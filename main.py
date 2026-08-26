@@ -29,21 +29,6 @@ else:
 app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# ===== إعداد رفع الصور =====
-UPLOAD_FOLDER = 'static/uploads'
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
-
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
-# ✅ تجاهل إنشاء المجلد على Vercel (Read-only file system)
-try:
-    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-except OSError:
-    pass  # Vercel doesn't allow writing to filesystem
-
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
 db = SQLAlchemy(app)
 CORS(app)
 
@@ -63,7 +48,7 @@ class User(db.Model):
     password_hash = db.Column(db.String(200), nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
     location = db.Column(db.String(100), default='')
-    profile_image = db.Column(db.String(500), default='')
+    profile_image = db.Column(db.Text, default='')  # ✅ نصي لتخزين Base64 أو URL
     favorite_planets = db.Column(db.Text, default='[]')
     favorite_missions = db.Column(db.Text, default='[]')
     favorite_asteroids = db.Column(db.Text, default='[]')
@@ -614,37 +599,31 @@ def admin_panel():
         return redirect(url_for('index'))
     return render_template('admin.html')
 
-# ===== API - Upload Avatar =====
-@app.route('/api/user/upload-avatar', methods=['POST'])
+# ===== API - Update Avatar (Base64 - مثل GainHub) =====
+@app.route('/api/user/update-avatar', methods=['POST'])
 @login_required
-def upload_avatar():
-    """رفع صورة بروفايل"""
+def update_avatar():
+    """تحديث صورة البروفايل (Base64)"""
     try:
-        if 'avatar' not in request.files:
-            return jsonify({'success': False, 'message': 'No file uploaded'}), 400
+        data = request.get_json()
+        avatar_base64 = data.get('avatar', '').strip()
         
-        file = request.files['avatar']
-        if file.filename == '':
-            return jsonify({'success': False, 'message': 'No file selected'}), 400
+        if not avatar_base64:
+            return jsonify({'success': False, 'message': 'No image provided'}), 400
         
-        if not allowed_file(file.filename):
-            return jsonify({'success': False, 'message': 'File type not allowed. Use PNG, JPG, JPEG, GIF, or WEBP'}), 400
+        # ✅ التحقق من صحة الصورة
+        if not avatar_base64.startswith('data:image/'):
+            return jsonify({'success': False, 'message': 'Invalid image format'}), 400
         
-        # حفظ الصورة
-        ext = file.filename.rsplit('.', 1)[1].lower()
-        filename = f"avatar_{session['user_id']}_{int(datetime.now().timestamp())}.{ext}"
-        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        file.save(filepath)
-        
-        # تحديث المستخدم
+        # ✅ تحديث المستخدم - تخزين Base64 مباشرة
         user = db.session.get(User, session['user_id'])
-        user.profile_image = f"/static/uploads/{filename}"
+        user.profile_image = avatar_base64
         db.session.commit()
         
         return jsonify({
             'success': True,
             'message': 'Avatar updated successfully',
-            'data': {'profile_image': user.profile_image}
+            'data': {'profile_image': avatar_base64}
         })
     except Exception as e:
         db.session.rollback()
