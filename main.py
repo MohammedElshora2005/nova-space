@@ -35,8 +35,11 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-# إنشاء مجلد uploads لو مش موجود
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+# ✅ تجاهل إنشاء المجلد على Vercel (Read-only file system)
+try:
+    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+except OSError:
+    pass  # Vercel doesn't allow writing to filesystem
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -1540,4 +1543,5 @@ def server_error(error):
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port, debug=True)
+    # ✅ Production mode (debug=False)
+    app.run(host='0.0.0.0', port=port, debug=False)
