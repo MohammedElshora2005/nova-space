@@ -697,8 +697,8 @@
           <li><a href="/chat">Nova AI</a></li>
           <!-- Dynamic Auth Buttons -->
           <li id="authButtons">
-            <a href="/login">Login</a>
-            <a href="/register">Register</a>
+            <a href="/login">🔐 Login</a>
+            <a href="/register">📝 Register</a>
           </li>
           <li id="profileButton" style="display: inline-block">
             <a href="/profile" class="active nav-cta">👤 Profile</a>
@@ -1031,21 +1031,22 @@
             document.getElementById("profileJoined").textContent =
               "Joined: " + user.created_at;
 
-            // Avatar
-            if (user.profile_image) {
-              document.getElementById("profileAvatarImg").src =
-                user.profile_image;
-              document.getElementById("profileAvatarImg").style.display =
-                "block";
-              document.getElementById("avatarPlaceholder").style.display =
-                "none";
+            // Avatar - check if Base64 or URL
+            if (user.profile_image && user.profile_image.startsWith('data:image')) {
+              // Base64 image
+              document.getElementById("profileAvatarImg").src = user.profile_image;
+              document.getElementById("profileAvatarImg").style.display = "block";
+              document.getElementById("avatarPlaceholder").style.display = "none";
+            } else if (user.profile_image && user.profile_image.startsWith('http')) {
+              // URL image
+              document.getElementById("profileAvatarImg").src = user.profile_image;
+              document.getElementById("profileAvatarImg").style.display = "block";
+              document.getElementById("avatarPlaceholder").style.display = "none";
             } else {
-              document.getElementById("profileAvatarImg").style.display =
-                "none";
-              document.getElementById("avatarPlaceholder").style.display =
-                "block";
-              document.getElementById("avatarPlaceholder").textContent =
-                user.username.charAt(0).toUpperCase();
+              // No image - show placeholder
+              document.getElementById("profileAvatarImg").style.display = "none";
+              document.getElementById("avatarPlaceholder").style.display = "block";
+              document.getElementById("avatarPlaceholder").textContent = user.username.charAt(0).toUpperCase();
             }
 
             // Admin badge
@@ -1307,7 +1308,7 @@
         }
       }
 
-      // ===== Upload Avatar =====
+      // ===== Upload Avatar (Base64 - نفس GainHub) =====
       document
         .getElementById("avatarInput")
         .addEventListener("change", async function (e) {
@@ -1326,32 +1327,39 @@
             return;
           }
 
-          const formData = new FormData();
-          formData.append("avatar", file);
+          // Convert to Base64 (زي GainHub بالظبط)
+          const reader = new FileReader();
+          reader.onload = async function (event) {
+            const base64Image = event.target.result;
 
-          try {
-            const response = await fetch("/api/user/upload-avatar", {
-              method: "POST",
-              credentials: "include",
-              body: formData,
-            });
+            try {
+              const response = await fetch("/api/user/update-avatar", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                credentials: "include",
+                body: JSON.stringify({ avatar: base64Image }),
+              });
 
-            const result = await response.json();
-            if (result.success) {
-              // Update avatar
-              document.getElementById("profileAvatarImg").src =
-                result.data.profile_image;
-              document.getElementById("profileAvatarImg").style.display =
-                "block";
-              document.getElementById("avatarPlaceholder").style.display =
-                "none";
-            } else {
-              alert(result.message || "Error uploading avatar");
+              const result = await response.json();
+              if (result.success) {
+                // Update avatar
+                document.getElementById("profileAvatarImg").src = base64Image;
+                document.getElementById("profileAvatarImg").style.display =
+                  "block";
+                document.getElementById("avatarPlaceholder").style.display =
+                  "none";
+                alert("Avatar updated successfully!");
+              } else {
+                alert(result.message || "Error updating avatar");
+              }
+            } catch (error) {
+              console.error("Error uploading avatar:", error);
+              alert("Error uploading avatar. Please try again.");
             }
-          } catch (error) {
-            console.error("Error uploading avatar:", error);
-            alert("Error uploading avatar. Please try again.");
-          }
+          };
+          reader.readAsDataURL(file);
         });
 
       // ===== Edit Profile =====
