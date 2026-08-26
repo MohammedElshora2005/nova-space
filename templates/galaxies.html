@@ -1,0 +1,1051 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Galaxies - Nova</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* ===== Stars Background ===== */
+      .stars,
+      .stars-2,
+      .stars-3 {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 0;
+      }
+      .stars {
+        background: transparent
+          url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100"%3E%3Ccircle cx="10" cy="10" r="1.5" fill="white" opacity="0.8"/%3E%3Ccircle cx="30" cy="45" r="1" fill="white" opacity="0.6"/%3E%3Ccircle cx="55" cy="20" r="2" fill="white" opacity="0.9"/%3E%3Ccircle cx="80" cy="60" r="1.5" fill="white" opacity="0.7"/%3E%3Ccircle cx="90" cy="15" r="1" fill="white" opacity="0.5"/%3E%3Ccircle cx="20" cy="80" r="2" fill="white" opacity="0.8"/%3E%3Ccircle cx="70" cy="85" r="1" fill="white" opacity="0.6"/%3E%3Ccircle cx="45" cy="70" r="1.5" fill="white" opacity="0.9"/%3E%3C/svg%3E')
+          repeat;
+        animation: starsMove 200s linear infinite;
+        opacity: 0.6;
+      }
+      .stars-2 {
+        background: transparent
+          url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="200" height="200"%3E%3Ccircle cx="20" cy="20" r="1" fill="white" opacity="0.4"/%3E%3Ccircle cx="80" cy="50" r="1.5" fill="white" opacity="0.5"/%3E%3Ccircle cx="120" cy="30" r="1" fill="white" opacity="0.3"/%3E%3Ccircle cx="170" cy="90" r="2" fill="white" opacity="0.6"/%3E%3Ccircle cx="40" cy="150" r="1" fill="white" opacity="0.4"/%3E%3Ccircle cx="160" cy="160" r="1.5" fill="white" opacity="0.5"/%3E%3C/svg%3E')
+          repeat;
+        animation: starsMove 300s linear infinite;
+        opacity: 0.4;
+      }
+      .stars-3 {
+        background: transparent
+          url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="300" height="300"%3E%3Ccircle cx="50" cy="50" r="0.8" fill="white" opacity="0.3"/%3E%3Ccircle cx="150" cy="100" r="1" fill="white" opacity="0.4"/%3E%3Ccircle cx="250" cy="70" r="0.8" fill="white" opacity="0.3"/%3E%3Ccircle cx="100" cy="200" r="1.2" fill="white" opacity="0.5"/%3E%3Ccircle cx="200" cy="220" r="0.8" fill="white" opacity="0.3"/%3E%3C/svg%3E')
+          repeat;
+        animation: starsMove 400s linear infinite;
+        opacity: 0.2;
+      }
+      @keyframes starsMove {
+        from {
+          transform: translateY(0);
+        }
+        to {
+          transform: translateY(-1000px);
+        }
+      }
+
+      .nebula-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background:
+          radial-gradient(
+            ellipse at 20% 50%,
+            rgba(123, 47, 252, 0.08) 0%,
+            transparent 60%
+          ),
+          radial-gradient(
+            ellipse at 80% 50%,
+            rgba(0, 212, 255, 0.05) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            ellipse at 50% 80%,
+            rgba(255, 0, 110, 0.04) 0%,
+            transparent 40%
+          );
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      /* ===== Navigation ===== */
+      .navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        padding: 15px 0;
+        z-index: 1000;
+        background: rgba(10, 14, 23, 0.92);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        transition: all 0.4s ease;
+      }
+      .navbar.scrolled {
+        background: rgba(10, 14, 23, 0.95);
+        backdrop-filter: blur(20px);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+      }
+      .navbar .container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+      .nav-logo {
+        font-size: 1.5rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .nav-logo .logo-img {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 30px;
+        list-style: none;
+      }
+      .nav-links a {
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.7);
+        transition: all 0.3s ease;
+        position: relative;
+        text-decoration: none;
+      }
+      .nav-links a:hover,
+      .nav-links a.active {
+        color: #fff;
+      }
+      .nav-links a.active::after {
+        content: "";
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(90deg, #00d4ff, #7b2ffc);
+      }
+      .nav-cta {
+        padding: 10px 24px;
+        background: linear-gradient(135deg, #00d4ff, #7b2ffc);
+        border-radius: 50px;
+        color: #fff !important;
+        font-weight: 600;
+        transition: all 0.3s ease;
+      }
+      .nav-cta:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
+      }
+      .hamburger {
+        display: none;
+        flex-direction: column;
+        gap: 6px;
+        cursor: pointer;
+        padding: 5px;
+      }
+      .hamburger span {
+        width: 28px;
+        height: 2px;
+        background: #fff;
+        transition: all 0.3s ease;
+        border-radius: 2px;
+      }
+      .hamburger.active span:nth-child(1) {
+        transform: rotate(45deg) translate(6px, 6px);
+      }
+      .hamburger.active span:nth-child(2) {
+        opacity: 0;
+      }
+      .hamburger.active span:nth-child(3) {
+        transform: rotate(-45deg) translate(6px, -6px);
+      }
+
+      /* ===== Galaxies Page ===== */
+      .galaxies-page {
+        padding-top: 100px;
+        min-height: 100vh;
+        background: #0a0e17;
+        position: relative;
+        z-index: 1;
+      }
+      .galaxies-page .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      /* ===== Header ===== */
+      .galaxies-header {
+        text-align: center;
+        padding: 40px 0 50px;
+      }
+      .galaxies-header h1 {
+        font-size: 3.5rem;
+        margin-bottom: 15px;
+      }
+      .galaxies-header p {
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 1.2rem;
+      }
+
+      /* ===== Filters ===== */
+      .filters {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 40px;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+      }
+      .filters input,
+      .filters select {
+        padding: 12px 20px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 12px;
+        color: #fff;
+        font-size: 0.95rem;
+        font-family: "Space Grotesk", sans-serif;
+        transition: all 0.3s ease;
+        outline: none;
+        min-width: 200px;
+      }
+      .filters input:focus,
+      .filters select:focus {
+        border-color: rgba(0, 212, 255, 0.3);
+        background: rgba(255, 255, 255, 0.06);
+      }
+      .filters input::placeholder {
+        color: rgba(255, 255, 255, 0.2);
+      }
+      .filters select option {
+        background: #0a0e17;
+        color: #fff;
+      }
+      .filters .filter-btn {
+        padding: 12px 30px;
+        background: linear-gradient(135deg, #00d4ff, #7b2ffc);
+        border: none;
+        border-radius: 12px;
+        color: #fff;
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-family: "Space Grotesk", sans-serif;
+      }
+      .filters .filter-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 40px rgba(0, 212, 255, 0.3);
+      }
+      .filters .filter-btn.reset {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .filters .filter-btn.reset:hover {
+        background: rgba(255, 255, 255, 0.1);
+        box-shadow: none;
+      }
+
+      /* ===== Galaxies Grid ===== */
+      .galaxies-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        margin-bottom: 50px;
+      }
+
+      .galaxy-card {
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 20px;
+        padding: 25px;
+        text-align: center;
+        transition: all 0.4s ease;
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+      }
+      .galaxy-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #00d4ff, #7b2ffc, #ff006e);
+        opacity: 0;
+        transition: opacity 0.4s ease;
+      }
+      .galaxy-card:hover::before {
+        opacity: 1;
+      }
+      .galaxy-card:hover {
+        transform: translateY(-8px);
+        border-color: rgba(0, 212, 255, 0.2);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      }
+
+      .galaxy-card .galaxy-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 12px;
+        margin-bottom: 15px;
+        background: #1a1a2e;
+      }
+      .galaxy-card h3 {
+        font-size: 1.4rem;
+        margin-bottom: 5px;
+      }
+      .galaxy-card .type {
+        color: rgba(255, 255, 255, 0.3);
+        font-size: 0.85rem;
+      }
+      .galaxy-card .galaxy-stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 10px;
+        padding-top: 15px;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        margin-top: 12px;
+      }
+      .galaxy-card .galaxy-stats .stat {
+        text-align: center;
+      }
+      .galaxy-card .galaxy-stats .stat .value {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #00d4ff;
+      }
+      .galaxy-card .galaxy-stats .stat .label {
+        font-size: 0.65rem;
+        color: rgba(255, 255, 255, 0.3);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .galaxy-card .favorite-btn {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: none;
+        border: none;
+        color: rgba(255, 255, 255, 0.2);
+        font-size: 1.4rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      .galaxy-card .favorite-btn:hover {
+        color: #00d4ff;
+        transform: scale(1.2);
+      }
+      .galaxy-card .favorite-btn.active {
+        color: #00d4ff;
+      }
+      .galaxy-card .favorite-btn.active:hover {
+        color: #7b2ffc;
+      }
+
+      /* ===== Detail Modal ===== */
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(10px);
+        z-index: 2000;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+      .modal-overlay.active {
+        display: flex;
+      }
+      .modal-content {
+        background: rgba(10, 14, 23, 0.95);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 24px;
+        max-width: 600px;
+        width: 100%;
+        padding: 40px;
+        position: relative;
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+      .modal-content .close-btn {
+        position: absolute;
+        top: 15px;
+        right: 20px;
+        background: none;
+        border: none;
+        color: rgba(255, 255, 255, 0.3);
+        font-size: 1.8rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      .modal-content .close-btn:hover {
+        color: #fff;
+        transform: rotate(90deg);
+      }
+      .modal-content .galaxy-image-big {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+        border-radius: 12px;
+        margin-bottom: 15px;
+        background: #1a1a2e;
+      }
+      .modal-content h2 {
+        text-align: center;
+        font-size: 2.2rem;
+        margin-bottom: 5px;
+      }
+      .modal-content .galaxy-sub {
+        text-align: center;
+        color: rgba(255, 255, 255, 0.3);
+        font-size: 0.9rem;
+        margin-bottom: 20px;
+      }
+      .modal-content .detail-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 15px;
+        margin-bottom: 20px;
+      }
+      .modal-content .detail-item {
+        background: rgba(255, 255, 255, 0.02);
+        border-radius: 12px;
+        padding: 15px;
+        text-align: center;
+      }
+      .modal-content .detail-item .label {
+        font-size: 0.7rem;
+        color: rgba(255, 255, 255, 0.3);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .modal-content .detail-item .value {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #00d4ff;
+        margin-top: 4px;
+      }
+      .modal-content .galaxy-description-full {
+        color: rgba(255, 255, 255, 0.6);
+        line-height: 1.8;
+        font-size: 0.95rem;
+        padding: 15px;
+        background: rgba(255, 255, 255, 0.02);
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      /* ===== Loading ===== */
+      .loading-spinner {
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        border: 3px solid rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        border-top-color: #00d4ff;
+        animation: spin 0.8s ease infinite;
+        margin: 60px auto;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .no-results {
+        text-align: center;
+        padding: 60px 20px;
+        color: rgba(255, 255, 255, 0.2);
+      }
+      .no-results .icon {
+        font-size: 4rem;
+        margin-bottom: 20px;
+      }
+
+      /* ===== Responsive ===== */
+      @media (max-width: 768px) {
+        .nav-links {
+          position: fixed;
+          top: 0;
+          right: -100%;
+          width: 70%;
+          max-width: 300px;
+          height: 100vh;
+          background: rgba(10, 14, 23, 0.98);
+          backdrop-filter: blur(20px);
+          flex-direction: column;
+          justify-content: center;
+          padding: 40px;
+          transition: all 0.4s ease;
+          border-left: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .nav-links.active {
+          right: 0;
+        }
+        .hamburger {
+          display: flex;
+          z-index: 1001;
+        }
+
+        .galaxies-header h1 {
+          font-size: 2.5rem;
+        }
+        .filters {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        .filters input,
+        .filters select,
+        .filters .filter-btn {
+          width: 100%;
+          min-width: unset;
+        }
+        .galaxies-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+        .galaxy-card .galaxy-stats {
+          grid-template-columns: 1fr 1fr;
+        }
+        .modal-content {
+          padding: 25px;
+        }
+        .modal-content .detail-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+        .modal-content .galaxy-image-big {
+          height: 180px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .galaxies-header h1 {
+          font-size: 2rem;
+        }
+        .galaxies-grid {
+          grid-template-columns: 1fr;
+        }
+        .galaxy-card {
+          padding: 18px;
+        }
+        .galaxy-card .galaxy-image {
+          height: 160px;
+        }
+        .galaxy-card .galaxy-stats {
+          grid-template-columns: 1fr;
+          gap: 8px;
+        }
+        .modal-content {
+          padding: 20px;
+        }
+        .modal-content .detail-grid {
+          grid-template-columns: 1fr;
+        }
+        .modal-content .galaxy-image-big {
+          height: 150px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Stars Background -->
+    <div class="stars"></div>
+    <div class="stars-2"></div>
+    <div class="stars-3"></div>
+    <div class="nebula-bg"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+      <div class="container">
+        <a href="/" class="nova-logo">
+          <svg
+            width="32"
+            height="32"
+            viewBox="0 0 40 40"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <circle cx="20" cy="20" r="10" fill="url(#grad1)" />
+            <ellipse
+              cx="20"
+              cy="20"
+              rx="18"
+              ry="6"
+              fill="none"
+              stroke="url(#grad2)"
+              stroke-width="2"
+              transform="rotate(-20, 20, 20)"
+            />
+            <ellipse
+              cx="20"
+              cy="20"
+              rx="14"
+              ry="4"
+              fill="none"
+              stroke="#fff"
+              stroke-width="0.5"
+              opacity="0.15"
+              transform="rotate(-20, 20, 20)"
+            />
+            <path
+              d="M10 20 Q20 26 30 20"
+              stroke="rgba(0,0,0,0.2)"
+              stroke-width="4"
+              fill="none"
+            />
+            <defs>
+              <linearGradient id="grad1" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#00D4FF" />
+                <stop offset="50%" stop-color="#7B2FFC" />
+                <stop offset="100%" stop-color="#FF006E" />
+              </linearGradient>
+              <linearGradient id="grad2" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#7B2FFC" />
+                <stop offset="100%" stop-color="#FF006E" />
+              </linearGradient>
+            </defs>
+          </svg>
+          <span>Nova</span>
+        </a>
+        <ul class="nav-links">
+          <li><a href="/">Home</a></li>
+          <li><a href="/missions">Missions</a></li>
+          <li><a href="/planets">Planets</a></li>
+          <li><a href="/asteroids">Asteroids</a></li>
+          <li><a href="/stars">Stars</a></li>
+          <li><a href="/galaxies" class="active">Galaxies</a></li>
+          <li><a href="/blackholes">Black Holes</a></li>
+          <li><a href="/chat">Nova AI</a></li>
+          <!-- Dynamic Auth Buttons -->
+          <li id="authButtons">
+            <a href="/login" class="nav-cta">Login</a>
+            <a href="/register">Register</a>
+          </li>
+          <li id="profileButton" style="display: none">
+            <a href="/profile" class="nav-cta">👤 Profile</a>
+          </li>
+        </ul>
+        <div class="hamburger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </nav>
+
+    <!-- ===== Galaxies Page ===== -->
+    <div class="galaxies-page">
+      <div class="container">
+        <!-- Header -->
+        <div class="galaxies-header">
+          <h1>🌌 <span class="gradient-text">Galaxies</span></h1>
+          <p>Discover the magnificent galaxies of our universe</p>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters">
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="🔍 Search galaxies..."
+          />
+          <select id="typeFilter">
+            <option value="">All Types</option>
+            <option value="Spiral">Spiral</option>
+            <option value="Starburst">Starburst</option>
+            <option value="Elliptical">Elliptical</option>
+            <option value="Irregular">Irregular</option>
+          </select>
+          <button class="filter-btn" id="filterBtn">
+            <i class="fas fa-search"></i> Filter
+          </button>
+          <button class="filter-btn reset" id="resetBtn">
+            <i class="fas fa-undo"></i> Reset
+          </button>
+        </div>
+
+        <!-- Galaxies Grid -->
+        <div id="galaxiesGrid" class="galaxies-grid">
+          <div class="loading-spinner" style="grid-column: 1 / -1"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== Detail Modal ===== -->
+    <div class="modal-overlay" id="detailModal">
+      <div class="modal-content">
+        <button class="close-btn" onclick="closeModal()">&times;</button>
+        <img class="galaxy-image-big" id="modalImage" src="" alt="Galaxy" />
+        <h2 id="modalName">Galaxy Name</h2>
+        <p class="galaxy-sub" id="modalType">Type</p>
+        <div class="detail-grid">
+          <div class="detail-item">
+            <div class="label">Distance</div>
+            <div class="value" id="modalDistance">N/A</div>
+          </div>
+          <div class="detail-item">
+            <div class="label">Stars</div>
+            <div class="value" id="modalStars">N/A</div>
+          </div>
+          <div class="detail-item">
+            <div class="label">Diameter</div>
+            <div class="value" id="modalDiameter">N/A</div>
+          </div>
+        </div>
+        <div class="galaxy-description-full" id="modalDescription">
+          No description available for this galaxy.
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== Footer ===== -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-brand">
+            <span class="logo-icon">✦</span>
+            <span>Nova</span>
+            <p>Exploration Without Limits - Toward New Horizons</p>
+          </div>
+          <div class="footer-links">
+            <div>
+              <h4>Explore</h4>
+              <a href="/missions">Missions</a>
+              <a href="/planets">Planets</a>
+              <a href="/asteroids">Asteroids</a>
+              <a href="/stars">Stars</a>
+              <a href="/galaxies">Galaxies</a>
+              <a href="/chat">Nova AI</a>
+            </div>
+            <div>
+              <h4>Account</h4>
+              <a href="/login">Login</a>
+              <a href="/register">Register</a>
+            </div>
+            <div>
+              <h4>Support</h4>
+              <a href="#">Contact</a>
+              <a href="#">FAQ</a>
+              <a href="/login" class="footer-admin-link">🔐 Admin</a>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>© 2026 Nova. All Rights Reserved</p>
+          <div class="footer-social">
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#"><i class="fab fa-youtube"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // ===== Hamburger =====
+      document
+        .querySelector(".hamburger")
+        .addEventListener("click", function () {
+          this.classList.toggle("active");
+          document.querySelector(".nav-links").classList.toggle("active");
+        });
+
+      // ===== Navbar Scroll Effect =====
+      window.addEventListener("scroll", function () {
+        const navbar = document.querySelector(".navbar");
+        if (window.scrollY > 100) {
+          navbar.classList.add("scrolled");
+        } else {
+          navbar.classList.remove("scrolled");
+        }
+      });
+
+      // ===== Check Authentication Status =====
+      async function checkAuth() {
+        try {
+          const response = await fetch("/api/user/profile", {
+            credentials: "include",
+          });
+          const data = await response.json();
+
+          if (data.success) {
+            document.getElementById("authButtons").style.display = "none";
+            document.getElementById("profileButton").style.display =
+              "inline-block";
+          } else {
+            document.getElementById("authButtons").style.display =
+              "inline-block";
+            document.getElementById("profileButton").style.display = "none";
+          }
+        } catch (e) {
+          console.error("Error checking auth:", e);
+          document.getElementById("authButtons").style.display = "inline-block";
+          document.getElementById("profileButton").style.display = "none";
+        }
+      }
+
+      // ===== Data =====
+      let galaxiesData = [];
+      let favorites = [];
+
+      // ===== Load Favorites =====
+      async function loadFavorites() {
+        try {
+          const response = await fetch("/api/user/profile", {
+            credentials: "include",
+          });
+          const data = await response.json();
+          if (data.success) {
+            favorites = data.data.favorite_galaxies || [];
+          }
+        } catch (e) {
+          console.error("Error loading favorites:", e);
+        }
+      }
+
+      // ===== Load Galaxies =====
+      async function loadGalaxies(search = "", type = "") {
+        const grid = document.getElementById("galaxiesGrid");
+        grid.innerHTML =
+          '<div class="loading-spinner" style="grid-column: 1 / -1;"></div>';
+
+        try {
+          let url = "/api/galaxies";
+          const params = new URLSearchParams();
+          if (search) params.append("search", search);
+          if (type) params.append("type", type);
+          if (params.toString()) url += "?" + params.toString();
+
+          const response = await fetch(url);
+          const data = await response.json();
+
+          if (data.success) {
+            galaxiesData = data.data;
+            renderGalaxies(galaxiesData);
+          } else {
+            grid.innerHTML = `
+              <div class="no-results" style="grid-column: 1 / -1;">
+                <div class="icon">🌌</div>
+                <p>No galaxies found</p>
+              </div>
+            `;
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          grid.innerHTML = `
+            <div class="no-results" style="grid-column: 1 / -1;">
+              <div class="icon">⚠️</div>
+              <p>Error loading galaxies. Please try again.</p>
+            </div>
+          `;
+        }
+      }
+
+      // ===== Render Galaxies =====
+      function renderGalaxies(galaxies) {
+        const grid = document.getElementById("galaxiesGrid");
+
+        if (galaxies.length === 0) {
+          grid.innerHTML = `
+            <div class="no-results" style="grid-column: 1 / -1;">
+              <div class="icon">🌌</div>
+              <p>No galaxies match your criteria</p>
+            </div>
+          `;
+          return;
+        }
+
+        let html = "";
+        galaxies.forEach((galaxy) => {
+          const isFavorite = favorites.includes(String(galaxy.id));
+          const image =
+            galaxy.image ||
+            "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&h=300&fit=crop";
+
+          html += `
+            <div class="galaxy-card" onclick="showDetail('${galaxy.id}')">
+              <button class="favorite-btn ${isFavorite ? "active" : ""}" onclick="event.stopPropagation(); toggleFavorite('${galaxy.id}', this)">
+                <i class="fas fa-star"></i>
+              </button>
+              <img src="${image}" alt="${galaxy.name}" class="galaxy-image" onerror="this.src='https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&h=300&fit=crop'">
+              <h3>${galaxy.name}</h3>
+              <div class="type">${galaxy.type || "Unknown type"} Galaxy</div>
+              <div class="galaxy-stats">
+                <div class="stat">
+                  <div class="value">${galaxy.distance || "N/A"}</div>
+                  <div class="label">Distance</div>
+                </div>
+                <div class="stat">
+                  <div class="value">${galaxy.stars || "N/A"}</div>
+                  <div class="label">Stars</div>
+                </div>
+                <div class="stat">
+                  <div class="value">${galaxy.diameter || "N/A"}</div>
+                  <div class="label">Diameter</div>
+                </div>
+              </div>
+            </div>
+          `;
+        });
+
+        grid.innerHTML = html;
+      }
+
+      // ===== Toggle Favorite =====
+      async function toggleFavorite(galaxyId, button) {
+        try {
+          const id = String(galaxyId);
+          const isFavorite = favorites.includes(id);
+
+          if (isFavorite) {
+            favorites = favorites.filter((f) => f !== id);
+          } else {
+            favorites.push(id);
+          }
+
+          const response = await fetch("/api/user/favorites", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+            body: JSON.stringify({ galaxies: favorites }),
+          });
+
+          const data = await response.json();
+          if (data.success) {
+            if (button) {
+              button.classList.toggle("active");
+            }
+            await loadFavorites();
+            renderGalaxies(galaxiesData);
+          } else {
+            await loadFavorites();
+          }
+        } catch (e) {
+          console.error("Error toggling favorite:", e);
+          await loadFavorites();
+        }
+      }
+
+      // ===== Show Detail Modal =====
+      function showDetail(galaxyId) {
+        const galaxy = galaxiesData.find(
+          (g) => String(g.id) === String(galaxyId),
+        );
+        if (!galaxy) return;
+
+        const image =
+          galaxy.image ||
+          "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&h=300&fit=crop";
+
+        document.getElementById("modalImage").src = image;
+        document.getElementById("modalImage").alt = galaxy.name;
+        document.getElementById("modalName").textContent = galaxy.name;
+        document.getElementById("modalType").textContent =
+          galaxy.type || "Unknown type";
+        document.getElementById("modalDistance").textContent =
+          galaxy.distance || "N/A";
+        document.getElementById("modalStars").textContent =
+          galaxy.stars || "N/A";
+        document.getElementById("modalDiameter").textContent =
+          galaxy.diameter || "N/A";
+        document.getElementById("modalDescription").textContent =
+          galaxy.description || "No description available for this galaxy.";
+
+        document.getElementById("detailModal").classList.add("active");
+        document.body.style.overflow = "hidden";
+      }
+
+      // ===== Close Modal =====
+      function closeModal() {
+        document.getElementById("detailModal").classList.remove("active");
+        document.body.style.overflow = "auto";
+      }
+
+      // Close modal on overlay click
+      document
+        .getElementById("detailModal")
+        .addEventListener("click", function (e) {
+          if (e.target === this) {
+            closeModal();
+          }
+        });
+
+      // Close modal with Escape key
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") {
+          closeModal();
+        }
+      });
+
+      // ===== Filters =====
+      document
+        .getElementById("filterBtn")
+        .addEventListener("click", function () {
+          const search = document.getElementById("searchInput").value.trim();
+          const type = document.getElementById("typeFilter").value;
+          loadGalaxies(search, type);
+        });
+
+      document
+        .getElementById("resetBtn")
+        .addEventListener("click", function () {
+          document.getElementById("searchInput").value = "";
+          document.getElementById("typeFilter").value = "";
+          loadGalaxies();
+        });
+
+      document
+        .getElementById("searchInput")
+        .addEventListener("keyup", function (e) {
+          if (e.key === "Enter") {
+            document.getElementById("filterBtn").click();
+          }
+        });
+
+      // ===== Init =====
+      document.addEventListener("DOMContentLoaded", async function () {
+        await checkAuth();
+        await loadFavorites();
+        loadGalaxies();
+      });
+    </script>
+  </body>
+</html>

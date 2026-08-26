@@ -1,0 +1,21 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "main.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "main.py"
+    }
+  ],
+  "env": {
+    "SECRET_KEY": "d9904d3168ffe3f355944a68bed6469d61519d24391dc5aa562b8633ab0e67c1",
+    "ADMIN_USERNAME": "admin",
+    "ADMIN_PASSWORD": "admin123",
+    "NASA_API_KEY": "1V7JMUPWcjzQ5NqNlAreKGjnDRzfchVVpuI8c0wg"
+  }
+}

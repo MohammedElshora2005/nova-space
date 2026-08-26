@@ -1,0 +1,1449 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profile - Nova</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* ===== Stars Background ===== */
+      .stars,
+      .stars-2,
+      .stars-3 {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 0;
+      }
+      .stars {
+        background: transparent
+          url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100"%3E%3Ccircle cx="10" cy="10" r="1.5" fill="white" opacity="0.8"/%3E%3Ccircle cx="30" cy="45" r="1" fill="white" opacity="0.6"/%3E%3Ccircle cx="55" cy="20" r="2" fill="white" opacity="0.9"/%3E%3Ccircle cx="80" cy="60" r="1.5" fill="white" opacity="0.7"/%3E%3Ccircle cx="90" cy="15" r="1" fill="white" opacity="0.5"/%3E%3Ccircle cx="20" cy="80" r="2" fill="white" opacity="0.8"/%3E%3Ccircle cx="70" cy="85" r="1" fill="white" opacity="0.6"/%3E%3Ccircle cx="45" cy="70" r="1.5" fill="white" opacity="0.9"/%3E%3C/svg%3E')
+          repeat;
+        animation: starsMove 200s linear infinite;
+        opacity: 0.6;
+      }
+      .stars-2 {
+        background: transparent
+          url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="200" height="200"%3E%3Ccircle cx="20" cy="20" r="1" fill="white" opacity="0.4"/%3E%3Ccircle cx="80" cy="50" r="1.5" fill="white" opacity="0.5"/%3E%3Ccircle cx="120" cy="30" r="1" fill="white" opacity="0.3"/%3E%3Ccircle cx="170" cy="90" r="2" fill="white" opacity="0.6"/%3E%3Ccircle cx="40" cy="150" r="1" fill="white" opacity="0.4"/%3E%3Ccircle cx="160" cy="160" r="1.5" fill="white" opacity="0.5"/%3E%3C/svg%3E')
+          repeat;
+        animation: starsMove 300s linear infinite;
+        opacity: 0.4;
+      }
+      .stars-3 {
+        background: transparent
+          url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="300" height="300"%3E%3Ccircle cx="50" cy="50" r="0.8" fill="white" opacity="0.3"/%3E%3Ccircle cx="150" cy="100" r="1" fill="white" opacity="0.4"/%3E%3Ccircle cx="250" cy="70" r="0.8" fill="white" opacity="0.3"/%3E%3Ccircle cx="100" cy="200" r="1.2" fill="white" opacity="0.5"/%3E%3Ccircle cx="200" cy="220" r="0.8" fill="white" opacity="0.3"/%3E%3C/svg%3E')
+          repeat;
+        animation: starsMove 400s linear infinite;
+        opacity: 0.2;
+      }
+      @keyframes starsMove {
+        from {
+          transform: translateY(0);
+        }
+        to {
+          transform: translateY(-1000px);
+        }
+      }
+
+      .nebula-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background:
+          radial-gradient(
+            ellipse at 20% 50%,
+            rgba(123, 47, 252, 0.08) 0%,
+            transparent 60%
+          ),
+          radial-gradient(
+            ellipse at 80% 50%,
+            rgba(0, 212, 255, 0.05) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            ellipse at 50% 80%,
+            rgba(255, 0, 110, 0.04) 0%,
+            transparent 40%
+          );
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      /* ===== Navigation ===== */
+      .navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        padding: 15px 0;
+        z-index: 1000;
+        background: rgba(10, 14, 23, 0.92);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        transition: all 0.4s ease;
+      }
+      .navbar.scrolled {
+        background: rgba(10, 14, 23, 0.95);
+        backdrop-filter: blur(20px);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+      }
+      .navbar .container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+      .nav-logo {
+        font-size: 1.5rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .nav-logo .logo-icon {
+        color: #00d4ff;
+        font-size: 1.8rem;
+      }
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 30px;
+        list-style: none;
+      }
+      .nav-links a {
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.7);
+        transition: all 0.3s ease;
+        position: relative;
+        text-decoration: none;
+      }
+      .nav-links a:hover,
+      .nav-links a.active {
+        color: #fff;
+      }
+      .nav-links a.active::after {
+        content: "";
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(90deg, #00d4ff, #7b2ffc);
+      }
+      .nav-cta {
+        padding: 10px 24px;
+        background: linear-gradient(135deg, #00d4ff, #7b2ffc);
+        border-radius: 50px;
+        color: #fff !important;
+        font-weight: 600;
+        transition: all 0.3s ease;
+      }
+      .nav-cta:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
+      }
+      .hamburger {
+        display: none;
+        flex-direction: column;
+        gap: 6px;
+        cursor: pointer;
+        padding: 5px;
+      }
+      .hamburger span {
+        width: 28px;
+        height: 2px;
+        background: #fff;
+        transition: all 0.3s ease;
+        border-radius: 2px;
+      }
+      .hamburger.active span:nth-child(1) {
+        transform: rotate(45deg) translate(6px, 6px);
+      }
+      .hamburger.active span:nth-child(2) {
+        opacity: 0;
+      }
+      .hamburger.active span:nth-child(3) {
+        transform: rotate(-45deg) translate(6px, -6px);
+      }
+
+      /* ===== Profile Page ===== */
+      .profile-page {
+        padding-top: 100px;
+        min-height: 100vh;
+        background: #0a0e17;
+        position: relative;
+        z-index: 1;
+      }
+
+      .profile-page .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      /* ===== Profile Header ===== */
+      .profile-header {
+        display: flex;
+        align-items: center;
+        gap: 40px;
+        padding: 40px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        flex-wrap: wrap;
+      }
+      .profile-avatar {
+        position: relative;
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        overflow: hidden;
+        background: linear-gradient(135deg, #00d4ff, #7b2ffc);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+        color: #fff;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      .profile-avatar:hover {
+        transform: scale(1.02);
+        box-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
+      }
+      .profile-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .profile-avatar .avatar-placeholder {
+        font-size: 3rem;
+        color: #fff;
+        user-select: none;
+      }
+      .profile-avatar .avatar-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(0, 0, 0, 0.7);
+        color: #fff;
+        border: none;
+        padding: 8px;
+        cursor: pointer;
+        font-size: 0.7rem;
+        transition: all 0.3s ease;
+        opacity: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+      }
+      .profile-avatar:hover .avatar-overlay {
+        opacity: 1;
+      }
+      .profile-avatar input[type="file"] {
+        display: none;
+      }
+
+      .profile-info h1 {
+        font-size: 2.2rem;
+        margin-bottom: 5px;
+      }
+      .profile-info .username {
+        color: rgba(255, 255, 255, 0.3);
+        font-size: 1rem;
+      }
+      .profile-info .email {
+        color: rgba(255, 255, 255, 0.3);
+        font-size: 0.9rem;
+        margin-top: 5px;
+      }
+      .profile-info .location {
+        color: rgba(255, 255, 255, 0.3);
+        font-size: 0.9rem;
+      }
+      .profile-info .joined {
+        color: rgba(255, 255, 255, 0.2);
+        font-size: 0.85rem;
+        margin-top: 8px;
+      }
+      .profile-info .badge-admin {
+        display: inline-block;
+        padding: 3px 14px;
+        background: rgba(255, 215, 0, 0.15);
+        border: 1px solid rgba(255, 215, 0, 0.2);
+        border-radius: 20px;
+        color: #ffd700;
+        font-size: 0.75rem;
+        margin-top: 8px;
+      }
+      .profile-actions {
+        margin-left: auto;
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .profile-actions .btn-logout-profile {
+        padding: 10px 24px;
+        background: rgba(255, 0, 110, 0.15);
+        border: 1px solid rgba(255, 0, 110, 0.2);
+        border-radius: 10px;
+        color: #ff006e;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-family: "Space Grotesk", sans-serif;
+        font-weight: 500;
+        font-size: 0.9rem;
+      }
+      .profile-actions .btn-logout-profile:hover {
+        background: rgba(255, 0, 110, 0.25);
+      }
+      .profile-actions .btn-back {
+        padding: 10px 24px;
+        background: rgba(0, 212, 255, 0.1);
+        border: 1px solid rgba(0, 212, 255, 0.15);
+        border-radius: 10px;
+        color: #00d4ff;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        font-size: 0.9rem;
+      }
+      .profile-actions .btn-back:hover {
+        background: rgba(0, 212, 255, 0.2);
+      }
+
+      /* ===== Profile Stats ===== */
+      .profile-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 20px;
+        padding: 30px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      }
+      .profile-stats .stat {
+        text-align: center;
+        padding: 15px;
+        background: rgba(255, 255, 255, 0.02);
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.03);
+        transition: all 0.3s ease;
+      }
+      .profile-stats .stat:hover {
+        border-color: rgba(0, 212, 255, 0.1);
+        transform: translateY(-2px);
+      }
+      .profile-stats .stat .number {
+        font-size: 2rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #00d4ff, #7b2ffc);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .profile-stats .stat .label {
+        color: rgba(255, 255, 255, 0.3);
+        font-size: 0.8rem;
+        margin-top: 4px;
+      }
+
+      /* ===== Favorites Section ===== */
+      .favorites-section {
+        padding: 30px 0;
+      }
+      .favorites-section h2 {
+        font-size: 1.6rem;
+        margin-bottom: 25px;
+      }
+      .favorites-section h2 i {
+        color: #00d4ff;
+        margin-right: 10px;
+      }
+
+      .favorites-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+      }
+      .favorite-item {
+        padding: 15px 20px;
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        transition: all 0.3s ease;
+      }
+      .favorite-item:hover {
+        border-color: rgba(0, 212, 255, 0.15);
+        background: rgba(255, 255, 255, 0.04);
+      }
+      .favorite-item .name {
+        font-weight: 500;
+      }
+      .favorite-item .type {
+        font-size: 0.75rem;
+        color: rgba(255, 255, 255, 0.3);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .favorite-item .remove-btn {
+        background: none;
+        border: none;
+        color: rgba(255, 255, 255, 0.15);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 1rem;
+        padding: 4px 8px;
+        border-radius: 6px;
+      }
+      .favorite-item .remove-btn:hover {
+        color: #ff006e;
+        background: rgba(255, 0, 110, 0.1);
+      }
+
+      .no-favorites {
+        text-align: center;
+        padding: 40px 20px;
+        color: rgba(255, 255, 255, 0.2);
+      }
+      .no-favorites .icon {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        display: block;
+      }
+      .no-favorites a {
+        color: #00d4ff;
+        text-decoration: none;
+      }
+      .no-favorites a:hover {
+        text-decoration: underline;
+      }
+
+      /* ===== Edit Section ===== */
+      .edit-section {
+        padding: 30px 0;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+      }
+      .edit-section h2 {
+        font-size: 1.4rem;
+        margin-bottom: 20px;
+      }
+      .edit-section .form-group {
+        margin-bottom: 16px;
+      }
+      .edit-section .form-group label {
+        display: block;
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 0.85rem;
+        margin-bottom: 6px;
+        font-weight: 500;
+      }
+      .edit-section .form-group input {
+        width: 100%;
+        max-width: 400px;
+        padding: 12px 16px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 10px;
+        color: #fff;
+        font-size: 0.95rem;
+        font-family: "Space Grotesk", sans-serif;
+        transition: all 0.3s ease;
+        outline: none;
+      }
+      .edit-section .form-group input:focus {
+        border-color: rgba(0, 212, 255, 0.3);
+        background: rgba(255, 255, 255, 0.06);
+      }
+      .edit-section .form-group input::placeholder {
+        color: rgba(255, 255, 255, 0.2);
+      }
+      .edit-section .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        max-width: 400px;
+      }
+      .edit-section .form-row .form-group input {
+        max-width: 100%;
+      }
+      .edit-section .btn-save {
+        padding: 12px 36px;
+        background: linear-gradient(135deg, #00d4ff, #7b2ffc);
+        border: none;
+        border-radius: 10px;
+        color: #fff;
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-family: "Space Grotesk", sans-serif;
+        margin-top: 8px;
+      }
+      .edit-section .btn-save:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 40px rgba(0, 212, 255, 0.3);
+      }
+      .edit-section .btn-save:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      /* ===== Alert ===== */
+      .alert {
+        padding: 12px 18px;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        font-size: 0.9rem;
+        animation: slideDown 0.3s ease;
+      }
+      @keyframes slideDown {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .alert-success {
+        background: rgba(0, 255, 135, 0.12);
+        border: 1px solid rgba(0, 255, 135, 0.15);
+        color: #00ff87;
+      }
+      .alert-error {
+        background: rgba(255, 0, 110, 0.12);
+        border: 1px solid rgba(255, 0, 110, 0.15);
+        color: #ff006e;
+      }
+
+      /* ===== Loading ===== */
+      .loading-spinner {
+        display: inline-block;
+        width: 30px;
+        height: 30px;
+        border: 3px solid rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        border-top-color: #00d4ff;
+        animation: spin 0.8s ease infinite;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* ===== Responsive ===== */
+      @media (max-width: 768px) {
+        .nav-links {
+          position: fixed;
+          top: 0;
+          right: -100%;
+          width: 70%;
+          max-width: 300px;
+          height: 100vh;
+          background: rgba(10, 14, 23, 0.98);
+          backdrop-filter: blur(20px);
+          flex-direction: column;
+          justify-content: center;
+          padding: 40px;
+          transition: all 0.4s ease;
+          border-left: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .nav-links.active {
+          right: 0;
+        }
+        .hamburger {
+          display: flex;
+          z-index: 1001;
+        }
+
+        .profile-header {
+          flex-direction: column;
+          text-align: center;
+        }
+        .profile-actions {
+          margin-left: 0;
+          justify-content: center;
+          width: 100%;
+        }
+        .profile-avatar {
+          width: 100px;
+          height: 100px;
+          font-size: 2.5rem;
+        }
+        .profile-info h1 {
+          font-size: 1.8rem;
+        }
+        .favorites-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+        .edit-section .form-row {
+          grid-template-columns: 1fr;
+        }
+        .edit-section .form-group input {
+          max-width: 100%;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .favorites-grid {
+          grid-template-columns: 1fr;
+        }
+        .profile-stats {
+          grid-template-columns: 1fr 1fr;
+        }
+        .profile-actions {
+          flex-direction: column;
+        }
+        .profile-actions .btn-back,
+        .profile-actions .btn-logout-profile {
+          width: 100%;
+          text-align: center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Stars Background -->
+    <div class="stars"></div>
+    <div class="stars-2"></div>
+    <div class="stars-3"></div>
+    <div class="nebula-bg"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+      <div class="container">
+        <a href="/" class="nova-logo">
+          <svg
+            width="32"
+            height="32"
+            viewBox="0 0 40 40"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <circle cx="20" cy="20" r="10" fill="url(#grad1)" />
+            <ellipse
+              cx="20"
+              cy="20"
+              rx="18"
+              ry="6"
+              fill="none"
+              stroke="url(#grad2)"
+              stroke-width="2"
+              transform="rotate(-20, 20, 20)"
+            />
+            <ellipse
+              cx="20"
+              cy="20"
+              rx="14"
+              ry="4"
+              fill="none"
+              stroke="#fff"
+              stroke-width="0.5"
+              opacity="0.15"
+              transform="rotate(-20, 20, 20)"
+            />
+            <path
+              d="M10 20 Q20 26 30 20"
+              stroke="rgba(0,0,0,0.2)"
+              stroke-width="4"
+              fill="none"
+            />
+            <defs>
+              <linearGradient id="grad1" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#00D4FF" />
+                <stop offset="50%" stop-color="#7B2FFC" />
+                <stop offset="100%" stop-color="#FF006E" />
+              </linearGradient>
+              <linearGradient id="grad2" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#7B2FFC" />
+                <stop offset="100%" stop-color="#FF006E" />
+              </linearGradient>
+            </defs>
+          </svg>
+          <span>Nova</span>
+        </a>
+        <ul class="nav-links">
+          <li><a href="/">Home</a></li>
+          <li><a href="/missions">Missions</a></li>
+          <li><a href="/planets">Planets</a></li>
+          <li><a href="/asteroids">Asteroids</a></li>
+          <li><a href="/stars">Stars</a></li>
+          <li><a href="/galaxies">Galaxies</a></li>
+          <li><a href="/blackholes">Black Holes</a></li>
+          <li><a href="/chat">Nova AI</a></li>
+          <!-- Dynamic Auth Buttons -->
+          <li id="authButtons">
+            <a href="/login">Login</a>
+            <a href="/register">Register</a>
+          </li>
+          <li id="profileButton" style="display: inline-block">
+            <a href="/profile" class="active nav-cta">👤 Profile</a>
+          </li>
+        </ul>
+        <div class="hamburger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </nav>
+
+    <!-- ===== Profile Page ===== -->
+    <div class="profile-page">
+      <div class="container">
+        <!-- Loading -->
+        <div id="loadingState" style="text-align: center; padding: 80px 0">
+          <div class="loading-spinner"></div>
+          <p style="color: rgba(255, 255, 255, 0.2); margin-top: 20px">
+            Loading profile...
+          </p>
+        </div>
+
+        <!-- Profile Content -->
+        <div id="profileContent" style="display: none">
+          <!-- Profile Header -->
+          <div class="profile-header">
+            <div
+              class="profile-avatar"
+              id="avatarContainer"
+              onclick="document.getElementById('avatarInput').click()"
+            >
+              <img
+                id="profileAvatarImg"
+                src=""
+                alt="Avatar"
+                style="display: none"
+              />
+              <span class="avatar-placeholder" id="avatarPlaceholder">🚀</span>
+              <div class="avatar-overlay">
+                <i class="fas fa-camera"></i> Change
+              </div>
+              <input type="file" id="avatarInput" accept="image/*" />
+            </div>
+            <div class="profile-info">
+              <h1 id="profileName">Username</h1>
+              <div class="username" id="profileUsername">@username</div>
+              <div class="email" id="profileEmail">✉️ email@example.com</div>
+              <div class="location" id="profileLocation">
+                📍 No location set
+              </div>
+              <div class="joined" id="profileJoined">Joined: Loading...</div>
+              <div id="adminBadge" style="display: none" class="badge-admin">
+                ⭐ Admin
+              </div>
+            </div>
+            <div class="profile-actions">
+              <a href="/" class="btn-back"
+                ><i class="fas fa-arrow-left"></i> Back</a
+              >
+              <button class="btn-logout-profile" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+              </button>
+            </div>
+          </div>
+
+          <!-- Stats -->
+          <div class="profile-stats">
+            <div class="stat">
+              <div class="number" id="statPlanets">0</div>
+              <div class="label">Favorite Planets</div>
+            </div>
+            <div class="stat">
+              <div class="number" id="statMissions">0</div>
+              <div class="label">Favorite Missions</div>
+            </div>
+            <div class="stat">
+              <div class="number" id="statAsteroids">0</div>
+              <div class="label">Favorite Asteroids</div>
+            </div>
+            <div class="stat">
+              <div class="number" id="statStars">0</div>
+              <div class="label">Favorite Stars</div>
+            </div>
+            <div class="stat">
+              <div class="number" id="statGalaxies">0</div>
+              <div class="label">Favorite Galaxies</div>
+            </div>
+            <div class="stat">
+              <div class="number" id="statBlackHoles">0</div>
+              <div class="label">Favorite Black Holes</div>
+            </div>
+          </div>
+
+          <!-- Favorite Planets -->
+          <div class="favorites-section">
+            <h2><i class="fas fa-star"></i> Favorite Planets</h2>
+            <div id="favoritePlanets" class="favorites-grid"></div>
+          </div>
+
+          <!-- Favorite Missions -->
+          <div class="favorites-section">
+            <h2><i class="fas fa-rocket"></i> Favorite Missions</h2>
+            <div id="favoriteMissions" class="favorites-grid"></div>
+          </div>
+
+          <!-- Favorite Asteroids -->
+          <div class="favorites-section">
+            <h2><i class="fas fa-meteor"></i> Favorite Asteroids</h2>
+            <div id="favoriteAsteroids" class="favorites-grid"></div>
+          </div>
+
+          <!-- Favorite Stars -->
+          <div class="favorites-section">
+            <h2><i class="fas fa-star"></i> Favorite Stars</h2>
+            <div id="favoriteStars" class="favorites-grid"></div>
+          </div>
+
+          <!-- Favorite Galaxies -->
+          <div class="favorites-section">
+            <h2><i class="fas fa-galaxy"></i> Favorite Galaxies</h2>
+            <div id="favoriteGalaxies" class="favorites-grid"></div>
+          </div>
+
+          <!-- Favorite Black Holes -->
+          <div class="favorites-section">
+            <h2><i class="fas fa-black-hole"></i> Favorite Black Holes</h2>
+            <div id="favoriteBlackHoles" class="favorites-grid"></div>
+          </div>
+
+          <!-- Edit Profile -->
+          <div class="edit-section">
+            <h2><i class="fas fa-edit"></i> Edit Profile</h2>
+            <div id="editAlert"></div>
+            <form id="editForm">
+              <div class="form-group">
+                <label>Username</label>
+                <input
+                  type="text"
+                  id="editUsername"
+                  placeholder="Enter username"
+                />
+              </div>
+              <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="editEmail" placeholder="Enter email" />
+              </div>
+              <div class="form-group">
+                <label>Location</label>
+                <input
+                  type="text"
+                  id="editLocation"
+                  placeholder="Your location (e.g., Cairo, Egypt)"
+                />
+              </div>
+              <div class="form-group">
+                <label>New Password (leave blank to keep current)</label>
+                <input
+                  type="password"
+                  id="editPassword"
+                  placeholder="Enter new password"
+                  minlength="6"
+                />
+              </div>
+              <button type="submit" class="btn-save" id="saveBtn">
+                <i class="fas fa-save"></i> Save Changes
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== Footer ===== -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-brand">
+            <svg
+              width="28"
+              height="28"
+              viewBox="0 0 40 40"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              style="display: inline-block; vertical-align: middle"
+            >
+              <circle cx="20" cy="20" r="10" fill="url(#grad1)" />
+              <ellipse
+                cx="20"
+                cy="20"
+                rx="18"
+                ry="6"
+                fill="none"
+                stroke="url(#grad2)"
+                stroke-width="2"
+                transform="rotate(-20, 20, 20)"
+              />
+              <ellipse
+                cx="20"
+                cy="20"
+                rx="14"
+                ry="4"
+                fill="none"
+                stroke="#fff"
+                stroke-width="0.5"
+                opacity="0.15"
+                transform="rotate(-20, 20, 20)"
+              />
+              <path
+                d="M10 20 Q20 26 30 20"
+                stroke="rgba(0,0,0,0.2)"
+                stroke-width="4"
+                fill="none"
+              />
+              <defs>
+                <linearGradient id="grad1" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#00D4FF" />
+                  <stop offset="50%" stop-color="#7B2FFC" />
+                  <stop offset="100%" stop-color="#FF006E" />
+                </linearGradient>
+                <linearGradient id="grad2" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#7B2FFC" />
+                  <stop offset="100%" stop-color="#FF006E" />
+                </linearGradient>
+              </defs>
+            </svg>
+            <span>Nova</span>
+            <p>Exploration Without Limits - Toward New Horizons</p>
+          </div>
+          <div class="footer-links">
+            <div>
+              <h4>Explore</h4>
+              <a href="/missions">Missions</a>
+              <a href="/planets">Planets</a>
+              <a href="/asteroids">Asteroids</a>
+              <a href="/stars">Stars</a>
+              <a href="/galaxies">Galaxies</a>
+              <a href="/blackholes">Black Holes</a>
+              <a href="/chat">Nova AI</a>
+            </div>
+            <div>
+              <h4>Account</h4>
+              <a href="/login">Login</a>
+              <a href="/register">Register</a>
+            </div>
+            <div>
+              <h4>Support</h4>
+              <a href="#">Contact</a>
+              <a href="#">FAQ</a>
+              <a href="/login" class="footer-admin-link">🔐 Admin</a>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>© 2026 Nova. All Rights Reserved</p>
+          <div class="footer-social">
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#"><i class="fab fa-youtube"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // ===== Hamburger =====
+      document
+        .querySelector(".hamburger")
+        .addEventListener("click", function () {
+          this.classList.toggle("active");
+          document.querySelector(".nav-links").classList.toggle("active");
+        });
+
+      // ===== Navbar Scroll Effect =====
+      window.addEventListener("scroll", function () {
+        const navbar = document.querySelector(".navbar");
+        if (window.scrollY > 100) {
+          navbar.classList.add("scrolled");
+        } else {
+          navbar.classList.remove("scrolled");
+        }
+      });
+
+      // ===== Check Auth =====
+      async function checkAuth() {
+        try {
+          const response = await fetch("/api/user/profile", {
+            credentials: "include",
+          });
+          const data = await response.json();
+
+          if (data.success) {
+            document.getElementById("authButtons").style.display = "none";
+            document.getElementById("profileButton").style.display =
+              "inline-block";
+          } else {
+            document.getElementById("authButtons").style.display =
+              "inline-block";
+            document.getElementById("profileButton").style.display = "none";
+          }
+        } catch (e) {
+          console.error("Error checking auth:", e);
+        }
+      }
+
+      // ===== Load Profile =====
+      async function loadProfile() {
+        try {
+          const response = await fetch("/api/user/profile", {
+            credentials: "include",
+          });
+          const data = await response.json();
+
+          if (data.success) {
+            const user = data.data;
+
+            document.getElementById("loadingState").style.display = "none";
+            document.getElementById("profileContent").style.display = "block";
+
+            // Profile info
+            document.getElementById("profileName").textContent = user.username;
+            document.getElementById("profileUsername").textContent =
+              "@" + user.username;
+            document.getElementById("profileEmail").textContent =
+              "✉️ " + user.email;
+            document.getElementById("profileLocation").textContent =
+              user.location ? "📍 " + user.location : "📍 No location set";
+            document.getElementById("profileJoined").textContent =
+              "Joined: " + user.created_at;
+
+            // Avatar
+            if (user.profile_image) {
+              document.getElementById("profileAvatarImg").src =
+                user.profile_image;
+              document.getElementById("profileAvatarImg").style.display =
+                "block";
+              document.getElementById("avatarPlaceholder").style.display =
+                "none";
+            } else {
+              document.getElementById("profileAvatarImg").style.display =
+                "none";
+              document.getElementById("avatarPlaceholder").style.display =
+                "block";
+              document.getElementById("avatarPlaceholder").textContent =
+                user.username.charAt(0).toUpperCase();
+            }
+
+            // Admin badge
+            if (user.is_admin) {
+              document.getElementById("adminBadge").style.display =
+                "inline-block";
+            }
+
+            // Stats
+            document.getElementById("statPlanets").textContent =
+              user.favorite_planets.length || 0;
+            document.getElementById("statMissions").textContent =
+              user.favorite_missions.length || 0;
+            document.getElementById("statAsteroids").textContent =
+              user.favorite_asteroids.length || 0;
+            document.getElementById("statStars").textContent =
+              user.favorite_stars.length || 0;
+            document.getElementById("statGalaxies").textContent =
+              user.favorite_galaxies.length || 0;
+            document.getElementById("statBlackHoles").textContent =
+              user.favorite_blackholes.length || 0;
+
+            // Edit form
+            document.getElementById("editUsername").value = user.username;
+            document.getElementById("editEmail").value = user.email;
+            document.getElementById("editLocation").value = user.location || "";
+
+            // Render favorites
+            renderFavorites(
+              user.favorite_planets,
+              user.favorite_missions,
+              user.favorite_asteroids,
+              user.favorite_stars,
+              user.favorite_galaxies,
+              user.favorite_blackholes,
+            );
+          } else {
+            window.location.href = "/login";
+          }
+        } catch (e) {
+          console.error("Error loading profile:", e);
+          window.location.href = "/login";
+        }
+      }
+
+      // ===== Render Favorites =====
+      function renderFavorites(
+        planets,
+        missions,
+        asteroids,
+        stars,
+        galaxies,
+        blackholes,
+      ) {
+        // Planets
+        const planetsContainer = document.getElementById("favoritePlanets");
+        if (planets && planets.length > 0) {
+          planetsContainer.innerHTML = planets
+            .map(
+              (name) => `
+                <div class="favorite-item">
+                  <span class="name">🪐 ${name}</span>
+                  <span class="type">Planet</span>
+                  <button class="remove-btn" onclick="removeFavorite('planet', '${name}')" title="Remove from favorites">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+              `,
+            )
+            .join("");
+        } else {
+          planetsContainer.innerHTML = `
+            <div class="no-favorites" style="grid-column: 1 / -1;">
+              <span class="icon">🌌</span>
+              <p>No favorite planets yet. <a href="/planets">Explore planets →</a></p>
+            </div>
+          `;
+        }
+
+        // Missions
+        const missionsContainer = document.getElementById("favoriteMissions");
+        if (missions && missions.length > 0) {
+          missionsContainer.innerHTML = missions
+            .map(
+              (id) => `
+                <div class="favorite-item">
+                  <span class="name">🚀 ${id.replace(/-/g, " ").toUpperCase()}</span>
+                  <span class="type">Mission</span>
+                  <button class="remove-btn" onclick="removeFavorite('mission', '${id}')" title="Remove from favorites">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+              `,
+            )
+            .join("");
+        } else {
+          missionsContainer.innerHTML = `
+            <div class="no-favorites" style="grid-column: 1 / -1;">
+              <span class="icon">🚀</span>
+              <p>No favorite missions yet. <a href="/missions">Explore missions →</a></p>
+            </div>
+          `;
+        }
+
+        // Asteroids
+        const asteroidsContainer = document.getElementById("favoriteAsteroids");
+        if (asteroids && asteroids.length > 0) {
+          asteroidsContainer.innerHTML = asteroids
+            .map(
+              (id) => `
+                <div class="favorite-item">
+                  <span class="name">☄️ ${id.replace(/-/g, " ").toUpperCase()}</span>
+                  <span class="type">Asteroid</span>
+                  <button class="remove-btn" onclick="removeFavorite('asteroid', '${id}')" title="Remove from favorites">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+              `,
+            )
+            .join("");
+        } else {
+          asteroidsContainer.innerHTML = `
+            <div class="no-favorites" style="grid-column: 1 / -1;">
+              <span class="icon">☄️</span>
+              <p>No favorite asteroids yet. <a href="/asteroids">Explore asteroids →</a></p>
+            </div>
+          `;
+        }
+
+        // Stars
+        const starsContainer = document.getElementById("favoriteStars");
+        if (stars && stars.length > 0) {
+          starsContainer.innerHTML = stars
+            .map(
+              (id) => `
+                <div class="favorite-item">
+                  <span class="name">⭐ ${id.replace(/-/g, " ").toUpperCase()}</span>
+                  <span class="type">Star</span>
+                  <button class="remove-btn" onclick="removeFavorite('star', '${id}')" title="Remove from favorites">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+              `,
+            )
+            .join("");
+        } else {
+          starsContainer.innerHTML = `
+            <div class="no-favorites" style="grid-column: 1 / -1;">
+              <span class="icon">⭐</span>
+              <p>No favorite stars yet. <a href="/stars">Explore stars →</a></p>
+            </div>
+          `;
+        }
+
+        // Galaxies
+        const galaxiesContainer = document.getElementById("favoriteGalaxies");
+        if (galaxies && galaxies.length > 0) {
+          galaxiesContainer.innerHTML = galaxies
+            .map(
+              (id) => `
+                <div class="favorite-item">
+                  <span class="name">🌌 ${id.replace(/-/g, " ").toUpperCase()}</span>
+                  <span class="type">Galaxy</span>
+                  <button class="remove-btn" onclick="removeFavorite('galaxy', '${id}')" title="Remove from favorites">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+              `,
+            )
+            .join("");
+        } else {
+          galaxiesContainer.innerHTML = `
+            <div class="no-favorites" style="grid-column: 1 / -1;">
+              <span class="icon">🌌</span>
+              <p>No favorite galaxies yet. <a href="/galaxies">Explore galaxies →</a></p>
+            </div>
+          `;
+        }
+
+        // Black Holes
+        const blackholesContainer =
+          document.getElementById("favoriteBlackHoles");
+        if (blackholes && blackholes.length > 0) {
+          blackholesContainer.innerHTML = blackholes
+            .map(
+              (id) => `
+                <div class="favorite-item">
+                  <span class="name">🕳️ ${id.replace(/-/g, " ").toUpperCase()}</span>
+                  <span class="type">Black Hole</span>
+                  <button class="remove-btn" onclick="removeFavorite('blackhole', '${id}')" title="Remove from favorites">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+              `,
+            )
+            .join("");
+        } else {
+          blackholesContainer.innerHTML = `
+            <div class="no-favorites" style="grid-column: 1 / -1;">
+              <span class="icon">🕳️</span>
+              <p>No favorite black holes yet. <a href="/blackholes">Explore black holes →</a></p>
+            </div>
+          `;
+        }
+      }
+
+      // ===== Remove Favorite =====
+      async function removeFavorite(type, name) {
+        try {
+          const response = await fetch("/api/user/profile", {
+            credentials: "include",
+          });
+          const data = await response.json();
+          if (!data.success) return;
+
+          const user = data.data;
+          let planets = user.favorite_planets || [];
+          let missions = user.favorite_missions || [];
+          let asteroids = user.favorite_asteroids || [];
+          let stars = user.favorite_stars || [];
+          let galaxies = user.favorite_galaxies || [];
+          let blackholes = user.favorite_blackholes || [];
+
+          if (type === "planet") {
+            planets = planets.filter((p) => p !== name);
+          } else if (type === "mission") {
+            missions = missions.filter((m) => m !== name);
+          } else if (type === "asteroid") {
+            asteroids = asteroids.filter((a) => a !== name);
+          } else if (type === "star") {
+            stars = stars.filter((s) => s !== name);
+          } else if (type === "galaxy") {
+            galaxies = galaxies.filter((g) => g !== name);
+          } else if (type === "blackhole") {
+            blackholes = blackholes.filter((b) => b !== name);
+          }
+
+          const updateResponse = await fetch("/api/user/favorites", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+            body: JSON.stringify({
+              planets,
+              missions,
+              asteroids,
+              stars,
+              galaxies,
+              blackholes,
+            }),
+          });
+
+          if (updateResponse.ok) {
+            loadProfile();
+          }
+        } catch (e) {
+          console.error("Error removing favorite:", e);
+        }
+      }
+
+      // ===== Upload Avatar =====
+      document
+        .getElementById("avatarInput")
+        .addEventListener("change", async function (e) {
+          const file = this.files[0];
+          if (!file) return;
+
+          // Check file type
+          if (!file.type.startsWith("image/")) {
+            alert("Please select an image file");
+            return;
+          }
+
+          // Check file size (max 5MB)
+          if (file.size > 5 * 1024 * 1024) {
+            alert("Image size must be less than 5MB");
+            return;
+          }
+
+          const formData = new FormData();
+          formData.append("avatar", file);
+
+          try {
+            const response = await fetch("/api/user/upload-avatar", {
+              method: "POST",
+              credentials: "include",
+              body: formData,
+            });
+
+            const result = await response.json();
+            if (result.success) {
+              // Update avatar
+              document.getElementById("profileAvatarImg").src =
+                result.data.profile_image;
+              document.getElementById("profileAvatarImg").style.display =
+                "block";
+              document.getElementById("avatarPlaceholder").style.display =
+                "none";
+            } else {
+              alert(result.message || "Error uploading avatar");
+            }
+          } catch (error) {
+            console.error("Error uploading avatar:", error);
+            alert("Error uploading avatar. Please try again.");
+          }
+        });
+
+      // ===== Edit Profile =====
+      document
+        .getElementById("editForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          const username = document.getElementById("editUsername").value.trim();
+          const email = document.getElementById("editEmail").value.trim();
+          const location = document.getElementById("editLocation").value.trim();
+          const password = document.getElementById("editPassword").value;
+
+          const button = document.getElementById("saveBtn");
+          const alertContainer = document.getElementById("editAlert");
+
+          button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+          button.disabled = true;
+          alertContainer.innerHTML = "";
+
+          const data = { username, email, location };
+          if (password) {
+            data.password = password;
+          }
+
+          try {
+            const response = await fetch("/api/user/update", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              credentials: "include",
+              body: JSON.stringify(data),
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+              alertContainer.innerHTML = `
+                <div class="alert alert-success">✅ ${result.message}</div>
+              `;
+              document.getElementById("profileName").textContent = username;
+              document.getElementById("profileUsername").textContent =
+                "@" + username;
+              document.getElementById("profileEmail").textContent =
+                "✉️ " + email;
+              document.getElementById("profileLocation").textContent = location
+                ? "📍 " + location
+                : "📍 No location set";
+
+              // Update avatar placeholder
+              document.getElementById("avatarPlaceholder").textContent =
+                username.charAt(0).toUpperCase();
+
+              button.innerHTML = '<i class="fas fa-save"></i> Save Changes';
+              button.disabled = false;
+
+              // Clear password field
+              document.getElementById("editPassword").value = "";
+
+              setTimeout(() => {
+                alertContainer.innerHTML = "";
+              }, 5000);
+            } else {
+              alertContainer.innerHTML = `
+                <div class="alert alert-error">❌ ${result.message}</div>
+              `;
+              button.innerHTML = '<i class="fas fa-save"></i> Save Changes';
+              button.disabled = false;
+            }
+          } catch (e) {
+            console.error("Error updating profile:", e);
+            alertContainer.innerHTML = `
+              <div class="alert alert-error">❌ Connection error. Please try again.</div>
+            `;
+            button.innerHTML = '<i class="fas fa-save"></i> Save Changes';
+            button.disabled = false;
+          }
+        });
+
+      // ===== Logout =====
+      async function logout() {
+        if (confirm("Are you sure you want to logout?")) {
+          window.location.href = "/logout";
+        }
+      }
+
+      // ===== Init =====
+      document.addEventListener("DOMContentLoaded", function () {
+        checkAuth();
+        loadProfile();
+      });
+    </script>
+  </body>
+</html>

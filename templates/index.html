@@ -1,0 +1,1609 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nova - Space Exploration</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* ===== Nova Logo ===== */
+      .nova-logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+      }
+
+      .nova-logo svg {
+        width: 32px;
+        height: 32px;
+        flex-shrink: 0;
+      }
+
+      .nova-logo span {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #fff;
+        background: linear-gradient(135deg, #00d4ff, #7b2ffc, #ff006e);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      /* ===== NASA Data Section ===== */
+      .nasa-data {
+        padding: 80px 0;
+        position: relative;
+        z-index: 1;
+        background: rgba(10, 14, 23, 0.3);
+      }
+      .apod-card {
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 20px;
+        overflow: hidden;
+        margin-bottom: 40px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+      .apod-card .apod-image {
+        width: 100%;
+        height: 400px;
+        object-fit: cover;
+        background: #1a1a2e;
+      }
+      .apod-card .apod-info {
+        padding: 30px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+      .apod-card .apod-info .date {
+        color: rgba(255, 255, 255, 0.3);
+        font-size: 0.85rem;
+      }
+      .apod-card .apod-info h3 {
+        font-size: 1.5rem;
+        margin: 10px 0;
+      }
+      .apod-card .apod-info p {
+        color: rgba(255, 255, 255, 0.6);
+        line-height: 1.8;
+      }
+      .apod-card .apod-info .btn-primary {
+        align-self: flex-start;
+        padding: 10px 24px;
+        font-size: 0.9rem;
+      }
+      .apod-card iframe {
+        width: 100%;
+        height: 400px;
+        border: none;
+        background: #1a1a2e;
+      }
+
+      .iss-card {
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 16px;
+        padding: 30px;
+        text-align: center;
+        margin-bottom: 30px;
+      }
+      .iss-card h3 {
+        margin-bottom: 15px;
+      }
+      .iss-card .coords {
+        font-size: 2.5rem;
+        color: #00d4ff;
+        margin: 15px 0;
+        font-weight: 700;
+      }
+      .iss-card .sub {
+        color: rgba(255, 255, 255, 0.3);
+        font-size: 0.9rem;
+      }
+
+      .asteroid-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 18px;
+        background: rgba(255, 255, 255, 0.02);
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        margin-bottom: 10px;
+      }
+      .asteroid-item .hazardous {
+        color: #ff006e;
+        font-size: 0.85rem;
+      }
+      .asteroid-item .safe {
+        color: #00ff87;
+        font-size: 0.85rem;
+      }
+      .asteroid-item .size {
+        color: rgba(255, 255, 255, 0.4);
+      }
+
+      .mars-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 15px;
+        margin-top: 15px;
+      }
+      .mars-item {
+        border-radius: 12px;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        transition: all 0.3s ease;
+      }
+      .mars-item:hover {
+        transform: scale(1.03);
+        border-color: rgba(0, 212, 255, 0.2);
+      }
+      .mars-item img {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+      }
+      .mars-item .info {
+        padding: 10px;
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.4);
+        text-align: center;
+      }
+
+      /* ===== News Section ===== */
+      .news-section {
+        padding: 80px 0;
+        position: relative;
+        z-index: 1;
+        background: rgba(10, 14, 23, 0.2);
+      }
+      .news-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 25px;
+      }
+      .news-card {
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 16px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+      }
+      .news-card:hover {
+        transform: translateY(-5px);
+        border-color: rgba(0, 212, 255, 0.2);
+      }
+      .news-card .news-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        background: #1a1a2e;
+      }
+      .news-card .news-content {
+        padding: 20px;
+      }
+      .news-card .news-content h4 {
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+      }
+      .news-card .news-content p {
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 0.9rem;
+        line-height: 1.6;
+      }
+      .news-card .news-content .btn-news {
+        display: inline-block;
+        margin-top: 12px;
+        color: #00d4ff;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+      }
+      .news-card .news-content .btn-news:hover {
+        color: #7b2ffc;
+      }
+
+      /* ===== Team Section with Real Images ===== */
+      .team-avatar .avatar-img {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid rgba(0, 212, 255, 0.1);
+        transition: all 0.4s ease;
+      }
+      .team-card:hover .avatar-img {
+        border-color: rgba(0, 212, 255, 0.3);
+        transform: scale(1.05);
+      }
+      .team-avatar {
+        position: relative;
+        display: inline-block;
+        margin-bottom: 15px;
+      }
+      .team-status {
+        position: absolute;
+        bottom: 2px;
+        right: 2px;
+        width: 14px;
+        height: 14px;
+        background: #00ff87;
+        border-radius: 50%;
+        border: 2px solid #0a0e17;
+      }
+
+      /* ===== Navigation ===== */
+      .navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        padding: 15px 0;
+        z-index: 1000;
+        background: rgba(10, 14, 23, 0.92);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        transition: all 0.4s ease;
+      }
+      .navbar.scrolled {
+        background: rgba(10, 14, 23, 0.95);
+        backdrop-filter: blur(20px);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+      }
+      .navbar .container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 30px;
+        list-style: none;
+      }
+      .nav-links a {
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.7);
+        transition: all 0.3s ease;
+        position: relative;
+        text-decoration: none;
+      }
+      .nav-links a:hover,
+      .nav-links a.active {
+        color: #fff;
+      }
+      .nav-links a.active::after {
+        content: "";
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(90deg, #00d4ff, #7b2ffc);
+      }
+      .nav-cta {
+        padding: 10px 24px;
+        background: linear-gradient(135deg, #00d4ff, #7b2ffc);
+        border-radius: 50px;
+        color: #fff !important;
+        font-weight: 600;
+        transition: all 0.3s ease;
+      }
+      .nav-cta:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
+      }
+      .hamburger {
+        display: none;
+        flex-direction: column;
+        gap: 6px;
+        cursor: pointer;
+        padding: 5px;
+      }
+      .hamburger span {
+        width: 28px;
+        height: 2px;
+        background: #fff;
+        transition: all 0.3s ease;
+        border-radius: 2px;
+      }
+      .hamburger.active span:nth-child(1) {
+        transform: rotate(45deg) translate(6px, 6px);
+      }
+      .hamburger.active span:nth-child(2) {
+        opacity: 0;
+      }
+      .hamburger.active span:nth-child(3) {
+        transform: rotate(-45deg) translate(6px, -6px);
+      }
+
+      /* ===== Technology ===== */
+      .technology {
+        padding: 80px 0;
+        position: relative;
+        z-index: 1;
+      }
+      .tech-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 25px;
+      }
+      .tech-item {
+        padding: 30px 20px;
+        text-align: center;
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 16px;
+        transition: all 0.4s ease;
+      }
+      .tech-item:hover {
+        transform: translateY(-5px);
+        border-color: rgba(0, 212, 255, 0.15);
+        background: rgba(255, 255, 255, 0.04);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      }
+      .tech-icon {
+        width: 60px;
+        height: 60px;
+        margin: 0 auto 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.8rem;
+        background: linear-gradient(
+          135deg,
+          rgba(0, 212, 255, 0.1),
+          rgba(123, 47, 252, 0.1)
+        );
+        border-radius: 50%;
+        color: #00d4ff;
+        transition: all 0.4s ease;
+      }
+      .tech-item:hover .tech-icon {
+        background: linear-gradient(
+          135deg,
+          rgba(0, 212, 255, 0.2),
+          rgba(123, 47, 252, 0.2)
+        );
+        transform: scale(1.1);
+      }
+      .tech-item h3 {
+        font-size: 1.1rem;
+        margin-bottom: 8px;
+      }
+      .tech-item p {
+        font-size: 0.85rem;
+        color: rgba(255, 255, 255, 0.5);
+      }
+
+      /* ===== Missions ===== */
+      .missions {
+        padding: 80px 0;
+        position: relative;
+        z-index: 1;
+        background: rgba(10, 14, 23, 0.5);
+      }
+      .missions-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+      }
+      .mission-card {
+        position: relative;
+        padding: 30px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 20px;
+        transition: all 0.4s ease;
+        overflow: hidden;
+        cursor: pointer;
+      }
+      .mission-card:hover {
+        transform: translateY(-10px);
+        border-color: rgba(0, 212, 255, 0.2);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        background: rgba(255, 255, 255, 0.05);
+      }
+      .mission-number {
+        position: absolute;
+        top: -10px;
+        right: 20px;
+        font-size: 6rem;
+        font-weight: 700;
+        color: rgba(255, 255, 255, 0.05);
+        transition: all 0.4s ease;
+        pointer-events: none;
+      }
+      .mission-card:hover .mission-number {
+        opacity: 0.3;
+        transform: scale(1.1);
+      }
+      .mission-content {
+        position: relative;
+        z-index: 1;
+      }
+      .mission-content h3 {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+      }
+      .mission-content p {
+        color: rgba(255, 255, 255, 0.6);
+        margin-bottom: 15px;
+      }
+      .mission-meta {
+        display: flex;
+        gap: 20px;
+        font-size: 0.85rem;
+        color: rgba(255, 255, 255, 0.4);
+      }
+      .mission-meta i {
+        margin-right: 6px;
+      }
+      .mission-icon {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        font-size: 2.5rem;
+        color: rgba(0, 212, 255, 0.08);
+        transition: all 0.4s ease;
+      }
+      .mission-card:hover .mission-icon {
+        color: rgba(0, 212, 255, 0.2);
+        transform: scale(1.2) rotate(10deg);
+      }
+
+      /* ===== Team ===== */
+      .team {
+        padding: 80px 0;
+        position: relative;
+        z-index: 1;
+      }
+      .team-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 30px;
+      }
+      .team-card {
+        text-align: center;
+        padding: 30px 20px;
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 16px;
+        transition: all 0.4s ease;
+      }
+      .team-card:hover {
+        transform: translateY(-5px);
+        border-color: rgba(0, 212, 255, 0.15);
+        background: rgba(255, 255, 255, 0.04);
+      }
+      .team-card h4 {
+        font-size: 1.1rem;
+        margin-bottom: 4px;
+      }
+      .team-card > span {
+        color: rgba(255, 255, 255, 0.4);
+        font-size: 0.85rem;
+      }
+      .team-social {
+        margin-top: 15px;
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+      }
+      .team-social a {
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.05);
+        color: rgba(255, 255, 255, 0.4);
+        transition: all 0.3s ease;
+      }
+      .team-social a:hover {
+        background: rgba(0, 212, 255, 0.1);
+        color: #00d4ff;
+      }
+
+      /* ===== Contact ===== */
+      .contact {
+        padding: 80px 0;
+        position: relative;
+        z-index: 1;
+        background: rgba(10, 14, 23, 0.5);
+      }
+      .contact-wrapper {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 60px;
+        align-items: start;
+      }
+      .contact-text h2 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 12px;
+      }
+      .contact-text > p {
+        color: rgba(255, 255, 255, 0.5);
+        margin-bottom: 30px;
+      }
+      .contact-features {
+        display: grid;
+        gap: 14px;
+      }
+      .contact-features div {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: rgba(255, 255, 255, 0.7);
+      }
+      .contact-features i {
+        color: #00ff87;
+        font-size: 1.1rem;
+      }
+      .contact-form {
+        background: rgba(255, 255, 255, 0.03);
+        padding: 40px;
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+      .contact-form h3 {
+        font-size: 1.3rem;
+        margin-bottom: 20px;
+      }
+      .form-group {
+        margin-bottom: 16px;
+      }
+      .form-group input,
+      .form-group textarea {
+        width: 100%;
+        padding: 14px 18px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 12px;
+        color: #fff;
+        font-size: 0.95rem;
+        font-family: "Space Grotesk", sans-serif;
+        transition: all 0.3s ease;
+        outline: none;
+      }
+      .form-group input:focus,
+      .form-group textarea:focus {
+        border-color: rgba(0, 212, 255, 0.3);
+        background: rgba(255, 255, 255, 0.06);
+      }
+      .form-group input::placeholder,
+      .form-group textarea::placeholder {
+        color: rgba(255, 255, 255, 0.2);
+      }
+      .form-group textarea {
+        resize: vertical;
+        min-height: 100px;
+      }
+
+      /* ===== Footer ===== */
+      .footer {
+        padding: 60px 0 30px;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        position: relative;
+        z-index: 1;
+      }
+      .footer-content {
+        display: flex;
+        justify-content: space-between;
+        gap: 40px;
+        flex-wrap: wrap;
+        margin-bottom: 40px;
+      }
+      .footer-brand .logo-icon {
+        font-size: 1.8rem;
+        color: #00d4ff;
+      }
+      .footer-brand span:not(.logo-icon) {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-left: 10px;
+      }
+      .footer-brand p {
+        color: rgba(255, 255, 255, 0.4);
+        margin-top: 8px;
+        font-size: 0.9rem;
+      }
+      .footer-links {
+        display: flex;
+        gap: 60px;
+        flex-wrap: wrap;
+      }
+      .footer-links h4 {
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-bottom: 12px;
+        color: rgba(255, 255, 255, 0.8);
+      }
+      .footer-links a {
+        display: block;
+        color: rgba(255, 255, 255, 0.3);
+        font-size: 0.85rem;
+        transition: all 0.3s ease;
+        margin-bottom: 6px;
+      }
+      .footer-links a:hover {
+        color: #00d4ff;
+      }
+      .footer-bottom {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 20px;
+        border-top: 1px solid rgba(255, 255, 255, 0.03);
+      }
+      .footer-bottom p {
+        color: rgba(255, 255, 255, 0.2);
+        font-size: 0.85rem;
+      }
+      .footer-social {
+        display: flex;
+        gap: 16px;
+      }
+      .footer-social a {
+        color: rgba(255, 255, 255, 0.2);
+        transition: all 0.3s ease;
+        font-size: 1.1rem;
+      }
+      .footer-social a:hover {
+        color: #00d4ff;
+      }
+
+      /* ===== Alerts ===== */
+      .alert {
+        padding: 15px 20px;
+        border-radius: 12px;
+        margin: 15px 0;
+        font-weight: 500;
+      }
+      .alert-success {
+        background: rgba(0, 255, 135, 0.15);
+        border: 1px solid #00ff87;
+        color: #00ff87;
+      }
+      .alert-error {
+        background: rgba(255, 0, 110, 0.15);
+        border: 1px solid #ff006e;
+        color: #ff006e;
+      }
+      .alert-info {
+        background: rgba(0, 212, 255, 0.15);
+        border: 1px solid #00d4ff;
+        color: #00d4ff;
+      }
+
+      /* ===== Scroll Top Button ===== */
+      .scroll-top-btn {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #00d4ff, #7b2ffc);
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        z-index: 1000;
+        font-size: 20px;
+        box-shadow: 0 4px 20px rgba(0, 212, 255, 0.3);
+      }
+      .scroll-top-btn.visible {
+        opacity: 1;
+        visibility: visible;
+      }
+      .scroll-top-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 30px rgba(0, 212, 255, 0.4);
+      }
+
+      @media (max-width: 768px) {
+        .apod-card {
+          grid-template-columns: 1fr;
+        }
+        .apod-card .apod-image,
+        .apod-card iframe {
+          height: 250px;
+        }
+        .apod-card .apod-info {
+          padding: 20px;
+        }
+        .iss-card .coords {
+          font-size: 1.8rem;
+        }
+        .mars-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .news-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .nav-links {
+          position: fixed;
+          top: 0;
+          right: -100%;
+          width: 70%;
+          max-width: 300px;
+          height: 100vh;
+          background: rgba(10, 14, 23, 0.98);
+          backdrop-filter: blur(20px);
+          flex-direction: column;
+          justify-content: center;
+          padding: 40px;
+          transition: all 0.4s ease;
+          border-left: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .nav-links.active {
+          right: 0;
+        }
+        .hamburger {
+          display: flex;
+          z-index: 1001;
+        }
+
+        .tech-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .team-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .contact-wrapper {
+          grid-template-columns: 1fr;
+          gap: 40px;
+        }
+        .hero-stats {
+          gap: 20px;
+        }
+        .hero-stats .stat-number {
+          font-size: 2rem;
+        }
+        .contact-form {
+          padding: 25px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .mars-grid {
+          grid-template-columns: 1fr 1fr;
+          gap: 10px;
+        }
+        .asteroid-item {
+          flex-wrap: wrap;
+          gap: 8px;
+        }
+        .news-grid {
+          grid-template-columns: 1fr;
+        }
+        .hero h1 {
+          font-size: 2.2rem;
+        }
+        .hero-buttons {
+          flex-direction: column;
+          align-items: center;
+        }
+        .hero-buttons .btn-primary,
+        .hero-buttons .btn-outline {
+          width: 100%;
+          justify-content: center;
+        }
+        .hero-stats {
+          flex-direction: row;
+          gap: 15px;
+        }
+        .hero-stats div {
+          padding: 10px 15px;
+          background: rgba(255, 255, 255, 0.03);
+          border-radius: 12px;
+          min-width: 80px;
+        }
+        .hero-stats .stat-number {
+          font-size: 1.6rem;
+        }
+        .hero-stats span:not(.stat-number) {
+          font-size: 0.75rem;
+        }
+        .tech-grid {
+          grid-template-columns: 1fr 1fr;
+          gap: 12px;
+        }
+        .tech-item {
+          padding: 20px 12px;
+        }
+        .tech-item h3 {
+          font-size: 0.95rem;
+        }
+        .tech-item p {
+          font-size: 0.75rem;
+        }
+        .team-grid {
+          grid-template-columns: 1fr 1fr;
+          gap: 15px;
+        }
+        .team-card {
+          padding: 20px 12px;
+        }
+        .section-header h2 {
+          font-size: 1.8rem;
+        }
+        .contact-features {
+          grid-template-columns: 1fr 1fr;
+        }
+        .contact-features div {
+          font-size: 0.85rem;
+        }
+        .planet-container {
+          width: 220px;
+          height: 220px;
+        }
+        .planet {
+          width: 90px;
+          height: 90px;
+        }
+        .ring {
+          width: 170px;
+          height: 80px;
+        }
+        .orbit {
+          width: 190px;
+          height: 190px;
+        }
+        .orbit-2 {
+          width: 220px;
+          height: 220px;
+        }
+        .orbit-3 {
+          width: 250px;
+          height: 250px;
+        }
+        .satellite,
+        .satellite-2,
+        .satellite-3 {
+          width: 8px;
+          height: 8px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Animated Stars Background -->
+    <div class="stars"></div>
+    <div class="stars-2"></div>
+    <div class="stars-3"></div>
+    <div class="nebula-bg"></div>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+      <div class="container">
+        <a href="/" class="nova-logo">
+          <svg
+            width="32"
+            height="32"
+            viewBox="0 0 40 40"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <circle cx="20" cy="20" r="10" fill="url(#grad1)" />
+            <ellipse
+              cx="20"
+              cy="20"
+              rx="18"
+              ry="6"
+              fill="none"
+              stroke="url(#grad2)"
+              stroke-width="2"
+              transform="rotate(-20, 20, 20)"
+            />
+            <ellipse
+              cx="20"
+              cy="20"
+              rx="14"
+              ry="4"
+              fill="none"
+              stroke="#fff"
+              stroke-width="0.5"
+              opacity="0.15"
+              transform="rotate(-20, 20, 20)"
+            />
+            <path
+              d="M10 20 Q20 26 30 20"
+              stroke="rgba(0,0,0,0.2)"
+              stroke-width="4"
+              fill="none"
+            />
+            <defs>
+              <linearGradient id="grad1" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#00D4FF" />
+                <stop offset="50%" stop-color="#7B2FFC" />
+                <stop offset="100%" stop-color="#FF006E" />
+              </linearGradient>
+              <linearGradient id="grad2" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#7B2FFC" />
+                <stop offset="100%" stop-color="#FF006E" />
+              </linearGradient>
+            </defs>
+          </svg>
+          <span>Nova</span>
+        </a>
+        <ul class="nav-links">
+          <li><a href="/" class="active">Home</a></li>
+          <li><a href="/missions">Missions</a></li>
+          <li><a href="/planets">Planets</a></li>
+          <li><a href="/asteroids">Asteroids</a></li>
+          <li><a href="/stars">Stars</a></li>
+          <li><a href="/galaxies">Galaxies</a></li>
+          <li><a href="/blackholes">Black Holes</a></li>
+          <li><a href="/chat">Nova AI</a></li>
+          <!-- Dynamic Auth Buttons -->
+          <li id="authButtons">
+            <a href="/login" class="nav-cta">Login</a>
+            <a href="/register">Register</a>
+          </li>
+          <li id="profileButton" style="display: none">
+            <a href="/profile" class="nav-cta">👤 Profile</a>
+          </li>
+        </ul>
+        <div class="hamburger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </nav>
+
+    <!-- ===== Hero Section ===== -->
+    <section id="home" class="hero">
+      <div class="hero-bg">
+        <div class="hero-bg-inner"></div>
+      </div>
+      <div class="hero-overlay"></div>
+      <div class="particles-container" id="particles"></div>
+
+      <div class="hero-content">
+        <div class="hero-left">
+          <span class="hero-badge">🚀 Mission 2026</span>
+          <h1>
+            <span class="gradient-text">Explore</span> the Universe<br />
+            <span class="highlight-text">Without Limits</span>
+          </h1>
+          <p>
+            Embark on a journey to discover the secrets of space with the latest
+            technologies and scientific innovations
+          </p>
+          <div class="hero-buttons">
+            <a href="#missions" class="btn-primary">
+              <i class="fas fa-rocket"></i> Explore Missions
+            </a>
+            <a href="#nasa-data" class="btn-outline">
+              <i class="fas fa-satellite"></i> Live Data
+            </a>
+          </div>
+          <div class="hero-stats">
+            <div>
+              <span class="stat-number" data-target="120">0</span>
+              <span>Missions</span>
+            </div>
+            <div>
+              <span class="stat-number" data-target="50">0</span>
+              <span>Astronauts</span>
+            </div>
+            <div>
+              <span class="stat-number" data-target="15">0</span>
+              <span>Planets</span>
+            </div>
+          </div>
+        </div>
+        <div class="hero-right">
+          <div class="planet-container">
+            <div class="planet"></div>
+            <div class="orbit">
+              <div class="satellite"></div>
+            </div>
+            <div class="orbit-2">
+              <div class="satellite-2"></div>
+            </div>
+            <div class="orbit-3">
+              <div class="satellite-3"></div>
+            </div>
+            <div class="ring"></div>
+          </div>
+        </div>
+      </div>
+      <div class="scroll-indicator">
+        <span>Scroll Down</span>
+        <i class="fas fa-chevron-down"></i>
+      </div>
+    </section>
+
+    <!-- ===== Real NASA Data Section ===== -->
+    <section id="nasa-data" class="nasa-data">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">🛰️ Live from NASA</span>
+          <h2>Real-Time <span class="gradient-text">Space Data</span></h2>
+          <p>Live data from NASA's space missions</p>
+        </div>
+
+        <!-- APOD - Astronomy Picture of the Day -->
+        {% if apod %}
+        <div class="apod-card">
+          {% if apod.media_type == 'video' %}
+          <iframe src="{{ apod.url }}" allowfullscreen></iframe>
+          {% else %}
+          <img src="{{ apod.url }}" alt="{{ apod.title }}" class="apod-image" />
+          {% endif %}
+          <div class="apod-info">
+            <span class="date">📅 {{ apod.date }}</span>
+            <h3>{{ apod.title }}</h3>
+            <p>
+              {{ apod.explanation[:250] }}{% if apod.explanation|length > 250
+              %}...{% endif %}
+            </p>
+            <a
+              href="{{ apod.hdurl or apod.url }}"
+              target="_blank"
+              class="btn-primary"
+            >
+              <i class="fas fa-external-link-alt"></i> View Full Image
+            </a>
+          </div>
+        </div>
+        {% else %}
+        <p style="color: rgba(255, 255, 255, 0.3); text-align: center">
+          Unable to load APOD. Please try again later.
+        </p>
+        {% endif %}
+
+        <!-- ISS Location -->
+        <div class="iss-card">
+          <h3>🛰️ International Space Station</h3>
+          {% if iss and iss.latitude and iss.longitude %}
+          <div class="coords">
+            {{ "%.2f"|format(iss.latitude|float) }}° N, {{
+            "%.2f"|format(iss.longitude|float) }}° E
+          </div>
+          {% else %}
+          <div class="coords">Loading...</div>
+          {% endif %}
+          <div class="sub">
+            👨‍🚀 {{ astronauts.number if astronauts else 0 }} astronauts in space
+          </div>
+        </div>
+
+        <!-- Asteroids -->
+        {% if asteroids %}
+        <div style="margin-bottom: 30px">
+          <h3 style="margin-bottom: 15px">☄️ Near Earth Asteroids</h3>
+          {% for ast in asteroids %}
+          <div class="asteroid-item">
+            <span>{{ ast.name }}</span>
+            <span class="size">{{ "%.0f"|format(ast.size) }}m</span>
+            <span class="{{ 'hazardous' if ast.hazardous else 'safe' }}">
+              {{ '⚠️ Hazardous' if ast.hazardous else '✅ Safe' }}
+            </span>
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Mars Photos -->
+        {% if mars_photos %}
+        <div>
+          <h3 style="margin-bottom: 15px">🔴 Mars Rover Photos</h3>
+          <div class="mars-grid">
+            {% for photo in mars_photos[:6] %}
+            <div class="mars-item">
+              <img src="{{ photo.img_src }}" alt="Mars Photo" />
+              <div class="info">{{ photo.camera.full_name }}</div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </section>
+
+    <!-- ===== Space News Section ===== -->
+    {% if news %}
+    <section class="news-section">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">📰 Space News</span>
+          <h2>Latest <span class="gradient-text">News</span></h2>
+          <p>Stay updated with the latest space news</p>
+        </div>
+        <div class="news-grid">
+          {% for article in news %}
+          <div class="news-card">
+            <img
+              src="{{ article.image_url or 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&h=200&fit=crop' }}"
+              alt="{{ article.title }}"
+              class="news-image"
+              onerror="this.style.display = 'none'"
+            />
+            <div class="news-content">
+              <h4>{{ article.title }}</h4>
+              <p>
+                {{ article.summary[:150] if article.summary else 'No summary
+                available' }}...
+              </p>
+              <a href="{{ article.url }}" target="_blank" class="btn-news"
+                >Read More →</a
+              >
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+    {% endif %}
+
+    <!-- ===== Missions Section ===== -->
+    <section id="missions" class="missions">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">🌌 Missions</span>
+          <h2>Latest <span class="gradient-text">Missions</span></h2>
+          <p>Discover the space missions that changed the world</p>
+        </div>
+        <div class="missions-grid">
+          <div class="mission-card">
+            <div class="mission-number">01</div>
+            <div class="mission-content">
+              <h3>Mars Mission</h3>
+              <p>Exploring the surface of Mars and collecting samples</p>
+              <div class="mission-meta">
+                <span><i class="fas fa-calendar"></i> 2025</span>
+                <span><i class="fas fa-users"></i> 6 Crew</span>
+              </div>
+            </div>
+            <div class="mission-icon">
+              <i class="fas fa-planet-ringed"></i>
+            </div>
+          </div>
+          <div class="mission-card">
+            <div class="mission-number">02</div>
+            <div class="mission-content">
+              <h3>Space Station</h3>
+              <p>Building a new space station for research</p>
+              <div class="mission-meta">
+                <span><i class="fas fa-calendar"></i> 2024</span>
+                <span><i class="fas fa-users"></i> 12 Crew</span>
+              </div>
+            </div>
+            <div class="mission-icon">
+              <i class="fas fa-space-station"></i>
+            </div>
+          </div>
+          <div class="mission-card">
+            <div class="mission-number">03</div>
+            <div class="mission-content">
+              <h3>Satellite Launch</h3>
+              <p>Launching communication satellites into orbit</p>
+              <div class="mission-meta">
+                <span><i class="fas fa-calendar"></i> 2026</span>
+                <span><i class="fas fa-users"></i> 4 Crew</span>
+              </div>
+            </div>
+            <div class="mission-icon">
+              <i class="fas fa-satellite"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Technology Section with 10 Technologies ===== -->
+    <section id="technology" class="technology">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">⚡ Technology</span>
+          <h2>Latest <span class="gradient-text">Innovations</span></h2>
+          <p>
+            We present the latest technologies that will change the future of
+            space exploration
+          </p>
+        </div>
+        <div class="tech-grid">
+          <div class="tech-item">
+            <img
+              src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=200&h=200&fit=crop&crop=center"
+              alt="AI"
+              class="tech-image"
+            />
+            <h3>Artificial Intelligence</h3>
+            <p>Intelligent systems for space data analysis</p>
+          </div>
+          <div class="tech-item">
+            <img
+              src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=200&h=200&fit=crop&crop=center"
+              alt="Sensors"
+              class="tech-image"
+            />
+            <h3>Sensors</h3>
+            <p>Advanced sensing devices for exploration</p>
+          </div>
+          <div class="tech-item">
+            <img
+              src="https://images.unsplash.com/photo-1516849677043-ef67c9557e16?w=200&h=200&fit=crop&crop=center"
+              alt="Rockets"
+              class="tech-image"
+            />
+            <h3>Rockets</h3>
+            <p>Reusable rocket technology</p>
+          </div>
+          <div class="tech-item">
+            <img
+              src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=200&h=200&fit=crop&crop=center"
+              alt="Communications"
+              class="tech-image"
+            />
+            <h3>Communications</h3>
+            <p>Advanced space communication networks</p>
+          </div>
+          <div class="tech-item">
+            <img
+              src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=200&h=200&fit=crop&crop=center"
+              alt="Remote Sensing"
+              class="tech-image"
+            />
+            <h3>Remote Sensing</h3>
+            <p>Advanced technologies for planetary monitoring</p>
+          </div>
+          <div class="tech-item">
+            <img
+              src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=200&h=200&fit=crop&crop=center"
+              alt="Space Medicine"
+              class="tech-image"
+            />
+            <h3>Space Medicine</h3>
+            <p>Medical technologies for astronauts</p>
+          </div>
+          <div class="tech-item">
+            <img
+              src="https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=200&h=200&fit=crop&crop=center"
+              alt="Robotics"
+              class="tech-image"
+            />
+            <h3>Robotics</h3>
+            <p>Autonomous robots for space exploration</p>
+          </div>
+          <div class="tech-item">
+            <img
+              src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=200&h=200&fit=crop&crop=center"
+              alt="Propulsion"
+              class="tech-image"
+            />
+            <h3>Propulsion Systems</h3>
+            <p>Advanced propulsion for deep space travel</p>
+          </div>
+          <div class="tech-item">
+            <img
+              src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=200&h=200&fit=crop&crop=center"
+              alt="Materials"
+              class="tech-image"
+            />
+            <h3>Space Materials</h3>
+            <p>New materials for extreme space conditions</p>
+          </div>
+          <div class="tech-item">
+            <img
+              src="https://images.unsplash.com/photo-1581092335874-0f6e5d165d3f?w=200&h=200&fit=crop&crop=center"
+              alt="Data"
+              class="tech-image"
+            />
+            <h3>Data Analytics</h3>
+            <p>Big data processing for space missions</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Team Section ===== -->
+    <section id="team" class="team">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">👨‍🚀 Our Team</span>
+          <h2>Elite <span class="gradient-text">Creators</span></h2>
+          <p>A team of experts and scientists to achieve our vision</p>
+        </div>
+        <div class="team-grid">
+          <div class="team-card">
+            <div class="team-avatar">
+              <img
+                src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face"
+                alt="Ahmed"
+                class="avatar-img"
+              />
+              <div class="team-status"></div>
+            </div>
+            <h4>Ahmed Al-Sayed</h4>
+            <span>Mission Commander</span>
+            <div class="team-social">
+              <a href="#"><i class="fab fa-linkedin-in"></i></a>
+              <a href="#"><i class="fab fa-twitter"></i></a>
+            </div>
+          </div>
+          <div class="team-card">
+            <div class="team-avatar">
+              <img
+                src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&h=200&fit=crop&crop=face"
+                alt="Nora"
+                class="avatar-img"
+              />
+              <div class="team-status"></div>
+            </div>
+            <h4>Nora Al-Harbi</h4>
+            <span>Space Engineer</span>
+            <div class="team-social">
+              <a href="#"><i class="fab fa-linkedin-in"></i></a>
+              <a href="#"><i class="fab fa-github"></i></a>
+            </div>
+          </div>
+          <div class="team-card">
+            <div class="team-avatar">
+              <img
+                src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=200&h=200&fit=crop&crop=face"
+                alt="Saud"
+                class="avatar-img"
+              />
+              <div class="team-status"></div>
+            </div>
+            <h4>Saud Al-Qahtani</h4>
+            <span>Space Scientist</span>
+            <div class="team-social">
+              <a href="#"><i class="fab fa-linkedin-in"></i></a>
+              <a href="#"><i class="fab fa-twitter"></i></a>
+            </div>
+          </div>
+          <div class="team-card">
+            <div class="team-avatar">
+              <img
+                src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200&h=200&fit=crop&crop=face"
+                alt="Fatima"
+                class="avatar-img"
+              />
+              <div class="team-status"></div>
+            </div>
+            <h4>Fatima Al-Zahrani</h4>
+            <span>Software Developer</span>
+            <div class="team-social">
+              <a href="#"><i class="fab fa-linkedin-in"></i></a>
+              <a href="#"><i class="fab fa-github"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Contact Section ===== -->
+    <section id="contact" class="contact">
+      <div class="container">
+        <div class="contact-wrapper">
+          <div class="contact-text">
+            <span class="section-tag">💌 Join Us</span>
+            <h2>Be Part of the <span class="gradient-text">Future</span></h2>
+            <p>Join our team and explore new horizons together</p>
+            <div class="contact-features">
+              <div>
+                <i class="fas fa-check-circle"></i
+                ><span>Certified Training Opportunities</span>
+              </div>
+              <div>
+                <i class="fas fa-check-circle"></i
+                ><span>Ambitious Global Projects</span>
+              </div>
+              <div>
+                <i class="fas fa-check-circle"></i
+                ><span>Cutting-Edge Technologies</span>
+              </div>
+              <div>
+                <i class="fas fa-check-circle"></i
+                ><span>Creative Work Environment</span>
+              </div>
+            </div>
+          </div>
+          <form class="contact-form" id="contactForm">
+            <h3>Send Your Application</h3>
+            <div class="form-group">
+              <input type="text" name="name" placeholder="Full Name" required />
+            </div>
+            <div class="form-group">
+              <input
+                type="email"
+                name="email"
+                placeholder="Email Address"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <input type="text" name="specialty" placeholder="Specialty" />
+            </div>
+            <div class="form-group">
+              <textarea
+                name="message"
+                rows="4"
+                placeholder="Why do you want to join?"
+                required
+              ></textarea>
+            </div>
+            <button type="submit" class="btn-primary btn-full">
+              <span>Submit Application</span>
+              <i class="fas fa-arrow-right"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Footer ===== -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-brand">
+            <svg
+              width="28"
+              height="28"
+              viewBox="0 0 40 40"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              style="display: inline-block; vertical-align: middle"
+            >
+              <circle cx="20" cy="20" r="10" fill="url(#grad1)" />
+              <ellipse
+                cx="20"
+                cy="20"
+                rx="18"
+                ry="6"
+                fill="none"
+                stroke="url(#grad2)"
+                stroke-width="2"
+                transform="rotate(-20, 20, 20)"
+              />
+              <ellipse
+                cx="20"
+                cy="20"
+                rx="14"
+                ry="4"
+                fill="none"
+                stroke="#fff"
+                stroke-width="0.5"
+                opacity="0.15"
+                transform="rotate(-20, 20, 20)"
+              />
+              <path
+                d="M10 20 Q20 26 30 20"
+                stroke="rgba(0,0,0,0.2)"
+                stroke-width="4"
+                fill="none"
+              />
+              <defs>
+                <linearGradient id="grad1" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#00D4FF" />
+                  <stop offset="50%" stop-color="#7B2FFC" />
+                  <stop offset="100%" stop-color="#FF006E" />
+                </linearGradient>
+                <linearGradient id="grad2" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#7B2FFC" />
+                  <stop offset="100%" stop-color="#FF006E" />
+                </linearGradient>
+              </defs>
+            </svg>
+            <span>Nova</span>
+            <p>Exploration Without Limits - Toward New Horizons</p>
+          </div>
+          <div class="footer-links">
+            <div>
+              <h4>Explore</h4>
+              <a href="/missions">Missions</a>
+              <a href="/planets">Planets</a>
+              <a href="/asteroids">Asteroids</a>
+              <a href="/stars">Stars</a>
+              <a href="/galaxies">Galaxies</a>
+              <a href="/chat">Nova AI</a>
+            </div>
+            <div>
+              <h4>Account</h4>
+              <a href="/login">Login</a>
+              <a href="/register">Register</a>
+            </div>
+            <div>
+              <h4>Support</h4>
+              <a href="#">Contact</a>
+              <a href="#">FAQ</a>
+              <a href="/login" class="footer-admin-link">🔐 Admin</a>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>© 2026 Nova. All Rights Reserved</p>
+          <div class="footer-social">
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#"><i class="fab fa-youtube"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // ===== Hamburger =====
+      document
+        .querySelector(".hamburger")
+        .addEventListener("click", function () {
+          this.classList.toggle("active");
+          document.querySelector(".nav-links").classList.toggle("active");
+        });
+
+      // ===== Navbar Scroll Effect =====
+      window.addEventListener("scroll", function () {
+        const navbar = document.querySelector(".navbar");
+        if (window.scrollY > 100) {
+          navbar.classList.add("scrolled");
+        } else {
+          navbar.classList.remove("scrolled");
+        }
+      });
+
+      // ===== Check Authentication Status =====
+      async function checkAuth() {
+        try {
+          const response = await fetch("/api/user/profile", {
+            credentials: "include",
+          });
+          const data = await response.json();
+
+          if (data.success) {
+            document.getElementById("authButtons").style.display = "none";
+            document.getElementById("profileButton").style.display =
+              "inline-block";
+          } else {
+            document.getElementById("authButtons").style.display =
+              "inline-block";
+            document.getElementById("profileButton").style.display = "none";
+          }
+        } catch (e) {
+          console.error("Error checking auth:", e);
+          document.getElementById("authButtons").style.display = "inline-block";
+          document.getElementById("profileButton").style.display = "none";
+        }
+      }
+
+      // ===== Init =====
+      document.addEventListener("DOMContentLoaded", function () {
+        checkAuth();
+      });
+    </script>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+  </body>
+</html>
