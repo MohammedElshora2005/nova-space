@@ -288,6 +288,7 @@
       }
 
       .mission-card {
+        position: relative;
         background: rgba(255, 255, 255, 0.02);
         border: 1px solid rgba(255, 255, 255, 0.05);
         border-radius: 20px;
@@ -300,12 +301,63 @@
         border-color: rgba(0, 212, 255, 0.2);
         box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
       }
+
+      /* ===== Favorite Button - Top Right ===== */
+      .mission-card .favorite-btn {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: rgba(0, 0, 0, 0.55);
+        backdrop-filter: blur(10px);
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        color: rgba(255, 255, 255, 0.3);
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .mission-card .favorite-btn:hover {
+        color: #00d4ff;
+        transform: scale(1.15);
+        background: rgba(0, 0, 0, 0.75);
+      }
+      .mission-card .favorite-btn.active {
+        color: #00d4ff;
+        background: rgba(0, 212, 255, 0.2);
+      }
+      .mission-card .favorite-btn.active:hover {
+        color: #7b2ffc;
+        background: rgba(123, 47, 252, 0.2);
+      }
+
+      /* ===== Video Wrapper ===== */
+      .mission-card .video-wrapper {
+        width: 100%;
+        height: 220px;
+        overflow: hidden;
+        background: #1a1a2e;
+        position: relative;
+      }
+      .mission-card .video-wrapper iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+        object-fit: cover;
+      }
+
       .mission-card .image {
         width: 100%;
         height: 220px;
         object-fit: cover;
         background: #1a1a2e;
       }
+
       .mission-card .content {
         padding: 25px;
       }
@@ -361,26 +413,6 @@
         font-size: 0.85rem;
       }
 
-      .mission-card .content .favorite-btn {
-        background: none;
-        border: none;
-        color: rgba(255, 255, 255, 0.2);
-        font-size: 1.4rem;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        padding: 0 5px;
-      }
-      .mission-card .content .favorite-btn:hover {
-        color: #00d4ff;
-        transform: scale(1.2);
-      }
-      .mission-card .content .favorite-btn.active {
-        color: #00d4ff;
-      }
-      .mission-card .content .favorite-btn.active:hover {
-        color: #7b2ffc;
-      }
-
       /* ===== Detail Modal ===== */
       .modal-overlay {
         display: none;
@@ -432,6 +464,20 @@
         border-radius: 12px;
         margin-bottom: 15px;
         background: #1a1a2e;
+      }
+      .modal-content .video-wrapper {
+        width: 100%;
+        height: 250px;
+        overflow: hidden;
+        border-radius: 12px;
+        margin-bottom: 15px;
+        background: #1a1a2e;
+        position: relative;
+      }
+      .modal-content .video-wrapper iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
       }
       .modal-content h2 {
         text-align: center;
@@ -566,7 +612,8 @@
         .missions-grid {
           grid-template-columns: 1fr;
         }
-        .mission-card .image {
+        .mission-card .image,
+        .mission-card .video-wrapper {
           height: 180px;
         }
         .modal-content {
@@ -575,7 +622,8 @@
         .modal-content .detail-grid {
           grid-template-columns: 1fr;
         }
-        .modal-content .mission-image-big {
+        .modal-content .mission-image-big,
+        .modal-content .video-wrapper {
           height: 180px;
         }
       }
@@ -593,8 +641,16 @@
         .modal-content {
           padding: 20px;
         }
-        .modal-content .mission-image-big {
+        .modal-content .mission-image-big,
+        .modal-content .video-wrapper {
           height: 150px;
+        }
+        .mission-card .favorite-btn {
+          width: 34px;
+          height: 34px;
+          font-size: 1rem;
+          top: 10px;
+          right: 10px;
         }
       }
     </style>
@@ -729,7 +785,7 @@
     <div class="modal-overlay" id="detailModal">
       <div class="modal-content">
         <button class="close-btn" onclick="closeModal()">&times;</button>
-        <img class="mission-image-big" id="modalImage" src="" alt="Mission" />
+        <div id="modalMediaContainer"></div>
         <h2 id="modalName">Mission Name</h2>
         <div style="text-align: center">
           <span class="status-badge-large" id="modalStatus">Active</span>
@@ -920,10 +976,22 @@
             mission.status.charAt(0).toUpperCase() + mission.status.slice(1);
           const isFavorite = favorites.includes(String(mission.id));
           const image = mission.image || FALLBACK_IMAGE;
+          const hasVideo = mission.video_url && mission.video_url.trim() !== "";
 
           html += `
             <div class="mission-card" data-id="${mission.id}" onclick="showDetail('${mission.id}')">
-              <img src="${image}" alt="${mission.name}" class="image" onerror="this.src='${FALLBACK_IMAGE}'">
+              <button class="favorite-btn ${isFavorite ? "active" : ""}" onclick="event.stopPropagation(); toggleFavorite('${mission.id}', this)" title="Add to favorites">
+                <i class="fas fa-star"></i>
+              </button>
+              
+              ${hasVideo ? `
+                <div class="video-wrapper">
+                  <iframe src="${mission.video_url}" frameborder="0" allowfullscreen loading="lazy"></iframe>
+                </div>
+              ` : `
+                <img src="${image}" alt="${mission.name}" class="image" onerror="this.src='${FALLBACK_IMAGE}'">
+              `}
+              
               <div class="content">
                 <span class="badge ${statusClass}">${statusText}</span>
                 <h3>${mission.name}</h3>
@@ -931,9 +999,6 @@
                 <p class="description">${mission.description || "No description available"}</p>
                 <div class="meta">
                   <span class="date"><i class="fas fa-calendar"></i> ${mission.date}</span>
-                  <button class="favorite-btn ${isFavorite ? "active" : ""}" onclick="event.stopPropagation(); toggleFavorite('${mission.id}', this)" title="Add to favorites">
-                    <i class="fas fa-star"></i>
-                  </button>
                 </div>
               </div>
             </div>
@@ -991,12 +1056,24 @@
         const statusClass = `status-${mission.status}`;
         const statusText =
           mission.status.charAt(0).toUpperCase() + mission.status.slice(1);
+        const hasVideo = mission.video_url && mission.video_url.trim() !== "";
 
-        document.getElementById("modalImage").src = image;
-        document.getElementById("modalImage").alt = mission.name;
+        // Media container
+        const mediaContainer = document.getElementById("modalMediaContainer");
+        if (hasVideo) {
+          mediaContainer.innerHTML = `
+            <div class="video-wrapper">
+              <iframe src="${mission.video_url}" frameborder="0" allowfullscreen></iframe>
+            </div>
+          `;
+        } else {
+          mediaContainer.innerHTML = `
+            <img class="mission-image-big" src="${image}" alt="${mission.name}" onerror="this.src='${FALLBACK_IMAGE}'">
+          `;
+        }
+
         document.getElementById("modalName").textContent = mission.name;
-        document.getElementById("modalAgency").textContent =
-          `🚀 ${mission.agency}`;
+        document.getElementById("modalAgency").textContent = `🚀 ${mission.agency}`;
         document.getElementById("modalStatus").className =
           `status-badge-large ${statusClass}`;
         document.getElementById("modalStatus").textContent = statusText;
