@@ -302,7 +302,7 @@
         box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
       }
 
-      /* ===== Favorite Button - Top Right (زي بقيت الصفحات) ===== */
+      /* ===== Favorite Button - Top Right ===== */
       .mission-card .favorite-btn {
         position: absolute;
         top: 15px;
@@ -349,6 +349,13 @@
         height: 100%;
         border: none;
         object-fit: cover;
+        pointer-events: none;
+      }
+      .mission-card .video-wrapper video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        pointer-events: none;
       }
 
       .mission-card .image {
@@ -478,6 +485,13 @@
         width: 100%;
         height: 100%;
         border: none;
+        pointer-events: none;
+      }
+      .modal-content .video-wrapper video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        pointer-events: none;
       }
       .modal-content h2 {
         text-align: center;
@@ -901,6 +915,91 @@
         }
       }
 
+      // ===== Helper: Convert YouTube URLs to embed =====
+      function convertYoutubeUrl(url) {
+        if (!url) return url;
+        if (url.includes('youtube.com/shorts/')) {
+          const videoId = url.split('/shorts/')[1]?.split('?')[0];
+          if (videoId) return `https://www.youtube.com/embed/${videoId}`;
+        }
+        if (url.includes('youtu.be/')) {
+          const videoId = url.split('youtu.be/')[1]?.split('?')[0];
+          if (videoId) return `https://www.youtube.com/embed/${videoId}`;
+        }
+        if (url.includes('youtube.com/watch?v=')) {
+          const videoId = url.split('v=')[1]?.split('&')[0];
+          if (videoId) return `https://www.youtube.com/embed/${videoId}`;
+        }
+        return url;
+      }
+
+      // ===== Helper: Check if URL is video (MP4, WEBM, etc.) =====
+      function isVideoUrl(url) {
+        if (!url) return false;
+        const videoExtensions = ['.mp4', '.webm', '.ogg', '.mov', '.avi'];
+        const lowerUrl = url.toLowerCase();
+        return videoExtensions.some(ext => lowerUrl.includes(ext));
+      }
+
+      // ===== Helper: Check if URL is embeddable =====
+      function isEmbedUrl(url) {
+        if (!url) return false;
+        const lowerUrl = url.toLowerCase();
+        return lowerUrl.includes('youtube.com/embed') || 
+               lowerUrl.includes('youtu.be') || 
+               lowerUrl.includes('youtube.com/shorts/') ||
+               lowerUrl.includes('youtube.com/watch?v=') ||
+               lowerUrl.includes('vimeo.com') ||
+               lowerUrl.includes('player.vimeo.com') ||
+               lowerUrl.includes('drive.google.com') ||
+               lowerUrl.includes('dailymotion.com');
+      }
+
+      // ===== Helper: Extract video ID for YouTube playlist loop =====
+      function getPlaylistId(url) {
+        const match = url.match(/(?:embed\/|v\/|watch\?v=|shorts\/)([^&?#]+)/);
+        return match ? match[1] : '';
+      }
+
+      // ===== Helper: Generate media HTML =====
+      function getMediaHTML(url, alt, className) {
+        if (!url) {
+          return `<img src="${alt}" alt="Fallback" class="${className}" onerror="this.style.display='none'">`;
+        }
+
+        let processedUrl = convertYoutubeUrl(url);
+
+        if (isVideoUrl(processedUrl)) {
+          return `
+            <div class="video-wrapper">
+              <video autoplay loop muted playsinline style="width:100%; height:100%; object-fit:cover;">
+                <source src="${processedUrl}" type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          `;
+        }
+
+        if (isEmbedUrl(processedUrl)) {
+          const videoId = getPlaylistId(processedUrl);
+          let embedUrl = processedUrl;
+          if (!processedUrl.includes('autoplay=')) {
+            const separator = processedUrl.includes('?') ? '&' : '?';
+            embedUrl += `${separator}autoplay=1&loop=1&mute=1&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3`;
+            if (videoId) {
+              embedUrl += `&playlist=${videoId}`;
+            }
+          }
+          return `
+            <div class="video-wrapper" data-video-id="${videoId}">
+              <iframe src="${embedUrl}" frameborder="0" allow="autoplay; fullscreen" allowfullscreen loading="lazy"></iframe>
+            </div>
+          `;
+        }
+
+        return `<img src="${processedUrl}" alt="${alt}" class="${className}" onerror="this.src='${alt}'">`;
+      }
+
       // ===== FALLBACK IMAGE =====
       const FALLBACK_IMAGE =
         "https://placehold.co/800x400/1a1a2e/00D4FF?text=🚀";
@@ -984,6 +1083,8 @@
           const isFavorite = favorites.includes(String(mission.id));
           const image = mission.image || FALLBACK_IMAGE;
           const hasVideo = mission.video_url && mission.video_url.trim() !== "";
+          const mediaHTML = hasVideo ? getMediaHTML(mission.video_url, image, "image") : 
+                                      `<img src="${image}" alt="${mission.name}" class="image" onerror="this.src='${FALLBACK_IMAGE}'">`;
 
           html += `
             <div class="mission-card" data-id="${mission.id}" onclick="showDetail('${mission.id}')">
@@ -991,13 +1092,7 @@
                 <i class="fas fa-star"></i>
               </button>
               
-              ${hasVideo ? `
-                <div class="video-wrapper">
-                  <iframe src="${mission.video_url}" frameborder="0" allowfullscreen loading="lazy"></iframe>
-                </div>
-              ` : `
-                <img src="${image}" alt="${mission.name}" class="image" onerror="this.src='${FALLBACK_IMAGE}'">
-              `}
+              ${mediaHTML}
               
               <div class="content">
                 <span class="badge ${statusClass}">${statusText}</span>
@@ -1068,11 +1163,7 @@
         // Media container
         const mediaContainer = document.getElementById("modalMediaContainer");
         if (hasVideo) {
-          mediaContainer.innerHTML = `
-            <div class="video-wrapper">
-              <iframe src="${mission.video_url}" frameborder="0" allowfullscreen></iframe>
-            </div>
-          `;
+          mediaContainer.innerHTML = getMediaHTML(mission.video_url, image, "mission-image-big");
         } else {
           mediaContainer.innerHTML = `
             <img class="mission-image-big" src="${image}" alt="${mission.name}" onerror="this.src='${FALLBACK_IMAGE}'">
