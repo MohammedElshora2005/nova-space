@@ -313,6 +313,57 @@
         box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
       }
 
+      /* ===== Favorite Button - Top Right ===== */
+      .galaxy-card .favorite-btn {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: rgba(0, 0, 0, 0.55);
+        backdrop-filter: blur(10px);
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        color: rgba(255, 255, 255, 0.3);
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .galaxy-card .favorite-btn:hover {
+        color: #00d4ff;
+        transform: scale(1.15);
+        background: rgba(0, 0, 0, 0.75);
+      }
+      .galaxy-card .favorite-btn.active {
+        color: #00d4ff;
+        background: rgba(0, 212, 255, 0.2);
+      }
+      .galaxy-card .favorite-btn.active:hover {
+        color: #7b2ffc;
+        background: rgba(123, 47, 252, 0.2);
+      }
+
+      /* ===== Video Wrapper ===== */
+      .galaxy-card .video-wrapper {
+        width: 100%;
+        height: 200px;
+        overflow: hidden;
+        background: #1a1a2e;
+        border-radius: 12px;
+        margin-bottom: 15px;
+        position: relative;
+      }
+      .galaxy-card .video-wrapper iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+        object-fit: cover;
+      }
+
       .galaxy-card .galaxy-image {
         width: 100%;
         height: 200px;
@@ -328,6 +379,16 @@
       .galaxy-card .type {
         color: rgba(255, 255, 255, 0.3);
         font-size: 0.85rem;
+      }
+      .galaxy-card .description {
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 0.85rem;
+        line-height: 1.5;
+        margin: 10px 0;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
       }
       .galaxy-card .galaxy-stats {
         display: grid;
@@ -350,28 +411,6 @@
         color: rgba(255, 255, 255, 0.3);
         text-transform: uppercase;
         letter-spacing: 0.5px;
-      }
-
-      .galaxy-card .favorite-btn {
-        position: absolute;
-        top: 15px;
-        right: 15px;
-        background: none;
-        border: none;
-        color: rgba(255, 255, 255, 0.2);
-        font-size: 1.4rem;
-        cursor: pointer;
-        transition: all 0.3s ease;
-      }
-      .galaxy-card .favorite-btn:hover {
-        color: #00d4ff;
-        transform: scale(1.2);
-      }
-      .galaxy-card .favorite-btn.active {
-        color: #00d4ff;
-      }
-      .galaxy-card .favorite-btn.active:hover {
-        color: #7b2ffc;
       }
 
       /* ===== Detail Modal ===== */
@@ -425,6 +464,20 @@
         border-radius: 12px;
         margin-bottom: 15px;
         background: #1a1a2e;
+      }
+      .modal-content .video-wrapper {
+        width: 100%;
+        height: 250px;
+        overflow: hidden;
+        border-radius: 12px;
+        margin-bottom: 15px;
+        background: #1a1a2e;
+        position: relative;
+      }
+      .modal-content .video-wrapper iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
       }
       .modal-content h2 {
         text-align: center;
@@ -548,8 +601,20 @@
         .modal-content .detail-grid {
           grid-template-columns: 1fr 1fr;
         }
-        .modal-content .galaxy-image-big {
+        .modal-content .galaxy-image-big,
+        .modal-content .video-wrapper {
           height: 180px;
+        }
+        .galaxy-card .galaxy-image,
+        .galaxy-card .video-wrapper {
+          height: 140px;
+        }
+        .galaxy-card .favorite-btn {
+          width: 34px;
+          height: 34px;
+          font-size: 1rem;
+          top: 10px;
+          right: 10px;
         }
       }
 
@@ -563,8 +628,9 @@
         .galaxy-card {
           padding: 18px;
         }
-        .galaxy-card .galaxy-image {
-          height: 160px;
+        .galaxy-card .galaxy-image,
+        .galaxy-card .video-wrapper {
+          height: 120px;
         }
         .galaxy-card .galaxy-stats {
           grid-template-columns: 1fr;
@@ -576,7 +642,8 @@
         .modal-content .detail-grid {
           grid-template-columns: 1fr;
         }
-        .modal-content .galaxy-image-big {
+        .modal-content .galaxy-image-big,
+        .modal-content .video-wrapper {
           height: 150px;
         }
       }
@@ -710,7 +777,7 @@
     <div class="modal-overlay" id="detailModal">
       <div class="modal-content">
         <button class="close-btn" onclick="closeModal()">&times;</button>
-        <img class="galaxy-image-big" id="modalImage" src="" alt="Galaxy" />
+        <div id="modalMediaContainer"></div>
         <h2 id="modalName">Galaxy Name</h2>
         <p class="galaxy-sub" id="modalType">Type</p>
         <div class="detail-grid">
@@ -897,15 +964,25 @@
           const image =
             galaxy.image ||
             "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&h=300&fit=crop";
+          const hasVideo = galaxy.video_url && galaxy.video_url.trim() !== "";
 
           html += `
             <div class="galaxy-card" onclick="showDetail('${galaxy.id}')">
               <button class="favorite-btn ${isFavorite ? "active" : ""}" onclick="event.stopPropagation(); toggleFavorite('${galaxy.id}', this)">
                 <i class="fas fa-star"></i>
               </button>
-              <img src="${image}" alt="${galaxy.name}" class="galaxy-image" onerror="this.src='https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&h=300&fit=crop'">
+              
+              ${hasVideo ? `
+                <div class="video-wrapper">
+                  <iframe src="${galaxy.video_url}" frameborder="0" allowfullscreen loading="lazy"></iframe>
+                </div>
+              ` : `
+                <img src="${image}" alt="${galaxy.name}" class="galaxy-image" onerror="this.src='https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&h=300&fit=crop'">
+              `}
+              
               <h3>${galaxy.name}</h3>
               <div class="type">${galaxy.type || "Unknown type"} Galaxy</div>
+              <p class="description">${galaxy.description || "Explore this magnificent galaxy"}</p>
               <div class="galaxy-stats">
                 <div class="stat">
                   <div class="value">${galaxy.distance || "N/A"}</div>
@@ -974,9 +1051,22 @@
         const image =
           galaxy.image ||
           "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&h=300&fit=crop";
+        const hasVideo = galaxy.video_url && galaxy.video_url.trim() !== "";
 
-        document.getElementById("modalImage").src = image;
-        document.getElementById("modalImage").alt = galaxy.name;
+        // Media container
+        const mediaContainer = document.getElementById("modalMediaContainer");
+        if (hasVideo) {
+          mediaContainer.innerHTML = `
+            <div class="video-wrapper">
+              <iframe src="${galaxy.video_url}" frameborder="0" allowfullscreen></iframe>
+            </div>
+          `;
+        } else {
+          mediaContainer.innerHTML = `
+            <img class="galaxy-image-big" src="${image}" alt="${galaxy.name}" onerror="this.src='https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&h=300&fit=crop'">
+          `;
+        }
+
         document.getElementById("modalName").textContent = galaxy.name;
         document.getElementById("modalType").textContent =
           galaxy.type || "Unknown type";
