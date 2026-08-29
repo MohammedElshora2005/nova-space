@@ -939,7 +939,7 @@
         return match ? match[1] : '';
       }
 
-      // ===== Helper: Generate media HTML with autoplay & loop =====
+      // ===== Helper: Generate media HTML with autoplay, loop & MUTED =====
       function getMediaHTML(url, alt, className) {
         if (!url) {
           return `<img src="${alt}" alt="Fallback" class="${className}" onerror="this.style.display='none'">`;
@@ -961,10 +961,9 @@
         if (isEmbedUrl(url)) {
           const videoId = getPlaylistId(url);
           let embedUrl = url;
-          // Add autoplay and loop parameters if not already present
           if (!url.includes('autoplay=')) {
             const separator = url.includes('?') ? '&' : '?';
-            embedUrl += `${separator}autoplay=1&loop=1`;
+            embedUrl += `${separator}autoplay=1&loop=1&mute=1`;  // ✅ mute=1 لإلغاء الصوت
             if (videoId) {
               embedUrl += `&playlist=${videoId}`;
             }
