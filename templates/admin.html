@@ -921,7 +921,7 @@
           </button>
         </div>
 
-        <!-- ===== Tab: Missions (مع Video URL) ===== -->
+        <!-- ===== Tab: Missions ===== -->
         <div id="tab-missions" class="tab-content active">
           <div class="add-form">
             <h3>➕ Add New Mission</h3>
@@ -978,7 +978,7 @@
           </div>
         </div>
 
-        <!-- ===== Tab: Planets (مع Video URL) ===== -->
+        <!-- ===== Tab: Planets ===== -->
         <div id="tab-planets" class="tab-content">
           <div class="add-form">
             <h3>➕ Add New Planet</h3>
@@ -1037,7 +1037,7 @@
           </div>
         </div>
 
-        <!-- ===== Tab: Asteroids (مع Video URL) ===== -->
+        <!-- ===== Tab: Asteroids (مع Image URL + Video URL) ===== -->
         <div id="tab-asteroids" class="tab-content">
           <div class="add-form">
             <h3>➕ Add New Asteroid</h3>
@@ -1069,6 +1069,10 @@
                     <option value="true">Hazardous</option>
                   </select>
                 </div>
+                <div class="form-group">
+                  <label>Image URL</label>
+                  <input type="text" id="asteroidImage" placeholder="https://example.com/asteroid.jpg" />
+                </div>
               </div>
               <div class="form-group">
                 <label>Video URL (YouTube/Vimeo embed)</label>
@@ -1095,7 +1099,7 @@
           </div>
         </div>
 
-        <!-- ===== Tab: Stars (مع Video URL) ===== -->
+        <!-- ===== Tab: Stars (مع Video URL + Description) ===== -->
         <div id="tab-stars" class="tab-content">
           <div class="add-form">
             <h3>⭐ Add New Star</h3>
@@ -1127,6 +1131,10 @@
                 <label>Video URL (YouTube/Vimeo embed)</label>
                 <input type="text" id="starVideo" placeholder="https://www.youtube.com/embed/..." />
               </div>
+              <div class="form-group">
+                <label>Description</label>
+                <textarea id="starDescription" placeholder="Describe the star..." rows="2"></textarea>
+              </div>
               <button type="submit" class="btn-add">Add Star</button>
             </form>
           </div>
@@ -1144,7 +1152,7 @@
           </div>
         </div>
 
-        <!-- ===== Tab: Galaxies (مع Video URL) ===== -->
+        <!-- ===== Tab: Galaxies (مع Video URL + Description) ===== -->
         <div id="tab-galaxies" class="tab-content">
           <div class="add-form">
             <h3>🌌 Add New Galaxy</h3>
@@ -1182,6 +1190,10 @@
                 <label>Video URL (YouTube/Vimeo embed)</label>
                 <input type="text" id="galaxyVideo" placeholder="https://www.youtube.com/embed/..." />
               </div>
+              <div class="form-group">
+                <label>Description</label>
+                <textarea id="galaxyDescription" placeholder="Describe the galaxy..." rows="2"></textarea>
+              </div>
               <button type="submit" class="btn-add">Add Galaxy</button>
             </form>
           </div>
@@ -1199,7 +1211,7 @@
           </div>
         </div>
 
-        <!-- ===== Tab: Black Holes (مع Video URL) ===== -->
+        <!-- ===== Tab: Black Holes ===== -->
         <div id="tab-blackholes" class="tab-content">
           <div class="add-form">
             <h3>🕳️ Add New Black Hole</h3>
@@ -1588,6 +1600,7 @@
           speed: document.getElementById("asteroidSpeed").value.trim(),
           date: document.getElementById("asteroidDate").value,
           hazardous: document.getElementById("asteroidHazardous").value === "true",
+          image: document.getElementById("asteroidImage").value.trim(),
           video_url: document.getElementById("asteroidVideo").value.trim(),
           description: document.getElementById("asteroidDescription").value.trim(),
         };
@@ -1681,6 +1694,7 @@
           temperature: document.getElementById("starTemp").value.trim(),
           image: document.getElementById("starImage").value.trim(),
           video_url: document.getElementById("starVideo").value.trim(),
+          description: document.getElementById("starDescription").value.trim(),
         };
 
         try {
@@ -1775,6 +1789,7 @@
           diameter: document.getElementById("galaxyDiameter").value.trim(),
           image: document.getElementById("galaxyImage").value.trim(),
           video_url: document.getElementById("galaxyVideo").value.trim(),
+          description: document.getElementById("galaxyDescription").value.trim(),
         };
 
         try {
@@ -2063,6 +2078,7 @@
                   <option value="true" ${item.hazardous === true ? "selected" : ""}>Hazardous</option>
                 </select>
               </div>
+              <div class="form-group"><label>Image URL</label><input type="text" id="editImage" value="${item.image || ""}"></div>
               <div class="form-group"><label>Video URL</label><input type="text" id="editVideo" value="${item.video_url || ""}"></div>
               <div class="form-group"><label>Description</label><textarea id="editDescription" rows="3">${item.description || ""}</textarea></div>
             `;
@@ -2074,6 +2090,7 @@
               <div class="form-group"><label>Temperature</label><input type="text" id="editTemp" value="${item.temperature || ""}"></div>
               <div class="form-group"><label>Image URL</label><input type="text" id="editImage" value="${item.image || ""}"></div>
               <div class="form-group"><label>Video URL</label><input type="text" id="editVideo" value="${item.video_url || ""}"></div>
+              <div class="form-group"><label>Description</label><textarea id="editDescription" rows="3">${item.description || ""}</textarea></div>
             `;
           } else if (type === "galaxy") {
             html = `
@@ -2084,6 +2101,7 @@
               <div class="form-group"><label>Diameter</label><input type="text" id="editDiameter" value="${item.diameter || ""}"></div>
               <div class="form-group"><label>Image URL</label><input type="text" id="editImage" value="${item.image || ""}"></div>
               <div class="form-group"><label>Video URL</label><input type="text" id="editVideo" value="${item.video_url || ""}"></div>
+              <div class="form-group"><label>Description</label><textarea id="editDescription" rows="3">${item.description || ""}</textarea></div>
             `;
           } else if (type === "blackhole") {
             html = `
@@ -2173,6 +2191,7 @@
             speed: document.getElementById("editSpeed").value.trim(),
             date: document.getElementById("editDate").value,
             hazardous: document.getElementById("editHazardous").value === "true",
+            image: document.getElementById("editImage").value.trim(),
             video_url: document.getElementById("editVideo").value.trim(),
             description: document.getElementById("editDescription").value.trim(),
           };
@@ -2185,6 +2204,7 @@
             temperature: document.getElementById("editTemp").value.trim(),
             image: document.getElementById("editImage").value.trim(),
             video_url: document.getElementById("editVideo").value.trim(),
+            description: document.getElementById("editDescription").value.trim(),
           };
           endpoint = `/api/stars/${id}`;
         } else if (type === "galaxy") {
@@ -2196,6 +2216,7 @@
             diameter: document.getElementById("editDiameter").value.trim(),
             image: document.getElementById("editImage").value.trim(),
             video_url: document.getElementById("editVideo").value.trim(),
+            description: document.getElementById("editDescription").value.trim(),
           };
           endpoint = `/api/galaxies/${id}`;
         } else if (type === "blackhole") {
