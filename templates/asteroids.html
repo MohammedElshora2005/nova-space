@@ -361,6 +361,13 @@
         height: 100%;
         border: none;
         object-fit: cover;
+        pointer-events: none;
+      }
+      .asteroid-card .video-wrapper video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        pointer-events: none;
       }
 
       .asteroid-card .asteroid-image {
@@ -492,6 +499,13 @@
         width: 100%;
         height: 100%;
         border: none;
+        pointer-events: none;
+      }
+      .modal-content .video-wrapper video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        pointer-events: none;
       }
       .modal-content h2 {
         text-align: center;
@@ -690,23 +704,17 @@
           >
             <circle cx="20" cy="20" r="10" fill="url(#grad1)" />
             <ellipse
-              cx="20"
-              cy="20"
-              rx="18"
-              ry="6"
+              cx="20" cy="20"
+              rx="18" ry="6"
               fill="none"
-              stroke="url(#grad2)"
-              stroke-width="2"
+              stroke="url(#grad2)" stroke-width="2"
               transform="rotate(-20, 20, 20)"
             />
             <ellipse
-              cx="20"
-              cy="20"
-              rx="14"
-              ry="4"
+              cx="20" cy="20"
+              rx="14" ry="4"
               fill="none"
-              stroke="#fff"
-              stroke-width="0.5"
+              stroke="#fff" stroke-width="0.5"
               opacity="0.15"
               transform="rotate(-20, 20, 20)"
             />
@@ -749,9 +757,7 @@
           </li>
         </ul>
         <div class="hamburger">
-          <span></span>
-          <span></span>
-          <span></span>
+          <span></span> <span></span> <span></span>
         </div>
       </div>
     </nav>
@@ -828,8 +834,7 @@
       <div class="container">
         <div class="footer-content">
           <div class="footer-brand">
-            <span class="logo-icon">✦</span>
-            <span>Nova</span>
+            <span class="logo-icon">✦</span> <span>Nova</span>
             <p>Exploration Without Limits - Toward New Horizons</p>
           </div>
           <div class="footer-links">
@@ -910,6 +915,93 @@
         }
       }
 
+      // ===== Helper: Convert YouTube URLs to embed =====
+      function convertYoutubeUrl(url) {
+        if (!url) return url;
+        if (url.includes('youtube.com/shorts/')) {
+          const videoId = url.split('/shorts/')[1]?.split('?')[0];
+          if (videoId) return `https://www.youtube.com/embed/${videoId}`;
+        }
+        if (url.includes('youtu.be/')) {
+          const videoId = url.split('youtu.be/')[1]?.split('?')[0];
+          if (videoId) return `https://www.youtube.com/embed/${videoId}`;
+        }
+        if (url.includes('youtube.com/watch?v=')) {
+          const videoId = url.split('v=')[1]?.split('&')[0];
+          if (videoId) return `https://www.youtube.com/embed/${videoId}`;
+        }
+        return url;
+      }
+
+      // ===== Helper: Check if URL is video (MP4, WEBM, etc.) =====
+      function isVideoUrl(url) {
+        if (!url) return false;
+        const videoExtensions = ['.mp4', '.webm', '.ogg', '.mov', '.avi'];
+        const lowerUrl = url.toLowerCase();
+        return videoExtensions.some((ext) => lowerUrl.includes(ext));
+      }
+
+      // ===== Helper: Check if URL is embeddable =====
+      function isEmbedUrl(url) {
+        if (!url) return false;
+        const lowerUrl = url.toLowerCase();
+        return (
+          lowerUrl.includes('youtube.com/embed') ||
+          lowerUrl.includes('youtu.be') ||
+          lowerUrl.includes('youtube.com/shorts/') ||
+          lowerUrl.includes('youtube.com/watch?v=') ||
+          lowerUrl.includes('vimeo.com') ||
+          lowerUrl.includes('player.vimeo.com') ||
+          lowerUrl.includes('drive.google.com') ||
+          lowerUrl.includes('dailymotion.com')
+        );
+      }
+
+      // ===== Helper: Extract video ID for YouTube playlist loop =====
+      function getPlaylistId(url) {
+        const match = url.match(/(?:embed\/|v\/|watch\?v=|shorts\/)([^&?#]+)/);
+        return match ? match[1] : '';
+      }
+
+      // ===== Helper: Generate media HTML =====
+      function getMediaHTML(url, alt, className) {
+        if (!url) {
+          return `<img src="${alt}" alt="Fallback" class="${className}" onerror="this.style.display='none'">`;
+        }
+
+        let processedUrl = convertYoutubeUrl(url);
+
+        if (isVideoUrl(processedUrl)) {
+          return `
+                <div class="video-wrapper">
+                  <video autoplay loop muted playsinline style="width:100%; height:100%; object-fit:cover;">
+                    <source src="${processedUrl}" type="video/mp4">
+                    Your browser does not support the video tag.
+                  </video>
+                </div>
+              `;
+        }
+
+        if (isEmbedUrl(processedUrl)) {
+          const videoId = getPlaylistId(processedUrl);
+          let embedUrl = processedUrl;
+          if (!processedUrl.includes('autoplay=')) {
+            const separator = processedUrl.includes('?') ? '&' : '?';
+            embedUrl += `${separator}autoplay=1&loop=1&mute=1&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3`;
+            if (videoId) {
+              embedUrl += `&playlist=${videoId}`;
+            }
+          }
+          return `
+                <div class="video-wrapper" data-video-id="${videoId}">
+                  <iframe src="${embedUrl}" frameborder="0" allow="autoplay; fullscreen" allowfullscreen loading="lazy"></iframe>
+                </div>
+              `;
+        }
+
+        return `<img src="${processedUrl}" alt="${alt}" class="${className}" onerror="this.src='${alt}'">`;
+      }
+
       // ===== Fallback Image =====
       const FALLBACK_IMAGE =
         "https://images.unsplash.com/photo-1614732414444-096e5f1122d5?w=400&h=300&fit=crop";
@@ -954,20 +1046,20 @@
             renderAsteroids(asteroidsData);
           } else {
             grid.innerHTML = `
-              <div class="no-results" style="grid-column: 1 / -1;">
-                <div class="icon">☄️</div>
-                <p>No asteroids found</p>
-              </div>
-            `;
+                <div class="no-results" style="grid-column: 1 / -1;">
+                  <div class="icon">☄️</div>
+                  <p>No asteroids found</p>
+                </div>
+              `;
           }
         } catch (error) {
           console.error("Error:", error);
           grid.innerHTML = `
-            <div class="no-results" style="grid-column: 1 / -1;">
-              <div class="icon">⚠️</div>
-              <p>Error loading asteroids. Please try again.</p>
-            </div>
-          `;
+              <div class="no-results" style="grid-column: 1 / -1;">
+                <div class="icon">⚠️</div>
+                <p>Error loading asteroids. Please try again.</p>
+              </div>
+            `;
         }
       }
 
@@ -977,11 +1069,11 @@
 
         if (asteroids.length === 0) {
           grid.innerHTML = `
-            <div class="no-results" style="grid-column: 1 / -1;">
-              <div class="icon">🔭</div>
-              <p>No asteroids match your criteria</p>
-            </div>
-          `;
+              <div class="no-results" style="grid-column: 1 / -1;">
+                <div class="icon">🔭</div>
+                <p>No asteroids match your criteria</p>
+              </div>
+            `;
           return;
         }
 
@@ -991,38 +1083,36 @@
           const hazardClass = asteroid.hazardous ? "hazard-yes" : "hazard-no";
           const hazardText = asteroid.hazardous ? "⚠️ Hazardous" : "✅ Safe";
           const image = asteroid.image || FALLBACK_IMAGE;
-          const hasVideo = asteroid.video_url && asteroid.video_url.trim() !== "";
+          const hasVideo =
+            asteroid.video_url && asteroid.video_url.trim() !== "";
+          const mediaHTML = hasVideo
+            ? getMediaHTML(asteroid.video_url, image, "asteroid-image")
+            : `<img src="${image}" alt="${asteroid.name}" class="asteroid-image" onerror="this.src='${FALLBACK_IMAGE}'">`;
 
           html += `
-            <div class="asteroid-card" onclick="showDetail('${asteroid.id}')">
-              <button class="favorite-btn ${isFavorite ? "active" : ""}" onclick="event.stopPropagation(); toggleFavorite('${asteroid.id}', this)">
-                <i class="fas fa-star"></i>
-              </button>
-              
-              ${hasVideo ? `
-                <div class="video-wrapper">
-                  <iframe src="${asteroid.video_url}" frameborder="0" allowfullscreen loading="lazy"></iframe>
-                </div>
-              ` : `
-                <img src="${image}" alt="${asteroid.name}" class="asteroid-image" onerror="this.src='${FALLBACK_IMAGE}'">
-              `}
-              
-              <span class="hazard-badge ${hazardClass}">${hazardText}</span>
-              <h3>${asteroid.name}</h3>
-              <div class="date">📅 ${asteroid.date || "TBD"}</div>
-              <p class="description">${asteroid.description || "No description available"}</p>
-              <div class="stats">
-                <div class="stat">
-                  <i class="fas fa-arrows-alt-h"></i>
-                  <span class="value">${asteroid.size || "N/A"} m</span>
-                </div>
-                <div class="stat">
-                  <i class="fas fa-tachometer-alt"></i>
-                  <span class="value">${asteroid.speed || "N/A"}</span>
+              <div class="asteroid-card" onclick="showDetail('${asteroid.id}')">
+                <button class="favorite-btn ${isFavorite ? "active" : ""}" onclick="event.stopPropagation(); toggleFavorite('${asteroid.id}', this)">
+                  <i class="fas fa-star"></i>
+                </button>
+                
+                ${mediaHTML}
+                
+                <span class="hazard-badge ${hazardClass}">${hazardText}</span>
+                <h3>${asteroid.name}</h3>
+                <div class="date">📅 ${asteroid.date || "TBD"}</div>
+                <p class="description">${asteroid.description || "No description available"}</p>
+                <div class="stats">
+                  <div class="stat">
+                    <i class="fas fa-arrows-alt-h"></i>
+                    <span class="value">${asteroid.size || "N/A"} m</span>
+                  </div>
+                  <div class="stat">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span class="value">${asteroid.speed || "N/A"}</span>
+                  </div>
                 </div>
               </div>
-            </div>
-          `;
+            `;
         });
 
         grid.innerHTML = html;
@@ -1068,7 +1158,7 @@
       // ===== Show Detail Modal =====
       function showDetail(asteroidId) {
         const asteroid = asteroidsData.find(
-          (a) => String(a.id) === String(asteroidId),
+          (a) => String(a.id) === String(asteroidId)
         );
         if (!asteroid) return;
 
@@ -1078,25 +1168,27 @@
           : "hazard-no-large";
         const hazardText = asteroid.hazardous ? "⚠️ Hazardous" : "✅ Safe";
         const hazardDisplay = asteroid.hazardous ? "Yes" : "No";
-        const hasVideo = asteroid.video_url && asteroid.video_url.trim() !== "";
+        const hasVideo =
+          asteroid.video_url && asteroid.video_url.trim() !== "";
 
         // Media container
         const mediaContainer = document.getElementById("modalMediaContainer");
         if (hasVideo) {
-          mediaContainer.innerHTML = `
-            <div class="video-wrapper">
-              <iframe src="${asteroid.video_url}" frameborder="0" allowfullscreen></iframe>
-            </div>
-          `;
+          mediaContainer.innerHTML = getMediaHTML(
+            asteroid.video_url,
+            image,
+            "asteroid-image-big"
+          );
         } else {
           mediaContainer.innerHTML = `
-            <img class="asteroid-image-big" src="${image}" alt="${asteroid.name}" onerror="this.src='${FALLBACK_IMAGE}'">
-          `;
+              <img class="asteroid-image-big" src="${image}" alt="${asteroid.name}" onerror="this.src='${FALLBACK_IMAGE}'">
+            `;
         }
 
         document.getElementById("modalName").textContent = asteroid.name;
         document.getElementById("modalDescription").textContent =
-          asteroid.description || "No description available for this asteroid.";
+          asteroid.description ||
+          "No description available for this asteroid.";
         document.getElementById("modalHazard").className =
           `hazard-badge-large ${hazardClass}`;
         document.getElementById("modalHazard").textContent = hazardText;
