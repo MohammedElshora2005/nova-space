@@ -967,7 +967,7 @@
         return match ? match[1] : '';
       }
 
-      // ===== Helper: Generate media HTML with hover play =====
+      // ===== Helper: Generate media HTML =====
       function getMediaHTML(url, alt, className) {
         if (!url) {
           return `<img src="${alt}" alt="Fallback" class="${className}" onerror="this.style.display='none'">`;
@@ -980,7 +980,7 @@
         if (isVideoUrl(processedUrl)) {
           return `
             <div class="video-wrapper">
-              <video muted playsinline style="width:100%; height:100%; object-fit:cover;">
+              <video autoplay loop muted playsinline style="width:100%; height:100%; object-fit:cover;">
                 <source src="${processedUrl}" type="video/mp4">
                 Your browser does not support the video tag.
               </video>
@@ -991,11 +991,10 @@
         // If it's an embeddable URL (YouTube, Vimeo, etc.)
         if (isEmbedUrl(processedUrl)) {
           const videoId = getPlaylistId(processedUrl);
-          // ✅ Start with autoplay=0 (paused), loop=1, mute=1, and hide all controls
           let embedUrl = processedUrl;
           if (!processedUrl.includes('autoplay=')) {
             const separator = processedUrl.includes('?') ? '&' : '?';
-            embedUrl += `${separator}autoplay=0&loop=1&mute=1&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3`;
+            embedUrl += `${separator}autoplay=1&loop=1&mute=1&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3`;
             if (videoId) {
               embedUrl += `&playlist=${videoId}`;
             }
@@ -1118,29 +1117,6 @@
         });
 
         grid.innerHTML = html;
-
-        // ===== Add hover events for YouTube videos (play on hover) =====
-        document.querySelectorAll('.blackhole-card').forEach(card => {
-          const wrapper = card.querySelector('.video-wrapper');
-          if (!wrapper) return;
-          
-          const iframe = wrapper.querySelector('iframe');
-          if (!iframe) return;
-
-          card.addEventListener('mouseenter', function() {
-            // Play video by reloading iframe with autoplay=1
-            if (iframe.src.includes('autoplay=0')) {
-              iframe.src = iframe.src.replace('autoplay=0', 'autoplay=1');
-            }
-          });
-
-          card.addEventListener('mouseleave', function() {
-            // Pause video by reloading iframe with autoplay=0
-            if (iframe.src.includes('autoplay=1')) {
-              iframe.src = iframe.src.replace('autoplay=1', 'autoplay=0');
-            }
-          });
-        });
       }
 
       // ===== Toggle Favorite =====
