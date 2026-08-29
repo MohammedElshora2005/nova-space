@@ -947,7 +947,8 @@
         return videoExtensions.some(ext => lowerUrl.includes(ext));
       }
 
-      // ===== Helper: Check if URL is embeddable =====      function isEmbedUrl(url) {
+      // ===== Helper: Check if URL is embeddable =====
+      function isEmbedUrl(url) {
         if (!url) return false;
         const lowerUrl = url.toLowerCase();
         return lowerUrl.includes('youtube.com/embed') || 
