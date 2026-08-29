@@ -72,6 +72,7 @@ class Mission(db.Model):
     description = db.Column(db.Text)
     status = db.Column(db.String(50), default='planned')
     image = db.Column(db.String(500))
+    video_url = db.Column(db.String(500))  # ✅ فيديو
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
     
@@ -83,7 +84,8 @@ class Mission(db.Model):
             'date': self.date or 'TBD',
             'description': self.description,
             'status': self.status,
-            'image': self.image
+            'image': self.image,
+            'video_url': self.video_url
         }
 
 class Planet(db.Model):
@@ -96,6 +98,7 @@ class Planet(db.Model):
     moons = db.Column(db.Integer, default=0)
     temperature = db.Column(db.Float)
     image = db.Column(db.String(500))
+    video_url = db.Column(db.String(500))  # ✅ فيديو
     description = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
@@ -110,6 +113,7 @@ class Planet(db.Model):
             'moons': self.moons,
             'temperature': self.temperature,
             'image': self.image,
+            'video_url': self.video_url,
             'description': self.description
         }
 
@@ -121,6 +125,7 @@ class Asteroid(db.Model):
     hazardous = db.Column(db.Boolean, default=False)
     speed = db.Column(db.String(50))
     date = db.Column(db.String(50))
+    video_url = db.Column(db.String(500))  # ✅ فيديو
     description = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
@@ -133,6 +138,7 @@ class Asteroid(db.Model):
             'hazardous': self.hazardous,
             'speed': self.speed,
             'date': self.date,
+            'video_url': self.video_url,
             'description': self.description
         }
 
@@ -144,6 +150,8 @@ class Star(db.Model):
     distance = db.Column(db.String(50))
     temperature = db.Column(db.String(50))
     image = db.Column(db.String(500))
+    video_url = db.Column(db.String(500))  # ✅ فيديو
+    description = db.Column(db.Text)  # ✅ وصف
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
     
@@ -154,7 +162,9 @@ class Star(db.Model):
             'type': self.type,
             'distance': self.distance,
             'temperature': self.temperature,
-            'image': self.image
+            'image': self.image,
+            'video_url': self.video_url,
+            'description': self.description
         }
 
 class Galaxy(db.Model):
@@ -166,6 +176,8 @@ class Galaxy(db.Model):
     stars = db.Column(db.String(100))
     diameter = db.Column(db.String(50))
     image = db.Column(db.String(500))
+    video_url = db.Column(db.String(500))  # ✅ فيديو
+    description = db.Column(db.Text)  # ✅ وصف
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
     
@@ -177,7 +189,9 @@ class Galaxy(db.Model):
             'distance': self.distance,
             'stars': self.stars,
             'diameter': self.diameter,
-            'image': self.image
+            'image': self.image,
+            'video_url': self.video_url,
+            'description': self.description
         }
 
 class BlackHole(db.Model):
@@ -190,6 +204,7 @@ class BlackHole(db.Model):
     diameter = db.Column(db.String(50))
     discovered = db.Column(db.String(20))
     image = db.Column(db.String(500))
+    video_url = db.Column(db.String(500))  # ✅ فيديو
     description = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
@@ -204,6 +219,7 @@ class BlackHole(db.Model):
             'diameter': self.diameter,
             'discovered': self.discovered,
             'image': self.image,
+            'video_url': self.video_url,
             'description': self.description
         }
 
@@ -271,32 +287,32 @@ with app.app_context():
     else:
         print('⚠️ ADMIN_PASSWORD not set in .env - admin user not created')
     
-    # ===== إضافة بيانات افتراضية للكواكب (مع type) =====
+    # ===== إضافة بيانات افتراضية للكواكب (مع type و video_url) =====
     if Planet.query.count() == 0:
         planets = [
-            {'name': 'Mercury', 'type': 'Terrestrial', 'diameter': 4879, 'gravity': 3.7, 'moons': 0, 'temperature': 167, 'description': 'The smallest planet in our solar system'},
-            {'name': 'Venus', 'type': 'Terrestrial', 'diameter': 12104, 'gravity': 8.87, 'moons': 0, 'temperature': 464, 'description': 'The hottest planet in our solar system'},
-            {'name': 'Earth', 'type': 'Terrestrial', 'diameter': 12756, 'gravity': 9.8, 'moons': 1, 'temperature': 15, 'description': 'Our home planet'},
-            {'name': 'Mars', 'type': 'Terrestrial', 'diameter': 6792, 'gravity': 3.71, 'moons': 2, 'temperature': -65, 'description': 'The red planet'},
-            {'name': 'Jupiter', 'type': 'Gas Giant', 'diameter': 142984, 'gravity': 24.79, 'moons': 95, 'temperature': -110, 'description': 'The largest planet in our solar system'},
-            {'name': 'Saturn', 'type': 'Gas Giant', 'diameter': 120536, 'gravity': 10.44, 'moons': 146, 'temperature': -140, 'description': 'The ringed planet'},
-            {'name': 'Uranus', 'type': 'Ice Giant', 'diameter': 51118, 'gravity': 8.69, 'moons': 27, 'temperature': -195, 'description': 'The ice giant'},
-            {'name': 'Neptune', 'type': 'Ice Giant', 'diameter': 49528, 'gravity': 11.15, 'moons': 16, 'temperature': -200, 'description': 'The windiest planet'},
+            {'name': 'Mercury', 'type': 'Terrestrial', 'diameter': 4879, 'gravity': 3.7, 'moons': 0, 'temperature': 167, 'description': 'The smallest planet in our solar system', 'video_url': ''},
+            {'name': 'Venus', 'type': 'Terrestrial', 'diameter': 12104, 'gravity': 8.87, 'moons': 0, 'temperature': 464, 'description': 'The hottest planet in our solar system', 'video_url': ''},
+            {'name': 'Earth', 'type': 'Terrestrial', 'diameter': 12756, 'gravity': 9.8, 'moons': 1, 'temperature': 15, 'description': 'Our home planet', 'video_url': ''},
+            {'name': 'Mars', 'type': 'Terrestrial', 'diameter': 6792, 'gravity': 3.71, 'moons': 2, 'temperature': -65, 'description': 'The red planet', 'video_url': ''},
+            {'name': 'Jupiter', 'type': 'Gas Giant', 'diameter': 142984, 'gravity': 24.79, 'moons': 95, 'temperature': -110, 'description': 'The largest planet in our solar system', 'video_url': ''},
+            {'name': 'Saturn', 'type': 'Gas Giant', 'diameter': 120536, 'gravity': 10.44, 'moons': 146, 'temperature': -140, 'description': 'The ringed planet', 'video_url': ''},
+            {'name': 'Uranus', 'type': 'Ice Giant', 'diameter': 51118, 'gravity': 8.69, 'moons': 27, 'temperature': -195, 'description': 'The ice giant', 'video_url': ''},
+            {'name': 'Neptune', 'type': 'Ice Giant', 'diameter': 49528, 'gravity': 11.15, 'moons': 16, 'temperature': -200, 'description': 'The windiest planet', 'video_url': ''},
         ]
         for p in planets:
             planet = Planet(**p)
             db.session.add(planet)
         db.session.commit()
-        print('✅ Default planets added (with types)')
+        print('✅ Default planets added')
 
-    # ===== إضافة بيانات افتراضية للكويكبات =====
+    # ===== إضافة بيانات افتراضية للكويكبات (مع video_url) =====
     if Asteroid.query.count() == 0:
         asteroids = [
-            {'name': '2024 XN1', 'size': 150, 'hazardous': True, 'speed': '30.7 km/s', 'date': '2026-12-15', 'description': 'Near-Earth asteroid passing close to Earth'},
-            {'name': '2024 YR4', 'size': 80, 'hazardous': False, 'speed': '22.3 km/s', 'date': '2026-11-20', 'description': 'Safe asteroid in the main belt'},
-            {'name': '2024 ZA1', 'size': 200, 'hazardous': True, 'speed': '35.1 km/s', 'date': '2026-10-05', 'description': 'Potentially hazardous asteroid'},
-            {'name': '2024 WB2', 'size': 45, 'hazardous': False, 'speed': '18.9 km/s', 'date': '2026-09-12', 'description': 'Small safe asteroid'},
-            {'name': '2024 VC3', 'size': 120, 'hazardous': False, 'speed': '25.4 km/s', 'date': '2026-08-28', 'description': 'Medium-sized safe asteroid'},
+            {'name': '2024 XN1', 'size': 150, 'hazardous': True, 'speed': '30.7 km/s', 'date': '2026-12-15', 'description': 'Near-Earth asteroid passing close to Earth', 'video_url': ''},
+            {'name': '2024 YR4', 'size': 80, 'hazardous': False, 'speed': '22.3 km/s', 'date': '2026-11-20', 'description': 'Safe asteroid in the main belt', 'video_url': ''},
+            {'name': '2024 ZA1', 'size': 200, 'hazardous': True, 'speed': '35.1 km/s', 'date': '2026-10-05', 'description': 'Potentially hazardous asteroid', 'video_url': ''},
+            {'name': '2024 WB2', 'size': 45, 'hazardous': False, 'speed': '18.9 km/s', 'date': '2026-09-12', 'description': 'Small safe asteroid', 'video_url': ''},
+            {'name': '2024 VC3', 'size': 120, 'hazardous': False, 'speed': '25.4 km/s', 'date': '2026-08-28', 'description': 'Medium-sized safe asteroid', 'video_url': ''},
         ]
         for a in asteroids:
             asteroid = Asteroid(**a)
@@ -304,14 +320,14 @@ with app.app_context():
         db.session.commit()
         print('✅ Default asteroids added')
 
-    # ===== إضافة بيانات افتراضية للمهمات =====
+    # ===== إضافة بيانات افتراضية للمهمات (مع video_url) =====
     if Mission.query.count() == 0:
         missions = [
-            {'name': 'Artemis II', 'agency': 'NASA', 'date': '2026-09-15', 'status': 'planned', 'description': 'First crewed mission to the Moon since Apollo 17'},
-            {'name': 'Mars Sample Return', 'agency': 'NASA/ESA', 'date': '2028-03-01', 'status': 'planned', 'description': 'Bringing samples from Mars back to Earth'},
-            {'name': 'Europa Clipper', 'agency': 'NASA', 'date': '2024-10-10', 'status': 'active', 'description': 'Exploring Jupiter\'s icy moon Europa'},
-            {'name': 'James Webb', 'agency': 'NASA/ESA/CSA', 'date': '2021-12-25', 'status': 'active', 'description': 'Observing the universe in infrared'},
-            {'name': 'Apollo 11', 'agency': 'NASA', 'date': '1969-07-20', 'status': 'completed', 'description': 'First humans to land on the Moon'},
+            {'name': 'Artemis II', 'agency': 'NASA', 'date': '2026-09-15', 'status': 'planned', 'description': 'First crewed mission to the Moon since Apollo 17', 'video_url': ''},
+            {'name': 'Mars Sample Return', 'agency': 'NASA/ESA', 'date': '2028-03-01', 'status': 'planned', 'description': 'Bringing samples from Mars back to Earth', 'video_url': ''},
+            {'name': 'Europa Clipper', 'agency': 'NASA', 'date': '2024-10-10', 'status': 'active', 'description': 'Exploring Jupiter\'s icy moon Europa', 'video_url': ''},
+            {'name': 'James Webb', 'agency': 'NASA/ESA/CSA', 'date': '2021-12-25', 'status': 'active', 'description': 'Observing the universe in infrared', 'video_url': ''},
+            {'name': 'Apollo 11', 'agency': 'NASA', 'date': '1969-07-20', 'status': 'completed', 'description': 'First humans to land on the Moon', 'video_url': ''},
         ]
         for m in missions:
             mission = Mission(**m)
@@ -319,17 +335,17 @@ with app.app_context():
         db.session.commit()
         print('✅ Default missions added')
 
-    # ===== إضافة بيانات افتراضية للنجوم =====
+    # ===== إضافة بيانات افتراضية للنجوم (مع description و video_url) =====
     if Star.query.count() == 0:
         stars = [
-            {'name': 'Sirius', 'type': 'A-type main-sequence', 'distance': '8.6 ly', 'temperature': '9,940 K', 'image': 'https://images.unsplash.com/photo-1504333638930-c8787321eee0?w=400&h=300&fit=crop'},
-            {'name': 'Betelgeuse', 'type': 'Red supergiant', 'distance': '642 ly', 'temperature': '3,500 K', 'image': 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=400&h=300&fit=crop'},
-            {'name': 'Polaris', 'type': 'Cepheid variable', 'distance': '433 ly', 'temperature': '6,015 K', 'image': 'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&h=300&fit=crop'},
-            {'name': 'Vega', 'type': 'A-type main-sequence', 'distance': '25 ly', 'temperature': '9,602 K', 'image': 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=400&h=300&fit=crop'},
-            {'name': 'Rigel', 'type': 'Blue supergiant', 'distance': '860 ly', 'temperature': '12,100 K', 'image': 'https://images.unsplash.com/photo-1506703719100-a0f3a48a2f8f?w=400&h=300&fit=crop'},
-            {'name': 'Aldebaran', 'type': 'Red giant', 'distance': '65 ly', 'temperature': '4,000 K', 'image': 'https://images.unsplash.com/photo-1504333638930-c8787321eee0?w=400&h=300&fit=crop'},
-            {'name': 'Antares', 'type': 'Red supergiant', 'distance': '550 ly', 'temperature': '3,500 K', 'image': 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=400&h=300&fit=crop'},
-            {'name': 'Spica', 'type': 'B-type main-sequence', 'distance': '250 ly', 'temperature': '25,000 K', 'image': 'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&h=300&fit=crop'},
+            {'name': 'Sirius', 'type': 'A-type main-sequence', 'distance': '8.6 ly', 'temperature': '9,940 K', 'image': 'https://images.unsplash.com/photo-1504333638930-c8787321eee0?w=400&h=300&fit=crop', 'description': 'The brightest star in the night sky.', 'video_url': ''},
+            {'name': 'Betelgeuse', 'type': 'Red supergiant', 'distance': '642 ly', 'temperature': '3,500 K', 'image': 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=400&h=300&fit=crop', 'description': 'A massive red supergiant star nearing the end of its life.', 'video_url': ''},
+            {'name': 'Polaris', 'type': 'Cepheid variable', 'distance': '433 ly', 'temperature': '6,015 K', 'image': 'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&h=300&fit=crop', 'description': 'The North Star, used for navigation for centuries.', 'video_url': ''},
+            {'name': 'Vega', 'type': 'A-type main-sequence', 'distance': '25 ly', 'temperature': '9,602 K', 'image': 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=400&h=300&fit=crop', 'description': 'One of the brightest stars in the summer sky.', 'video_url': ''},
+            {'name': 'Rigel', 'type': 'Blue supergiant', 'distance': '860 ly', 'temperature': '12,100 K', 'image': 'https://images.unsplash.com/photo-1506703719100-a0f3a48a2f8f?w=400&h=300&fit=crop', 'description': 'The brightest star in the constellation Orion.', 'video_url': ''},
+            {'name': 'Aldebaran', 'type': 'Red giant', 'distance': '65 ly', 'temperature': '4,000 K', 'image': 'https://images.unsplash.com/photo-1504333638930-c8787321eee0?w=400&h=300&fit=crop', 'description': 'The brightest star in the constellation Taurus.', 'video_url': ''},
+            {'name': 'Antares', 'type': 'Red supergiant', 'distance': '550 ly', 'temperature': '3,500 K', 'image': 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=400&h=300&fit=crop', 'description': 'A massive red supergiant in the constellation Scorpius.', 'video_url': ''},
+            {'name': 'Spica', 'type': 'B-type main-sequence', 'distance': '250 ly', 'temperature': '25,000 K', 'image': 'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&h=300&fit=crop', 'description': 'The brightest star in the constellation Virgo.', 'video_url': ''},
         ]
         for s in stars:
             star = Star(**s)
@@ -337,17 +353,17 @@ with app.app_context():
         db.session.commit()
         print('✅ Default stars added')
 
-    # ===== إضافة بيانات افتراضية للمجرات =====
+    # ===== إضافة بيانات افتراضية للمجرات (مع description و video_url) =====
     if Galaxy.query.count() == 0:
         galaxies = [
-            {'name': 'Andromeda', 'type': 'Spiral', 'distance': '2.537 million ly', 'stars': '1 trillion', 'diameter': '220,000 ly', 'image': 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=400&h=300&fit=crop'},
-            {'name': 'Milky Way', 'type': 'Spiral', 'distance': '0 ly', 'stars': '100-400 billion', 'diameter': '100,000 ly', 'image': 'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&h=300&fit=crop'},
-            {'name': 'Triangulum', 'type': 'Spiral', 'distance': '3 million ly', 'stars': '40 billion', 'diameter': '60,000 ly', 'image': 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=400&h=300&fit=crop'},
-            {'name': 'Sombrero', 'type': 'Spiral', 'distance': '29.3 million ly', 'stars': '100 billion', 'diameter': '49,000 ly', 'image': 'https://images.unsplash.com/photo-1504333638930-c8787321eee0?w=400&h=300&fit=crop'},
-            {'name': 'Whirlpool', 'type': 'Spiral', 'distance': '23 million ly', 'stars': '100 billion', 'diameter': '60,000 ly', 'image': 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=400&h=300&fit=crop'},
-            {'name': 'Black Eye', 'type': 'Spiral', 'distance': '17 million ly', 'stars': '30 billion', 'diameter': '50,000 ly', 'image': 'https://images.unsplash.com/photo-1506703719100-a0f3a48a2f8f?w=400&h=300&fit=crop'},
-            {'name': 'Cigar Galaxy', 'type': 'Starburst', 'distance': '12 million ly', 'stars': '30 billion', 'diameter': '37,000 ly', 'image': 'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&h=300&fit=crop'},
-            {'name': 'Pinwheel', 'type': 'Spiral', 'distance': '21 million ly', 'stars': '100 billion', 'diameter': '170,000 ly', 'image': 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=400&h=300&fit=crop'},
+            {'name': 'Andromeda', 'type': 'Spiral', 'distance': '2.537 million ly', 'stars': '1 trillion', 'diameter': '220,000 ly', 'image': 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=400&h=300&fit=crop', 'description': 'The nearest major galaxy to the Milky Way.', 'video_url': ''},
+            {'name': 'Milky Way', 'type': 'Spiral', 'distance': '0 ly', 'stars': '100-400 billion', 'diameter': '100,000 ly', 'image': 'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&h=300&fit=crop', 'description': 'Our home galaxy containing our solar system.', 'video_url': ''},
+            {'name': 'Triangulum', 'type': 'Spiral', 'distance': '3 million ly', 'stars': '40 billion', 'diameter': '60,000 ly', 'image': 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=400&h=300&fit=crop', 'description': 'A spiral galaxy in the constellation Triangulum.', 'video_url': ''},
+            {'name': 'Sombrero', 'type': 'Spiral', 'distance': '29.3 million ly', 'stars': '100 billion', 'diameter': '49,000 ly', 'image': 'https://images.unsplash.com/photo-1504333638930-c8787321eee0?w=400&h=300&fit=crop', 'description': 'A spiral galaxy with a prominent dust lane, resembling a sombrero hat.', 'video_url': ''},
+            {'name': 'Whirlpool', 'type': 'Spiral', 'distance': '23 million ly', 'stars': '100 billion', 'diameter': '60,000 ly', 'image': 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=400&h=300&fit=crop', 'description': 'A beautiful spiral galaxy with well-defined arms.', 'video_url': ''},
+            {'name': 'Black Eye', 'type': 'Spiral', 'distance': '17 million ly', 'stars': '30 billion', 'diameter': '50,000 ly', 'image': 'https://images.unsplash.com/photo-1506703719100-a0f3a48a2f8f?w=400&h=300&fit=crop', 'description': 'A spiral galaxy with a striking dark dust lane.', 'video_url': ''},
+            {'name': 'Cigar Galaxy', 'type': 'Starburst', 'distance': '12 million ly', 'stars': '30 billion', 'diameter': '37,000 ly', 'image': 'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&h=300&fit=crop', 'description': 'A starburst galaxy undergoing intense star formation.', 'video_url': ''},
+            {'name': 'Pinwheel', 'type': 'Spiral', 'distance': '21 million ly', 'stars': '100 billion', 'diameter': '170,000 ly', 'image': 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=400&h=300&fit=crop', 'description': 'A magnificent spiral galaxy known for its well-defined arms.', 'video_url': ''},
         ]
         for g in galaxies:
             galaxy = Galaxy(**g)
@@ -355,17 +371,17 @@ with app.app_context():
         db.session.commit()
         print('✅ Default galaxies added')
 
-    # ===== إضافة بيانات افتراضية للثقوب السوداء =====
+    # ===== إضافة بيانات افتراضية للثقوب السوداء (مع video_url) =====
     if BlackHole.query.count() == 0:
         blackholes = [
-            {'name': 'Sagittarius A*', 'type': 'Supermassive', 'mass': '4.3 million M☉', 'distance': '26,000 ly', 'diameter': '44 million km', 'discovered': '1974', 'image': 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=400&h=300&fit=crop', 'description': 'The supermassive black hole at the center of the Milky Way galaxy.'},
-            {'name': 'M87*', 'type': 'Supermassive', 'mass': '6.5 billion M☉', 'distance': '53.5 million ly', 'diameter': '38 billion km', 'discovered': '2019', 'image': 'https://images.unsplash.com/photo-1504333638930-c8787321eee0?w=400&h=300&fit=crop', 'description': 'The first black hole ever imaged by the Event Horizon Telescope.'},
-            {'name': 'Cygnus X-1', 'type': 'Stellar', 'mass': '21 M☉', 'distance': '6,070 ly', 'diameter': '60 km', 'discovered': '1964', 'image': 'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&h=300&fit=crop', 'description': 'One of the strongest X-ray sources in the sky and the first black hole candidate.'},
-            {'name': 'Ton 618', 'type': 'Supermassive', 'mass': '66 billion M☉', 'distance': '10.4 billion ly', 'diameter': '390 billion km', 'discovered': '1970', 'image': 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=400&h=300&fit=crop', 'description': 'One of the most massive black holes ever discovered.'},
-            {'name': 'NGC 1277', 'type': 'Supermassive', 'mass': '17 billion M☉', 'distance': '220 million ly', 'diameter': '100 billion km', 'discovered': '2012', 'image': 'https://images.unsplash.com/photo-1506703719100-a0f3a48a2f8f?w=400&h=300&fit=crop', 'description': 'A supermassive black hole with a mass 17 billion times that of the Sun.'},
-            {'name': 'V404 Cygni', 'type': 'Stellar', 'mass': '9 M☉', 'distance': '7,800 ly', 'diameter': '30 km', 'discovered': '1989', 'image': 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=400&h=300&fit=crop', 'description': 'A binary system containing a stellar-mass black hole.'},
-            {'name': 'IC 1101', 'type': 'Supermassive', 'mass': '40 billion M☉', 'distance': '1.04 billion ly', 'diameter': '230 billion km', 'discovered': '1978', 'image': 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=400&h=300&fit=crop', 'description': 'The central black hole of one of the largest known galaxies.'},
-            {'name': 'Henize 2-10', 'type': 'Intermediate', 'mass': '50,000 M☉', 'distance': '34 million ly', 'diameter': '150 km', 'discovered': '2011', 'image': 'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&h=300&fit=crop', 'description': 'A dwarf galaxy containing an intermediate-mass black hole.'},
+            {'name': 'Sagittarius A*', 'type': 'Supermassive', 'mass': '4.3 million M☉', 'distance': '26,000 ly', 'diameter': '44 million km', 'discovered': '1974', 'image': 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=400&h=300&fit=crop', 'description': 'The supermassive black hole at the center of the Milky Way galaxy.', 'video_url': ''},
+            {'name': 'M87*', 'type': 'Supermassive', 'mass': '6.5 billion M☉', 'distance': '53.5 million ly', 'diameter': '38 billion km', 'discovered': '2019', 'image': 'https://images.unsplash.com/photo-1504333638930-c8787321eee0?w=400&h=300&fit=crop', 'description': 'The first black hole ever imaged by the Event Horizon Telescope.', 'video_url': ''},
+            {'name': 'Cygnus X-1', 'type': 'Stellar', 'mass': '21 M☉', 'distance': '6,070 ly', 'diameter': '60 km', 'discovered': '1964', 'image': 'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&h=300&fit=crop', 'description': 'One of the strongest X-ray sources in the sky and the first black hole candidate.', 'video_url': ''},
+            {'name': 'Ton 618', 'type': 'Supermassive', 'mass': '66 billion M☉', 'distance': '10.4 billion ly', 'diameter': '390 billion km', 'discovered': '1970', 'image': 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=400&h=300&fit=crop', 'description': 'One of the most massive black holes ever discovered.', 'video_url': ''},
+            {'name': 'NGC 1277', 'type': 'Supermassive', 'mass': '17 billion M☉', 'distance': '220 million ly', 'diameter': '100 billion km', 'discovered': '2012', 'image': 'https://images.unsplash.com/photo-1506703719100-a0f3a48a2f8f?w=400&h=300&fit=crop', 'description': 'A supermassive black hole with a mass 17 billion times that of the Sun.', 'video_url': ''},
+            {'name': 'V404 Cygni', 'type': 'Stellar', 'mass': '9 M☉', 'distance': '7,800 ly', 'diameter': '30 km', 'discovered': '1989', 'image': 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=400&h=300&fit=crop', 'description': 'A binary system containing a stellar-mass black hole.', 'video_url': ''},
+            {'name': 'IC 1101', 'type': 'Supermassive', 'mass': '40 billion M☉', 'distance': '1.04 billion ly', 'diameter': '230 billion km', 'discovered': '1978', 'image': 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=400&h=300&fit=crop', 'description': 'The central black hole of one of the largest known galaxies.', 'video_url': ''},
+            {'name': 'Henize 2-10', 'type': 'Intermediate', 'mass': '50,000 M☉', 'distance': '34 million ly', 'diameter': '150 km', 'discovered': '2011', 'image': 'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&h=300&fit=crop', 'description': 'A dwarf galaxy containing an intermediate-mass black hole.', 'video_url': ''},
         ]
         for b in blackholes:
             bh = BlackHole(**b)
@@ -599,7 +615,7 @@ def admin_panel():
         return redirect(url_for('index'))
     return render_template('admin.html')
 
-# ===== API - Update Avatar (Base64 - مثل GainHub) =====
+# ===== API - Update Avatar (Base64) =====
 @app.route('/api/user/update-avatar', methods=['POST'])
 @login_required
 def update_avatar():
@@ -611,11 +627,9 @@ def update_avatar():
         if not avatar_base64:
             return jsonify({'success': False, 'message': 'No image provided'}), 400
         
-        # ✅ التحقق من صحة الصورة
         if not avatar_base64.startswith('data:image/'):
             return jsonify({'success': False, 'message': 'Invalid image format'}), 400
         
-        # ✅ تحديث المستخدم - تخزين Base64 مباشرة
         user = db.session.get(User, session['user_id'])
         user.profile_image = avatar_base64
         db.session.commit()
@@ -638,7 +652,6 @@ def update_profile():
         data = request.get_json()
         user = db.session.get(User, session['user_id'])
         
-        # تحديث الاسم
         if 'username' in data and data['username']:
             existing = User.query.filter_by(username=data['username']).first()
             if existing and existing.id != user.id:
@@ -646,18 +659,15 @@ def update_profile():
             user.username = data['username']
             session['username'] = user.username
         
-        # تحديث الإيميل
         if 'email' in data and data['email']:
             existing = User.query.filter_by(email=data['email']).first()
             if existing and existing.id != user.id:
                 return jsonify({'success': False, 'message': 'Email already registered'}), 400
             user.email = data['email']
         
-        # تحديث الموقع
         if 'location' in data:
             user.location = data['location']
         
-        # تحديث كلمة المرور
         if 'password' in data and data['password']:
             if len(data['password']) < 6:
                 return jsonify({'success': False, 'message': 'Password must be at least 6 characters'}), 400
@@ -679,7 +689,7 @@ def update_profile():
         db.session.rollback()
         return jsonify({'success': False, 'message': str(e)}), 400
 
-# ===== API Routes - Missions (مع فلترة SQL) =====
+# ===== API Routes - Missions (مع فلترة SQL و video_url) =====
 
 @app.route('/api/missions')
 def get_missions():
@@ -719,7 +729,8 @@ def create_mission():
             date=data.get('date'),
             description=data.get('description'),
             status=data.get('status', 'planned'),
-            image=data.get('image')
+            image=data.get('image'),
+            video_url=data.get('video_url')
         )
         
         db.session.add(mission)
@@ -750,6 +761,8 @@ def update_mission(mission_id):
             mission.status = data['status']
         if 'image' in data:
             mission.image = data['image']
+        if 'video_url' in data:
+            mission.video_url = data['video_url']
         
         mission.updated_at = datetime.now(timezone.utc)
         db.session.commit()
@@ -772,7 +785,7 @@ def delete_mission(mission_id):
         db.session.rollback()
         return jsonify({'success': False, 'message': str(e)}), 400
 
-# ===== API Routes - Planets (مع فلترة SQL) =====
+# ===== API Routes - Planets (مع فلترة SQL و video_url) =====
 
 @app.route('/api/planets')
 def get_planets():
@@ -814,6 +827,7 @@ def create_planet():
             moons=data.get('moons', 0),
             temperature=data.get('temperature'),
             image=data.get('image'),
+            video_url=data.get('video_url'),
             description=data.get('description')
         )
         
@@ -847,6 +861,8 @@ def update_planet(planet_id):
             planet.temperature = data['temperature']
         if 'image' in data:
             planet.image = data['image']
+        if 'video_url' in data:
+            planet.video_url = data['video_url']
         if 'description' in data:
             planet.description = data['description']
         
@@ -871,7 +887,7 @@ def delete_planet(planet_id):
         db.session.rollback()
         return jsonify({'success': False, 'message': str(e)}), 400
 
-# ===== API Routes - Asteroids (مع فلترة SQL) =====
+# ===== API Routes - Asteroids (مع فلترة SQL و video_url) =====
 
 @app.route('/api/asteroids')
 def get_asteroids():
@@ -911,6 +927,7 @@ def create_asteroid():
             hazardous=data.get('hazardous', False),
             speed=data.get('speed'),
             date=data.get('date'),
+            video_url=data.get('video_url'),
             description=data.get('description')
         )
         
@@ -940,6 +957,8 @@ def update_asteroid(asteroid_id):
             asteroid.speed = data['speed']
         if 'date' in data:
             asteroid.date = data['date']
+        if 'video_url' in data:
+            asteroid.video_url = data['video_url']
         if 'description' in data:
             asteroid.description = data['description']
         
@@ -964,7 +983,7 @@ def delete_asteroid(asteroid_id):
         db.session.rollback()
         return jsonify({'success': False, 'message': str(e)}), 400
 
-# ===== API Routes - Stars (مع فلترة SQL) =====
+# ===== API Routes - Stars (مع فلترة SQL و video_url) =====
 
 @app.route('/api/stars')
 def get_stars():
@@ -977,7 +996,8 @@ def get_stars():
     if search:
         query = query.filter(
             Star.name.ilike(f'%{search}%') | 
-            Star.type.ilike(f'%{search}%')
+            Star.type.ilike(f'%{search}%') |
+            Star.description.ilike(f'%{search}%')
         )
     if type_filter:
         query = query.filter(Star.type == type_filter)
@@ -1003,7 +1023,9 @@ def create_star():
             type=data.get('type'),
             distance=data.get('distance'),
             temperature=data.get('temperature'),
-            image=data.get('image')
+            image=data.get('image'),
+            video_url=data.get('video_url'),
+            description=data.get('description')
         )
         
         db.session.add(star)
@@ -1032,6 +1054,10 @@ def update_star(star_id):
             star.temperature = data['temperature']
         if 'image' in data:
             star.image = data['image']
+        if 'video_url' in data:
+            star.video_url = data['video_url']
+        if 'description' in data:
+            star.description = data['description']
         
         star.updated_at = datetime.now(timezone.utc)
         db.session.commit()
@@ -1054,7 +1080,7 @@ def delete_star(star_id):
         db.session.rollback()
         return jsonify({'success': False, 'message': str(e)}), 400
 
-# ===== API Routes - Galaxies (مع فلترة SQL) =====
+# ===== API Routes - Galaxies (مع فلترة SQL و video_url) =====
 
 @app.route('/api/galaxies')
 def get_galaxies():
@@ -1067,7 +1093,8 @@ def get_galaxies():
     if search:
         query = query.filter(
             Galaxy.name.ilike(f'%{search}%') | 
-            Galaxy.type.ilike(f'%{search}%')
+            Galaxy.type.ilike(f'%{search}%') |
+            Galaxy.description.ilike(f'%{search}%')
         )
     if type_filter:
         query = query.filter(Galaxy.type == type_filter)
@@ -1094,7 +1121,9 @@ def create_galaxy():
             distance=data.get('distance'),
             stars=data.get('stars'),
             diameter=data.get('diameter'),
-            image=data.get('image')
+            image=data.get('image'),
+            video_url=data.get('video_url'),
+            description=data.get('description')
         )
         
         db.session.add(galaxy)
@@ -1125,6 +1154,10 @@ def update_galaxy(galaxy_id):
             galaxy.diameter = data['diameter']
         if 'image' in data:
             galaxy.image = data['image']
+        if 'video_url' in data:
+            galaxy.video_url = data['video_url']
+        if 'description' in data:
+            galaxy.description = data['description']
         
         galaxy.updated_at = datetime.now(timezone.utc)
         db.session.commit()
@@ -1147,7 +1180,7 @@ def delete_galaxy(galaxy_id):
         db.session.rollback()
         return jsonify({'success': False, 'message': str(e)}), 400
 
-# ===== API Routes - Black Holes (مع فلترة SQL) =====
+# ===== API Routes - Black Holes (مع فلترة SQL و video_url) =====
 
 @app.route('/api/blackholes')
 def get_blackholes():
@@ -1189,6 +1222,7 @@ def create_blackhole():
             diameter=data.get('diameter'),
             discovered=data.get('discovered'),
             image=data.get('image'),
+            video_url=data.get('video_url'),
             description=data.get('description')
         )
         
@@ -1222,6 +1256,8 @@ def update_blackhole(bh_id):
             bh.discovered = data['discovered']
         if 'image' in data:
             bh.image = data['image']
+        if 'video_url' in data:
+            bh.video_url = data['video_url']
         if 'description' in data:
             bh.description = data['description']
         
@@ -1522,5 +1558,4 @@ def server_error(error):
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
-    # ✅ Production mode (debug=False)
     app.run(host='0.0.0.0', port=port, debug=False)
