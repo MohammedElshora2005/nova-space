@@ -312,6 +312,57 @@
         box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
       }
 
+      /* ===== Favorite Button - Top Right ===== */
+      .asteroid-card .favorite-btn {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: rgba(0, 0, 0, 0.55);
+        backdrop-filter: blur(10px);
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        color: rgba(255, 255, 255, 0.3);
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .asteroid-card .favorite-btn:hover {
+        color: #00d4ff;
+        transform: scale(1.15);
+        background: rgba(0, 0, 0, 0.75);
+      }
+      .asteroid-card .favorite-btn.active {
+        color: #00d4ff;
+        background: rgba(0, 212, 255, 0.2);
+      }
+      .asteroid-card .favorite-btn.active:hover {
+        color: #7b2ffc;
+        background: rgba(123, 47, 252, 0.2);
+      }
+
+      /* ===== Video Wrapper ===== */
+      .asteroid-card .video-wrapper {
+        width: 100%;
+        height: 180px;
+        overflow: hidden;
+        background: #1a1a2e;
+        border-radius: 12px;
+        margin-bottom: 15px;
+        position: relative;
+      }
+      .asteroid-card .video-wrapper iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+        object-fit: cover;
+      }
+
       .asteroid-card .asteroid-image {
         width: 100%;
         height: 180px;
@@ -376,28 +427,6 @@
         font-weight: 600;
       }
 
-      .asteroid-card .favorite-btn {
-        position: absolute;
-        top: 15px;
-        right: 15px;
-        background: none;
-        border: none;
-        color: rgba(255, 255, 255, 0.2);
-        font-size: 1.4rem;
-        cursor: pointer;
-        transition: all 0.3s ease;
-      }
-      .asteroid-card .favorite-btn:hover {
-        color: #00d4ff;
-        transform: scale(1.2);
-      }
-      .asteroid-card .favorite-btn.active {
-        color: #00d4ff;
-      }
-      .asteroid-card .favorite-btn.active:hover {
-        color: #7b2ffc;
-      }
-
       /* ===== Detail Modal ===== */
       .modal-overlay {
         display: none;
@@ -449,6 +478,20 @@
         border-radius: 12px;
         margin-bottom: 15px;
         background: #1a1a2e;
+      }
+      .modal-content .video-wrapper {
+        width: 100%;
+        height: 250px;
+        overflow: hidden;
+        border-radius: 12px;
+        margin-bottom: 15px;
+        background: #1a1a2e;
+        position: relative;
+      }
+      .modal-content .video-wrapper iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
       }
       .modal-content h2 {
         text-align: center;
@@ -579,7 +622,8 @@
         .asteroids-grid {
           grid-template-columns: 1fr;
         }
-        .asteroid-card .asteroid-image {
+        .asteroid-card .asteroid-image,
+        .asteroid-card .video-wrapper {
           height: 140px;
         }
         .modal-content {
@@ -588,8 +632,16 @@
         .modal-content .detail-grid {
           grid-template-columns: 1fr;
         }
-        .modal-content .asteroid-image-big {
+        .modal-content .asteroid-image-big,
+        .modal-content .video-wrapper {
           height: 180px;
+        }
+        .asteroid-card .favorite-btn {
+          width: 34px;
+          height: 34px;
+          font-size: 1rem;
+          top: 10px;
+          right: 10px;
         }
       }
 
@@ -604,13 +656,15 @@
           flex-wrap: wrap;
           gap: 10px;
         }
-        .asteroid-card .asteroid-image {
+        .asteroid-card .asteroid-image,
+        .asteroid-card .video-wrapper {
           height: 120px;
         }
         .modal-content {
           padding: 20px;
         }
-        .modal-content .asteroid-image-big {
+        .modal-content .asteroid-image-big,
+        .modal-content .video-wrapper {
           height: 150px;
         }
       }
@@ -742,7 +796,7 @@
     <div class="modal-overlay" id="detailModal">
       <div class="modal-content">
         <button class="close-btn" onclick="closeModal()">&times;</button>
-        <img class="asteroid-image-big" id="modalImage" src="" alt="Asteroid" />
+        <div id="modalMediaContainer"></div>
         <h2 id="modalName">Asteroid Name</h2>
         <div style="text-align: center">
           <span class="hazard-badge-large" id="modalHazard">Safe</span>
@@ -937,13 +991,22 @@
           const hazardClass = asteroid.hazardous ? "hazard-yes" : "hazard-no";
           const hazardText = asteroid.hazardous ? "⚠️ Hazardous" : "✅ Safe";
           const image = asteroid.image || FALLBACK_IMAGE;
+          const hasVideo = asteroid.video_url && asteroid.video_url.trim() !== "";
 
           html += `
             <div class="asteroid-card" onclick="showDetail('${asteroid.id}')">
               <button class="favorite-btn ${isFavorite ? "active" : ""}" onclick="event.stopPropagation(); toggleFavorite('${asteroid.id}', this)">
                 <i class="fas fa-star"></i>
               </button>
-              <img src="${image}" alt="${asteroid.name}" class="asteroid-image" onerror="this.src='${FALLBACK_IMAGE}'">
+              
+              ${hasVideo ? `
+                <div class="video-wrapper">
+                  <iframe src="${asteroid.video_url}" frameborder="0" allowfullscreen loading="lazy"></iframe>
+                </div>
+              ` : `
+                <img src="${image}" alt="${asteroid.name}" class="asteroid-image" onerror="this.src='${FALLBACK_IMAGE}'">
+              `}
+              
               <span class="hazard-badge ${hazardClass}">${hazardText}</span>
               <h3>${asteroid.name}</h3>
               <div class="date">📅 ${asteroid.date || "TBD"}</div>
@@ -1015,9 +1078,22 @@
           : "hazard-no-large";
         const hazardText = asteroid.hazardous ? "⚠️ Hazardous" : "✅ Safe";
         const hazardDisplay = asteroid.hazardous ? "Yes" : "No";
+        const hasVideo = asteroid.video_url && asteroid.video_url.trim() !== "";
 
-        document.getElementById("modalImage").src = image;
-        document.getElementById("modalImage").alt = asteroid.name;
+        // Media container
+        const mediaContainer = document.getElementById("modalMediaContainer");
+        if (hasVideo) {
+          mediaContainer.innerHTML = `
+            <div class="video-wrapper">
+              <iframe src="${asteroid.video_url}" frameborder="0" allowfullscreen></iframe>
+            </div>
+          `;
+        } else {
+          mediaContainer.innerHTML = `
+            <img class="asteroid-image-big" src="${image}" alt="${asteroid.name}" onerror="this.src='${FALLBACK_IMAGE}'">
+          `;
+        }
+
         document.getElementById("modalName").textContent = asteroid.name;
         document.getElementById("modalDescription").textContent =
           asteroid.description || "No description available for this asteroid.";
