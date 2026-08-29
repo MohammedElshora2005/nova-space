@@ -368,6 +368,13 @@
         height: 100%;
         border: none;
         object-fit: cover;
+        pointer-events: none;
+      }
+      .star-card .video-wrapper video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        pointer-events: none;
       }
 
       .star-card .star-image {
@@ -484,6 +491,13 @@
         width: 100%;
         height: 100%;
         border: none;
+        pointer-events: none;
+      }
+      .modal-content .video-wrapper video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        pointer-events: none;
       }
       .modal-content h2 {
         text-align: center;
@@ -887,6 +901,93 @@
         }
       }
 
+      // ===== Helper: Convert YouTube URLs to embed =====
+      function convertYoutubeUrl(url) {
+        if (!url) return url;
+        if (url.includes('youtube.com/shorts/')) {
+          const videoId = url.split('/shorts/')[1]?.split('?')[0];
+          if (videoId) return `https://www.youtube.com/embed/${videoId}`;
+        }
+        if (url.includes('youtu.be/')) {
+          const videoId = url.split('youtu.be/')[1]?.split('?')[0];
+          if (videoId) return `https://www.youtube.com/embed/${videoId}`;
+        }
+        if (url.includes('youtube.com/watch?v=')) {
+          const videoId = url.split('v=')[1]?.split('&')[0];
+          if (videoId) return `https://www.youtube.com/embed/${videoId}`;
+        }
+        return url;
+      }
+
+      // ===== Helper: Check if URL is video (MP4, WEBM, etc.) =====
+      function isVideoUrl(url) {
+        if (!url) return false;
+        const videoExtensions = ['.mp4', '.webm', '.ogg', '.mov', '.avi'];
+        const lowerUrl = url.toLowerCase();
+        return videoExtensions.some((ext) => lowerUrl.includes(ext));
+      }
+
+      // ===== Helper: Check if URL is embeddable =====
+      function isEmbedUrl(url) {
+        if (!url) return false;
+        const lowerUrl = url.toLowerCase();
+        return (
+          lowerUrl.includes('youtube.com/embed') ||
+          lowerUrl.includes('youtu.be') ||
+          lowerUrl.includes('youtube.com/shorts/') ||
+          lowerUrl.includes('youtube.com/watch?v=') ||
+          lowerUrl.includes('vimeo.com') ||
+          lowerUrl.includes('player.vimeo.com') ||
+          lowerUrl.includes('drive.google.com') ||
+          lowerUrl.includes('dailymotion.com')
+        );
+      }
+
+      // ===== Helper: Extract video ID for YouTube playlist loop =====
+      function getPlaylistId(url) {
+        const match = url.match(/(?:embed\/|v\/|watch\?v=|shorts\/)([^&?#]+)/);
+        return match ? match[1] : '';
+      }
+
+      // ===== Helper: Generate media HTML =====
+      function getMediaHTML(url, alt, className) {
+        if (!url) {
+          return `<img src="${alt}" alt="Fallback" class="${className}" onerror="this.style.display='none'">`;
+        }
+
+        let processedUrl = convertYoutubeUrl(url);
+
+        if (isVideoUrl(processedUrl)) {
+          return `
+                <div class="video-wrapper">
+                  <video autoplay loop muted playsinline style="width:100%; height:100%; object-fit:cover;">
+                    <source src="${processedUrl}" type="video/mp4">
+                    Your browser does not support the video tag.
+                  </video>
+                </div>
+              `;
+        }
+
+        if (isEmbedUrl(processedUrl)) {
+          const videoId = getPlaylistId(processedUrl);
+          let embedUrl = processedUrl;
+          if (!processedUrl.includes('autoplay=')) {
+            const separator = processedUrl.includes('?') ? '&' : '?';
+            embedUrl += `${separator}autoplay=1&loop=1&mute=1&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3`;
+            if (videoId) {
+              embedUrl += `&playlist=${videoId}`;
+            }
+          }
+          return `
+                <div class="video-wrapper" data-video-id="${videoId}">
+                  <iframe src="${embedUrl}" frameborder="0" allow="autoplay; fullscreen" allowfullscreen loading="lazy"></iframe>
+                </div>
+              `;
+        }
+
+        return `<img src="${processedUrl}" alt="${alt}" class="${className}" onerror="this.src='${alt}'">`;
+      }
+
       // ===== Data =====
       let starsData = [];
       let favorites = [];
@@ -927,20 +1028,20 @@
             renderStars(starsData);
           } else {
             grid.innerHTML = `
-              <div class="no-results" style="grid-column: 1 / -1;">
-                <div class="icon">⭐</div>
-                <p>No stars found</p>
-              </div>
-            `;
+                <div class="no-results" style="grid-column: 1 / -1;">
+                  <div class="icon">⭐</div>
+                  <p>No stars found</p>
+                </div>
+              `;
           }
         } catch (error) {
           console.error("Error:", error);
           grid.innerHTML = `
-            <div class="no-results" style="grid-column: 1 / -1;">
-              <div class="icon">⚠️</div>
-              <p>Error loading stars. Please try again.</p>
-            </div>
-          `;
+              <div class="no-results" style="grid-column: 1 / -1;">
+                <div class="icon">⚠️</div>
+                <p>Error loading stars. Please try again.</p>
+              </div>
+            `;
         }
       }
 
@@ -950,11 +1051,11 @@
 
         if (stars.length === 0) {
           grid.innerHTML = `
-            <div class="no-results" style="grid-column: 1 / -1;">
-              <div class="icon">⭐</div>
-              <p>No stars match your criteria</p>
-            </div>
-          `;
+              <div class="no-results" style="grid-column: 1 / -1;">
+                <div class="icon">⭐</div>
+                <p>No stars match your criteria</p>
+              </div>
+            `;
           return;
         }
 
@@ -965,36 +1066,33 @@
             star.image ||
             "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&h=300&fit=crop";
           const hasVideo = star.video_url && star.video_url.trim() !== "";
+          const mediaHTML = hasVideo
+            ? getMediaHTML(star.video_url, image, "star-image")
+            : `<img src="${image}" alt="${star.name}" class="star-image" onerror="this.src='https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&h=300&fit=crop'">`;
 
           html += `
-            <div class="star-card" onclick="showDetail('${star.id}')">
-              <button class="favorite-btn ${isFavorite ? "active" : ""}" onclick="event.stopPropagation(); toggleFavorite('${star.id}', this)">
-                <i class="fas fa-star"></i>
-              </button>
-              
-              ${hasVideo ? `
-                <div class="video-wrapper">
-                  <iframe src="${star.video_url}" frameborder="0" allowfullscreen loading="lazy"></iframe>
-                </div>
-              ` : `
-                <img src="${image}" alt="${star.name}" class="star-image" onerror="this.src='https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&h=300&fit=crop'">
-              `}
-              
-              <h3>${star.name}</h3>
-              <div class="type">${star.type || "Unknown type"}</div>
-              <p class="description">${star.description || "Explore this fascinating star"}</p>
-              <div class="star-stats">
-                <div class="stat">
-                  <div class="value">${star.distance || "N/A"}</div>
-                  <div class="label">Distance</div>
-                </div>
-                <div class="stat">
-                  <div class="value">${star.temperature || "N/A"}</div>
-                  <div class="label">Temperature</div>
+              <div class="star-card" onclick="showDetail('${star.id}')">
+                <button class="favorite-btn ${isFavorite ? "active" : ""}" onclick="event.stopPropagation(); toggleFavorite('${star.id}', this)">
+                  <i class="fas fa-star"></i>
+                </button>
+                
+                ${mediaHTML}
+                
+                <h3>${star.name}</h3>
+                <div class="type">${star.type || "Unknown type"}</div>
+                <p class="description">${star.description || "Explore this fascinating star"}</p>
+                <div class="star-stats">
+                  <div class="stat">
+                    <div class="value">${star.distance || "N/A"}</div>
+                    <div class="label">Distance</div>
+                  </div>
+                  <div class="stat">
+                    <div class="value">${star.temperature || "N/A"}</div>
+                    <div class="label">Temperature</div>
+                  </div>
                 </div>
               </div>
-            </div>
-          `;
+            `;
         });
 
         grid.innerHTML = html;
@@ -1050,15 +1148,15 @@
         // Media container
         const mediaContainer = document.getElementById("modalMediaContainer");
         if (hasVideo) {
-          mediaContainer.innerHTML = `
-            <div class="video-wrapper">
-              <iframe src="${star.video_url}" frameborder="0" allowfullscreen></iframe>
-            </div>
-          `;
+          mediaContainer.innerHTML = getMediaHTML(
+            star.video_url,
+            image,
+            "star-image-big"
+          );
         } else {
           mediaContainer.innerHTML = `
-            <img class="star-image-big" src="${image}" alt="${star.name}" onerror="this.src='https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&h=300&fit=crop'">
-          `;
+              <img class="star-image-big" src="${image}" alt="${star.name}" onerror="this.src='https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&h=300&fit=crop'">
+            `;
         }
 
         document.getElementById("modalName").textContent = star.name;
