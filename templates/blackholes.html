@@ -912,7 +912,7 @@
         }
       }
 
-      // ===== Helper: Convert YouTube Shorts to embed =====
+      // ===== Helper: Convert YouTube URLs to embed =====
       function convertYoutubeUrl(url) {
         if (!url) return url;
         // Handle youtube.com/shorts/
@@ -929,6 +929,13 @@
             return `https://www.youtube.com/embed/${videoId}`;
           }
         }
+        // Handle youtube.com/watch?v=
+        if (url.includes('youtube.com/watch?v=')) {
+          const videoId = url.split('v=')[1]?.split('&')[0];
+          if (videoId) {
+            return `https://www.youtube.com/embed/${videoId}`;
+          }
+        }
         return url;
       }
 
@@ -940,40 +947,40 @@
         return videoExtensions.some(ext => lowerUrl.includes(ext));
       }
 
-      // ===== Helper: Check if URL is embeddable (YouTube, Vimeo, etc.) =====
+      // ===== Helper: Check if URL is embeddable =====
       function isEmbedUrl(url) {
         if (!url) return false;
         const lowerUrl = url.toLowerCase();
         return lowerUrl.includes('youtube.com/embed') || 
                lowerUrl.includes('youtu.be') || 
                lowerUrl.includes('youtube.com/shorts/') ||
+               lowerUrl.includes('youtube.com/watch?v=') ||
                lowerUrl.includes('vimeo.com') ||
                lowerUrl.includes('player.vimeo.com') ||
                lowerUrl.includes('drive.google.com') ||
-               lowerUrl.includes('dailymotion.com') ||
-               lowerUrl.includes('facebook.com/plugins/video');
+               lowerUrl.includes('dailymotion.com');
       }
 
       // ===== Helper: Extract video ID for YouTube playlist loop =====
       function getPlaylistId(url) {
-        const match = url.match(/(?:embed\/|v\/|watch\?v=)([^&?#]+)/);
+        const match = url.match(/(?:embed\/|v\/|watch\?v=|shorts\/)([^&?#]+)/);
         return match ? match[1] : '';
       }
 
-      // ===== Helper: Generate media HTML with autoplay, loop & MUTED =====
+      // ===== Helper: Generate media HTML with hover play =====
       function getMediaHTML(url, alt, className) {
         if (!url) {
           return `<img src="${alt}" alt="Fallback" class="${className}" onerror="this.style.display='none'">`;
         }
 
-        // Convert YouTube Shorts to embed
+        // Convert YouTube URLs to embed
         let processedUrl = convertYoutubeUrl(url);
 
         // If it's a video file (MP4, etc.)
         if (isVideoUrl(processedUrl)) {
           return `
             <div class="video-wrapper">
-              <video autoplay loop muted playsinline style="width:100%; height:100%; object-fit:cover;">
+              <video muted playsinline style="width:100%; height:100%; object-fit:cover;">
                 <source src="${processedUrl}" type="video/mp4">
                 Your browser does not support the video tag.
               </video>
@@ -984,17 +991,17 @@
         // If it's an embeddable URL (YouTube, Vimeo, etc.)
         if (isEmbedUrl(processedUrl)) {
           const videoId = getPlaylistId(processedUrl);
+          // ✅ Start with autoplay=0 (paused), loop=1, mute=1, and hide all controls
           let embedUrl = processedUrl;
-          // Add autoplay, loop, and mute parameters if not already present
           if (!processedUrl.includes('autoplay=')) {
             const separator = processedUrl.includes('?') ? '&' : '?';
-            embedUrl += `${separator}autoplay=1&loop=1&mute=1`;
+            embedUrl += `${separator}autoplay=0&loop=1&mute=1&controls=0&modestbranding=1&rel=0&showinfo=0`;
             if (videoId) {
               embedUrl += `&playlist=${videoId}`;
             }
           }
           return `
-            <div class="video-wrapper">
+            <div class="video-wrapper" data-video-id="${videoId}">
               <iframe src="${embedUrl}" frameborder="0" allow="autoplay; fullscreen" allowfullscreen loading="lazy"></iframe>
             </div>
           `;
@@ -1111,6 +1118,32 @@
         });
 
         grid.innerHTML = html;
+
+        // ===== Add hover events for YouTube videos =====
+        document.querySelectorAll('.blackhole-card').forEach(card => {
+          const wrapper = card.querySelector('.video-wrapper');
+          if (!wrapper) return;
+          
+          const iframe = wrapper.querySelector('iframe');
+          if (!iframe) return;
+
+          // Store the original src
+          const originalSrc = iframe.src;
+
+          card.addEventListener('mouseenter', function() {
+            // Play video by reloading iframe with autoplay=1
+            if (iframe.src.includes('autoplay=0')) {
+              iframe.src = iframe.src.replace('autoplay=0', 'autoplay=1');
+            }
+          });
+
+          card.addEventListener('mouseleave', function() {
+            // Pause video by reloading iframe with autoplay=0
+            if (iframe.src.includes('autoplay=1')) {
+              iframe.src = iframe.src.replace('autoplay=1', 'autoplay=0');
+            }
+          });
+        });
       }
 
       // ===== Toggle Favorite =====
