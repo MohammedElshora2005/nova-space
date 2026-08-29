@@ -446,11 +446,9 @@
         color: #00d4ff;
         margin-bottom: 20px;
       }
-      /* ===== Edit Modal - Improved ===== */
       .modal-content .form-group {
         margin-bottom: 16px;
       }
-
       .modal-content .form-group label {
         display: block;
         color: rgba(255, 255, 255, 0.6);
@@ -459,7 +457,6 @@
         margin-bottom: 4px;
         letter-spacing: 0.3px;
       }
-
       .modal-content .form-group input,
       .modal-content .form-group select,
       .modal-content .form-group textarea {
@@ -474,7 +471,6 @@
         transition: all 0.3s ease;
         outline: none;
       }
-
       .modal-content .form-group input:focus,
       .modal-content .form-group select:focus,
       .modal-content .form-group textarea:focus {
@@ -482,12 +478,10 @@
         background: rgba(255, 255, 255, 0.08);
         box-shadow: 0 0 20px rgba(0, 212, 255, 0.05);
       }
-
       .modal-content .form-group input::placeholder,
       .modal-content .form-group textarea::placeholder {
         color: rgba(255, 255, 255, 0.2);
       }
-
       .modal-content .form-group select {
         appearance: none;
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='rgba(255,255,255,0.3)' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");
@@ -495,23 +489,19 @@
         background-position: right 14px center;
         cursor: pointer;
       }
-
       .modal-content .form-group select option {
         background: #0a0e17;
         color: #fff;
       }
-
       .modal-content .form-group textarea {
         resize: vertical;
         min-height: 80px;
       }
-
       .modal-content .form-row {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 16px;
       }
-
       .modal-content .btn-add {
         width: 100%;
         padding: 14px;
@@ -526,24 +516,22 @@
         font-family: "Space Grotesk", sans-serif;
         margin-top: 8px;
       }
-
       .modal-content .btn-add:hover {
         transform: translateY(-2px);
         box-shadow: 0 10px 40px rgba(0, 212, 255, 0.3);
       }
-
       .modal-content .btn-add:disabled {
         opacity: 0.6;
         cursor: not-allowed;
         transform: none;
       }
 
-      /* ===== Responsive ===== */
       @media (max-width: 600px) {
         .modal-content .form-row {
           grid-template-columns: 1fr;
         }
       }
+
       /* ===== Stats ===== */
       .stats-grid {
         display: grid;
@@ -933,7 +921,7 @@
           </button>
         </div>
 
-        <!-- ===== Tab: Missions ===== -->
+        <!-- ===== Tab: Missions (مع Video URL) ===== -->
         <div id="tab-missions" class="tab-content active">
           <div class="add-form">
             <h3>➕ Add New Mission</h3>
@@ -942,21 +930,11 @@
               <div class="form-row">
                 <div class="form-group">
                   <label>Mission Name</label>
-                  <input
-                    type="text"
-                    id="missionName"
-                    placeholder="e.g. Artemis II"
-                    required
-                  />
+                  <input type="text" id="missionName" placeholder="e.g. Artemis II" required />
                 </div>
                 <div class="form-group">
                   <label>Agency</label>
-                  <input
-                    type="text"
-                    id="missionAgency"
-                    placeholder="e.g. NASA"
-                    required
-                  />
+                  <input type="text" id="missionAgency" placeholder="e.g. NASA" required />
                 </div>
                 <div class="form-group">
                   <label>Date</label>
@@ -973,19 +951,15 @@
               </div>
               <div class="form-group">
                 <label>Image URL</label>
-                <input
-                  type="text"
-                  id="missionImage"
-                  placeholder="https://example.com/image.jpg"
-                />
+                <input type="text" id="missionImage" placeholder="https://example.com/image.jpg" />
+              </div>
+              <div class="form-group">
+                <label>Video URL (YouTube/Vimeo embed)</label>
+                <input type="text" id="missionVideo" placeholder="https://www.youtube.com/embed/..." />
               </div>
               <div class="form-group">
                 <label>Description</label>
-                <textarea
-                  id="missionDescription"
-                  placeholder="Describe the mission..."
-                  rows="2"
-                ></textarea>
+                <textarea id="missionDescription" placeholder="Describe the mission..." rows="2"></textarea>
               </div>
               <button type="submit" class="btn-add">Add Mission</button>
             </form>
@@ -998,16 +972,13 @@
             </div>
             <div class="table-wrapper">
               <div id="missionList">
-                <div
-                  class="loading-spinner"
-                  style="margin: 30px auto; display: block"
-                ></div>
+                <div class="loading-spinner" style="margin: 30px auto; display: block"></div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- ===== Tab: Planets ===== -->
+        <!-- ===== Tab: Planets (مع Video URL) ===== -->
         <div id="tab-planets" class="tab-content">
           <div class="add-form">
             <h3>➕ Add New Planet</h3>
@@ -1016,29 +987,15 @@
               <div class="form-row">
                 <div class="form-group">
                   <label>Planet Name</label>
-                  <input
-                    type="text"
-                    id="planetName"
-                    placeholder="e.g. Proxima b"
-                    required
-                  />
+                  <input type="text" id="planetName" placeholder="e.g. Proxima b" required />
                 </div>
                 <div class="form-group">
                   <label>Diameter (km)</label>
-                  <input
-                    type="number"
-                    id="planetDiameter"
-                    placeholder="e.g. 12756"
-                  />
+                  <input type="number" id="planetDiameter" placeholder="e.g. 12756" />
                 </div>
                 <div class="form-group">
                   <label>Gravity (m/s²)</label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    id="planetGravity"
-                    placeholder="e.g. 9.8"
-                  />
+                  <input type="number" step="0.01" id="planetGravity" placeholder="e.g. 9.8" />
                 </div>
                 <div class="form-group">
                   <label>Moons</label>
@@ -1048,28 +1005,20 @@
               <div class="form-row">
                 <div class="form-group">
                   <label>Temperature (°C)</label>
-                  <input
-                    type="number"
-                    id="planetTemperature"
-                    placeholder="e.g. 15"
-                  />
+                  <input type="number" id="planetTemperature" placeholder="e.g. 15" />
                 </div>
                 <div class="form-group">
                   <label>Image URL</label>
-                  <input
-                    type="text"
-                    id="planetImage"
-                    placeholder="https://example.com/planet.jpg"
-                  />
+                  <input type="text" id="planetImage" placeholder="https://example.com/planet.jpg" />
                 </div>
               </div>
               <div class="form-group">
+                <label>Video URL (YouTube/Vimeo embed)</label>
+                <input type="text" id="planetVideo" placeholder="https://www.youtube.com/embed/..." />
+              </div>
+              <div class="form-group">
                 <label>Description</label>
-                <textarea
-                  id="planetDescription"
-                  placeholder="Describe the planet..."
-                  rows="2"
-                ></textarea>
+                <textarea id="planetDescription" placeholder="Describe the planet..." rows="2"></textarea>
               </div>
               <button type="submit" class="btn-add">Add Planet</button>
             </form>
@@ -1082,16 +1031,13 @@
             </div>
             <div class="table-wrapper">
               <div id="planetList">
-                <div
-                  class="loading-spinner"
-                  style="margin: 30px auto; display: block"
-                ></div>
+                <div class="loading-spinner" style="margin: 30px auto; display: block"></div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- ===== Tab: Asteroids ===== -->
+        <!-- ===== Tab: Asteroids (مع Video URL) ===== -->
         <div id="tab-asteroids" class="tab-content">
           <div class="add-form">
             <h3>➕ Add New Asteroid</h3>
@@ -1100,28 +1046,15 @@
               <div class="form-row">
                 <div class="form-group">
                   <label>Asteroid Name</label>
-                  <input
-                    type="text"
-                    id="asteroidName"
-                    placeholder="e.g. 2024 XN1"
-                    required
-                  />
+                  <input type="text" id="asteroidName" placeholder="e.g. 2024 XN1" required />
                 </div>
                 <div class="form-group">
                   <label>Size (meters)</label>
-                  <input
-                    type="number"
-                    id="asteroidSize"
-                    placeholder="e.g. 150"
-                  />
+                  <input type="number" id="asteroidSize" placeholder="e.g. 150" />
                 </div>
                 <div class="form-group">
                   <label>Speed</label>
-                  <input
-                    type="text"
-                    id="asteroidSpeed"
-                    placeholder="e.g. 30.7 km/h"
-                  />
+                  <input type="text" id="asteroidSpeed" placeholder="e.g. 30.7 km/h" />
                 </div>
                 <div class="form-group">
                   <label>Date</label>
@@ -1138,12 +1071,12 @@
                 </div>
               </div>
               <div class="form-group">
+                <label>Video URL (YouTube/Vimeo embed)</label>
+                <input type="text" id="asteroidVideo" placeholder="https://www.youtube.com/embed/..." />
+              </div>
+              <div class="form-group">
                 <label>Description</label>
-                <textarea
-                  id="asteroidDescription"
-                  placeholder="Describe the asteroid..."
-                  rows="2"
-                ></textarea>
+                <textarea id="asteroidDescription" placeholder="Describe the asteroid..." rows="2"></textarea>
               </div>
               <button type="submit" class="btn-add">Add Asteroid</button>
             </form>
@@ -1156,16 +1089,13 @@
             </div>
             <div class="table-wrapper">
               <div id="asteroidList">
-                <div
-                  class="loading-spinner"
-                  style="margin: 30px auto; display: block"
-                ></div>
+                <div class="loading-spinner" style="margin: 30px auto; display: block"></div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- ===== Tab: Stars ===== -->
+        <!-- ===== Tab: Stars (مع Video URL) ===== -->
         <div id="tab-stars" class="tab-content">
           <div class="add-form">
             <h3>⭐ Add New Star</h3>
@@ -1174,28 +1104,15 @@
               <div class="form-row">
                 <div class="form-group">
                   <label>Star Name</label>
-                  <input
-                    type="text"
-                    id="starName"
-                    placeholder="e.g. Sirius"
-                    required
-                  />
+                  <input type="text" id="starName" placeholder="e.g. Sirius" required />
                 </div>
                 <div class="form-group">
                   <label>Type</label>
-                  <input
-                    type="text"
-                    id="starType"
-                    placeholder="e.g. A-type main-sequence"
-                  />
+                  <input type="text" id="starType" placeholder="e.g. A-type main-sequence" />
                 </div>
                 <div class="form-group">
                   <label>Distance</label>
-                  <input
-                    type="text"
-                    id="starDistance"
-                    placeholder="e.g. 8.6 ly"
-                  />
+                  <input type="text" id="starDistance" placeholder="e.g. 8.6 ly" />
                 </div>
                 <div class="form-group">
                   <label>Temperature</label>
@@ -1204,11 +1121,11 @@
               </div>
               <div class="form-group">
                 <label>Image URL</label>
-                <input
-                  type="text"
-                  id="starImage"
-                  placeholder="https://example.com/star.jpg"
-                />
+                <input type="text" id="starImage" placeholder="https://example.com/star.jpg" />
+              </div>
+              <div class="form-group">
+                <label>Video URL (YouTube/Vimeo embed)</label>
+                <input type="text" id="starVideo" placeholder="https://www.youtube.com/embed/..." />
               </div>
               <button type="submit" class="btn-add">Add Star</button>
             </form>
@@ -1221,16 +1138,13 @@
             </div>
             <div class="table-wrapper">
               <div id="starList">
-                <div
-                  class="loading-spinner"
-                  style="margin: 30px auto; display: block"
-                ></div>
+                <div class="loading-spinner" style="margin: 30px auto; display: block"></div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- ===== Tab: Galaxies ===== -->
+        <!-- ===== Tab: Galaxies (مع Video URL) ===== -->
         <div id="tab-galaxies" class="tab-content">
           <div class="add-form">
             <h3>🌌 Add New Galaxy</h3>
@@ -1239,55 +1153,34 @@
               <div class="form-row">
                 <div class="form-group">
                   <label>Galaxy Name</label>
-                  <input
-                    type="text"
-                    id="galaxyName"
-                    placeholder="e.g. Andromeda"
-                    required
-                  />
+                  <input type="text" id="galaxyName" placeholder="e.g. Andromeda" required />
                 </div>
                 <div class="form-group">
                   <label>Type</label>
-                  <input
-                    type="text"
-                    id="galaxyType"
-                    placeholder="e.g. Spiral"
-                  />
+                  <input type="text" id="galaxyType" placeholder="e.g. Spiral" />
                 </div>
                 <div class="form-group">
                   <label>Distance</label>
-                  <input
-                    type="text"
-                    id="galaxyDistance"
-                    placeholder="e.g. 2.537 million ly"
-                  />
+                  <input type="text" id="galaxyDistance" placeholder="e.g. 2.537 million ly" />
                 </div>
                 <div class="form-group">
                   <label>Stars Count</label>
-                  <input
-                    type="text"
-                    id="galaxyStars"
-                    placeholder="e.g. 1 trillion"
-                  />
+                  <input type="text" id="galaxyStars" placeholder="e.g. 1 trillion" />
                 </div>
               </div>
               <div class="form-row">
                 <div class="form-group">
                   <label>Diameter</label>
-                  <input
-                    type="text"
-                    id="galaxyDiameter"
-                    placeholder="e.g. 220,000 ly"
-                  />
+                  <input type="text" id="galaxyDiameter" placeholder="e.g. 220,000 ly" />
                 </div>
                 <div class="form-group">
                   <label>Image URL</label>
-                  <input
-                    type="text"
-                    id="galaxyImage"
-                    placeholder="https://example.com/galaxy.jpg"
-                  />
+                  <input type="text" id="galaxyImage" placeholder="https://example.com/galaxy.jpg" />
                 </div>
+              </div>
+              <div class="form-group">
+                <label>Video URL (YouTube/Vimeo embed)</label>
+                <input type="text" id="galaxyVideo" placeholder="https://www.youtube.com/embed/..." />
               </div>
               <button type="submit" class="btn-add">Add Galaxy</button>
             </form>
@@ -1300,16 +1193,13 @@
             </div>
             <div class="table-wrapper">
               <div id="galaxyList">
-                <div
-                  class="loading-spinner"
-                  style="margin: 30px auto; display: block"
-                ></div>
+                <div class="loading-spinner" style="margin: 30px auto; display: block"></div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- ===== Tab: Black Holes ===== -->
+        <!-- ===== Tab: Black Holes (مع Video URL) ===== -->
         <div id="tab-blackholes" class="tab-content">
           <div class="add-form">
             <h3>🕳️ Add New Black Hole</h3>
@@ -1318,12 +1208,7 @@
               <div class="form-row">
                 <div class="form-group">
                   <label>Name</label>
-                  <input
-                    type="text"
-                    id="bhName"
-                    placeholder="e.g. Sagittarius A*"
-                    required
-                  />
+                  <input type="text" id="bhName" placeholder="e.g. Sagittarius A*" required />
                 </div>
                 <div class="form-group">
                   <label>Type</label>
@@ -1336,54 +1221,34 @@
                 </div>
                 <div class="form-group">
                   <label>Mass</label>
-                  <input
-                    type="text"
-                    id="bhMass"
-                    placeholder="e.g. 4.3 million M☉"
-                  />
+                  <input type="text" id="bhMass" placeholder="e.g. 4.3 million M☉" />
                 </div>
                 <div class="form-group">
                   <label>Distance</label>
-                  <input
-                    type="text"
-                    id="bhDistance"
-                    placeholder="e.g. 26,000 ly"
-                  />
+                  <input type="text" id="bhDistance" placeholder="e.g. 26,000 ly" />
                 </div>
               </div>
               <div class="form-row">
                 <div class="form-group">
                   <label>Diameter</label>
-                  <input
-                    type="text"
-                    id="bhDiameter"
-                    placeholder="e.g. 44 million km"
-                  />
+                  <input type="text" id="bhDiameter" placeholder="e.g. 44 million km" />
                 </div>
                 <div class="form-group">
                   <label>Discovered</label>
-                  <input
-                    type="text"
-                    id="bhDiscovered"
-                    placeholder="e.g. 1974"
-                  />
+                  <input type="text" id="bhDiscovered" placeholder="e.g. 1974" />
                 </div>
                 <div class="form-group">
                   <label>Image URL</label>
-                  <input
-                    type="text"
-                    id="bhImage"
-                    placeholder="https://example.com/image.jpg"
-                  />
+                  <input type="text" id="bhImage" placeholder="https://example.com/image.jpg" />
                 </div>
               </div>
               <div class="form-group">
+                <label>Video URL (YouTube/Vimeo embed)</label>
+                <input type="text" id="bhVideo" placeholder="https://www.youtube.com/embed/..." />
+              </div>
+              <div class="form-group">
                 <label>Description</label>
-                <textarea
-                  id="bhDescription"
-                  placeholder="Describe the black hole..."
-                  rows="2"
-                ></textarea>
+                <textarea id="bhDescription" placeholder="Describe the black hole..." rows="2"></textarea>
               </div>
               <button type="submit" class="btn-add">Add Black Hole</button>
             </form>
@@ -1396,10 +1261,7 @@
             </div>
             <div class="table-wrapper">
               <div id="blackholeList">
-                <div
-                  class="loading-spinner"
-                  style="margin: 30px auto; display: block"
-                ></div>
+                <div class="loading-spinner" style="margin: 30px auto; display: block"></div>
               </div>
             </div>
           </div>
@@ -1414,10 +1276,7 @@
             </div>
             <div class="table-wrapper">
               <div id="subscriptionList">
-                <div
-                  class="loading-spinner"
-                  style="margin: 30px auto; display: block"
-                ></div>
+                <div class="loading-spinner" style="margin: 30px auto; display: block"></div>
               </div>
             </div>
           </div>
@@ -1449,25 +1308,17 @@
 
     <script>
       // ===== Hamburger =====
-      document
-        .querySelector(".hamburger")
-        .addEventListener("click", function () {
-          this.classList.toggle("active");
-          document.querySelector(".nav-links").classList.toggle("active");
-        });
+      document.querySelector(".hamburger").addEventListener("click", function () {
+        this.classList.toggle("active");
+        document.querySelector(".nav-links").classList.toggle("active");
+      });
 
       // ===== Tab Switcher =====
       function switchTab(tab) {
-        document
-          .querySelectorAll(".tab-content")
-          .forEach((el) => el.classList.remove("active"));
-        document
-          .querySelectorAll(".tab-btn")
-          .forEach((el) => el.classList.remove("active"));
+        document.querySelectorAll(".tab-content").forEach((el) => el.classList.remove("active"));
+        document.querySelectorAll(".tab-btn").forEach((el) => el.classList.remove("active"));
         document.getElementById("tab-" + tab).classList.add("active");
-        document
-          .querySelector(`.tab-btn[onclick="switchTab('${tab}')"]`)
-          .classList.add("active");
+        document.querySelector(`.tab-btn[onclick="switchTab('${tab}')"]`).classList.add("active");
 
         if (tab === "missions") loadMissions();
         else if (tab === "planets") loadPlanets();
@@ -1485,20 +1336,13 @@
           const data = await response.json();
 
           if (data.success) {
-            document.getElementById("totalMissions").textContent =
-              data.data.total_missions || 0;
-            document.getElementById("totalPlanets").textContent =
-              data.data.total_planets || 0;
-            document.getElementById("totalAsteroids").textContent =
-              data.data.total_asteroids || 0;
-            document.getElementById("totalStars").textContent =
-              data.data.total_stars || 0;
-            document.getElementById("totalGalaxies").textContent =
-              data.data.total_galaxies || 0;
-            document.getElementById("totalBlackHoles").textContent =
-              data.data.total_blackholes || 0;
-            document.getElementById("totalSubscriptions").textContent =
-              data.data.total_subscriptions || 0;
+            document.getElementById("totalMissions").textContent = data.data.total_missions || 0;
+            document.getElementById("totalPlanets").textContent = data.data.total_planets || 0;
+            document.getElementById("totalAsteroids").textContent = data.data.total_asteroids || 0;
+            document.getElementById("totalStars").textContent = data.data.total_stars || 0;
+            document.getElementById("totalGalaxies").textContent = data.data.total_galaxies || 0;
+            document.getElementById("totalBlackHoles").textContent = data.data.total_blackholes || 0;
+            document.getElementById("totalSubscriptions").textContent = data.data.total_subscriptions || 0;
           }
         } catch (e) {
           console.error("Error loading stats:", e);
@@ -1548,51 +1392,46 @@
       }
 
       // ===== Add Mission =====
-      document
-        .getElementById("addMissionForm")
-        .addEventListener("submit", async function (e) {
-          e.preventDefault();
-          const alertContainer = document.getElementById("missionAlert");
-          alertContainer.innerHTML = "";
+      document.getElementById("addMissionForm").addEventListener("submit", async function (e) {
+        e.preventDefault();
+        const alertContainer = document.getElementById("missionAlert");
+        alertContainer.innerHTML = "";
 
-          const data = {
-            name: document.getElementById("missionName").value.trim(),
-            agency: document.getElementById("missionAgency").value.trim(),
-            date: document.getElementById("missionDate").value,
-            status: document.getElementById("missionStatus").value,
-            image: document.getElementById("missionImage").value.trim(),
-            description: document
-              .getElementById("missionDescription")
-              .value.trim(),
-          };
+        const data = {
+          name: document.getElementById("missionName").value.trim(),
+          agency: document.getElementById("missionAgency").value.trim(),
+          date: document.getElementById("missionDate").value,
+          status: document.getElementById("missionStatus").value,
+          image: document.getElementById("missionImage").value.trim(),
+          video_url: document.getElementById("missionVideo").value.trim(),
+          description: document.getElementById("missionDescription").value.trim(),
+        };
 
-          try {
-            const response = await fetch("/api/missions", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(data),
-            });
-            const result = await response.json();
-            if (result.success) {
-              alertContainer.innerHTML = `<div class="alert alert-success">✅ ${result.message}</div>`;
-              this.reset();
-              loadMissions();
-              loadStats();
-            } else {
-              alertContainer.innerHTML = `<div class="alert alert-error">❌ ${result.message}</div>`;
-            }
-          } catch (e) {
-            alertContainer.innerHTML = `<div class="alert alert-error">❌ Error adding mission</div>`;
+        try {
+          const response = await fetch("/api/missions", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+          });
+          const result = await response.json();
+          if (result.success) {
+            alertContainer.innerHTML = `<div class="alert alert-success">✅ ${result.message}</div>`;
+            this.reset();
+            loadMissions();
+            loadStats();
+          } else {
+            alertContainer.innerHTML = `<div class="alert alert-error">❌ ${result.message}</div>`;
           }
-        });
+        } catch (e) {
+          alertContainer.innerHTML = `<div class="alert alert-error">❌ Error adding mission</div>`;
+        }
+      });
 
       // ===== Delete Mission =====
       async function deleteMission(id) {
         if (!confirm("Are you sure you want to delete this mission?")) return;
         try {
-          const response = await fetch(`/api/missions/${id}`, {
-            method: "DELETE",
-          });
+          const response = await fetch(`/api/missions/${id}`, { method: "DELETE" });
           const result = await response.json();
           if (result.success) {
             loadMissions();
@@ -1645,58 +1484,47 @@
       }
 
       // ===== Add Planet =====
-      document
-        .getElementById("addPlanetForm")
-        .addEventListener("submit", async function (e) {
-          e.preventDefault();
-          const alertContainer = document.getElementById("planetAlert");
-          alertContainer.innerHTML = "";
+      document.getElementById("addPlanetForm").addEventListener("submit", async function (e) {
+        e.preventDefault();
+        const alertContainer = document.getElementById("planetAlert");
+        alertContainer.innerHTML = "";
 
-          const data = {
-            name: document.getElementById("planetName").value.trim(),
-            diameter:
-              parseFloat(document.getElementById("planetDiameter").value) ||
-              null,
-            gravity:
-              parseFloat(document.getElementById("planetGravity").value) ||
-              null,
-            moons: parseInt(document.getElementById("planetMoons").value) || 0,
-            temperature:
-              parseFloat(document.getElementById("planetTemperature").value) ||
-              null,
-            image: document.getElementById("planetImage").value.trim(),
-            description: document
-              .getElementById("planetDescription")
-              .value.trim(),
-          };
+        const data = {
+          name: document.getElementById("planetName").value.trim(),
+          diameter: parseFloat(document.getElementById("planetDiameter").value) || null,
+          gravity: parseFloat(document.getElementById("planetGravity").value) || null,
+          moons: parseInt(document.getElementById("planetMoons").value) || 0,
+          temperature: parseFloat(document.getElementById("planetTemperature").value) || null,
+          image: document.getElementById("planetImage").value.trim(),
+          video_url: document.getElementById("planetVideo").value.trim(),
+          description: document.getElementById("planetDescription").value.trim(),
+        };
 
-          try {
-            const response = await fetch("/api/planets", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(data),
-            });
-            const result = await response.json();
-            if (result.success) {
-              alertContainer.innerHTML = `<div class="alert alert-success">✅ ${result.message}</div>`;
-              this.reset();
-              loadPlanets();
-              loadStats();
-            } else {
-              alertContainer.innerHTML = `<div class="alert alert-error">❌ ${result.message}</div>`;
-            }
-          } catch (e) {
-            alertContainer.innerHTML = `<div class="alert alert-error">❌ Error adding planet</div>`;
+        try {
+          const response = await fetch("/api/planets", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+          });
+          const result = await response.json();
+          if (result.success) {
+            alertContainer.innerHTML = `<div class="alert alert-success">✅ ${result.message}</div>`;
+            this.reset();
+            loadPlanets();
+            loadStats();
+          } else {
+            alertContainer.innerHTML = `<div class="alert alert-error">❌ ${result.message}</div>`;
           }
-        });
+        } catch (e) {
+          alertContainer.innerHTML = `<div class="alert alert-error">❌ Error adding planet</div>`;
+        }
+      });
 
       // ===== Delete Planet =====
       async function deletePlanet(id) {
         if (!confirm("Are you sure you want to delete this planet?")) return;
         try {
-          const response = await fetch(`/api/planets/${id}`, {
-            method: "DELETE",
-          });
+          const response = await fetch(`/api/planets/${id}`, { method: "DELETE" });
           const result = await response.json();
           if (result.success) {
             loadPlanets();
@@ -1749,53 +1577,46 @@
       }
 
       // ===== Add Asteroid =====
-      document
-        .getElementById("addAsteroidForm")
-        .addEventListener("submit", async function (e) {
-          e.preventDefault();
-          const alertContainer = document.getElementById("asteroidAlert");
-          alertContainer.innerHTML = "";
+      document.getElementById("addAsteroidForm").addEventListener("submit", async function (e) {
+        e.preventDefault();
+        const alertContainer = document.getElementById("asteroidAlert");
+        alertContainer.innerHTML = "";
 
-          const data = {
-            name: document.getElementById("asteroidName").value.trim(),
-            size:
-              parseFloat(document.getElementById("asteroidSize").value) || null,
-            speed: document.getElementById("asteroidSpeed").value.trim(),
-            date: document.getElementById("asteroidDate").value,
-            hazardous:
-              document.getElementById("asteroidHazardous").value === "true",
-            description: document
-              .getElementById("asteroidDescription")
-              .value.trim(),
-          };
+        const data = {
+          name: document.getElementById("asteroidName").value.trim(),
+          size: parseFloat(document.getElementById("asteroidSize").value) || null,
+          speed: document.getElementById("asteroidSpeed").value.trim(),
+          date: document.getElementById("asteroidDate").value,
+          hazardous: document.getElementById("asteroidHazardous").value === "true",
+          video_url: document.getElementById("asteroidVideo").value.trim(),
+          description: document.getElementById("asteroidDescription").value.trim(),
+        };
 
-          try {
-            const response = await fetch("/api/asteroids", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(data),
-            });
-            const result = await response.json();
-            if (result.success) {
-              alertContainer.innerHTML = `<div class="alert alert-success">✅ ${result.message}</div>`;
-              this.reset();
-              loadAsteroids();
-              loadStats();
-            } else {
-              alertContainer.innerHTML = `<div class="alert alert-error">❌ ${result.message}</div>`;
-            }
-          } catch (e) {
-            alertContainer.innerHTML = `<div class="alert alert-error">❌ Error adding asteroid</div>`;
+        try {
+          const response = await fetch("/api/asteroids", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+          });
+          const result = await response.json();
+          if (result.success) {
+            alertContainer.innerHTML = `<div class="alert alert-success">✅ ${result.message}</div>`;
+            this.reset();
+            loadAsteroids();
+            loadStats();
+          } else {
+            alertContainer.innerHTML = `<div class="alert alert-error">❌ ${result.message}</div>`;
           }
-        });
+        } catch (e) {
+          alertContainer.innerHTML = `<div class="alert alert-error">❌ Error adding asteroid</div>`;
+        }
+      });
 
       // ===== Delete Asteroid =====
       async function deleteAsteroid(id) {
         if (!confirm("Are you sure you want to delete this asteroid?")) return;
         try {
-          const response = await fetch(`/api/asteroids/${id}`, {
-            method: "DELETE",
-          });
+          const response = await fetch(`/api/asteroids/${id}`, { method: "DELETE" });
           const result = await response.json();
           if (result.success) {
             loadAsteroids();
@@ -1848,48 +1669,45 @@
       }
 
       // ===== Add Star =====
-      document
-        .getElementById("addStarForm")
-        .addEventListener("submit", async function (e) {
-          e.preventDefault();
-          const alertContainer = document.getElementById("starAlert");
-          alertContainer.innerHTML = "";
+      document.getElementById("addStarForm").addEventListener("submit", async function (e) {
+        e.preventDefault();
+        const alertContainer = document.getElementById("starAlert");
+        alertContainer.innerHTML = "";
 
-          const data = {
-            name: document.getElementById("starName").value.trim(),
-            type: document.getElementById("starType").value.trim(),
-            distance: document.getElementById("starDistance").value.trim(),
-            temperature: document.getElementById("starTemp").value.trim(),
-            image: document.getElementById("starImage").value.trim(),
-          };
+        const data = {
+          name: document.getElementById("starName").value.trim(),
+          type: document.getElementById("starType").value.trim(),
+          distance: document.getElementById("starDistance").value.trim(),
+          temperature: document.getElementById("starTemp").value.trim(),
+          image: document.getElementById("starImage").value.trim(),
+          video_url: document.getElementById("starVideo").value.trim(),
+        };
 
-          try {
-            const response = await fetch("/api/stars", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(data),
-            });
-            const result = await response.json();
-            if (result.success) {
-              alertContainer.innerHTML = `<div class="alert alert-success">✅ ${result.message}</div>`;
-              this.reset();
-              loadStars();
-              loadStats();
-            } else {
-              alertContainer.innerHTML = `<div class="alert alert-error">❌ ${result.message}</div>`;
-            }
-          } catch (e) {
-            alertContainer.innerHTML = `<div class="alert alert-error">❌ Error adding star</div>`;
+        try {
+          const response = await fetch("/api/stars", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+          });
+          const result = await response.json();
+          if (result.success) {
+            alertContainer.innerHTML = `<div class="alert alert-success">✅ ${result.message}</div>`;
+            this.reset();
+            loadStars();
+            loadStats();
+          } else {
+            alertContainer.innerHTML = `<div class="alert alert-error">❌ ${result.message}</div>`;
           }
-        });
+        } catch (e) {
+          alertContainer.innerHTML = `<div class="alert alert-error">❌ Error adding star</div>`;
+        }
+      });
 
       // ===== Delete Star =====
       async function deleteStar(id) {
         if (!confirm("Are you sure you want to delete this star?")) return;
         try {
-          const response = await fetch(`/api/stars/${id}`, {
-            method: "DELETE",
-          });
+          const response = await fetch(`/api/stars/${id}`, { method: "DELETE" });
           const result = await response.json();
           if (result.success) {
             loadStars();
@@ -1944,49 +1762,46 @@
       }
 
       // ===== Add Galaxy =====
-      document
-        .getElementById("addGalaxyForm")
-        .addEventListener("submit", async function (e) {
-          e.preventDefault();
-          const alertContainer = document.getElementById("galaxyAlert");
-          alertContainer.innerHTML = "";
+      document.getElementById("addGalaxyForm").addEventListener("submit", async function (e) {
+        e.preventDefault();
+        const alertContainer = document.getElementById("galaxyAlert");
+        alertContainer.innerHTML = "";
 
-          const data = {
-            name: document.getElementById("galaxyName").value.trim(),
-            type: document.getElementById("galaxyType").value.trim(),
-            distance: document.getElementById("galaxyDistance").value.trim(),
-            stars: document.getElementById("galaxyStars").value.trim(),
-            diameter: document.getElementById("galaxyDiameter").value.trim(),
-            image: document.getElementById("galaxyImage").value.trim(),
-          };
+        const data = {
+          name: document.getElementById("galaxyName").value.trim(),
+          type: document.getElementById("galaxyType").value.trim(),
+          distance: document.getElementById("galaxyDistance").value.trim(),
+          stars: document.getElementById("galaxyStars").value.trim(),
+          diameter: document.getElementById("galaxyDiameter").value.trim(),
+          image: document.getElementById("galaxyImage").value.trim(),
+          video_url: document.getElementById("galaxyVideo").value.trim(),
+        };
 
-          try {
-            const response = await fetch("/api/galaxies", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(data),
-            });
-            const result = await response.json();
-            if (result.success) {
-              alertContainer.innerHTML = `<div class="alert alert-success">✅ ${result.message}</div>`;
-              this.reset();
-              loadGalaxies();
-              loadStats();
-            } else {
-              alertContainer.innerHTML = `<div class="alert alert-error">❌ ${result.message}</div>`;
-            }
-          } catch (e) {
-            alertContainer.innerHTML = `<div class="alert alert-error">❌ Error adding galaxy</div>`;
+        try {
+          const response = await fetch("/api/galaxies", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+          });
+          const result = await response.json();
+          if (result.success) {
+            alertContainer.innerHTML = `<div class="alert alert-success">✅ ${result.message}</div>`;
+            this.reset();
+            loadGalaxies();
+            loadStats();
+          } else {
+            alertContainer.innerHTML = `<div class="alert alert-error">❌ ${result.message}</div>`;
           }
-        });
+        } catch (e) {
+          alertContainer.innerHTML = `<div class="alert alert-error">❌ Error adding galaxy</div>`;
+        }
+      });
 
       // ===== Delete Galaxy =====
       async function deleteGalaxy(id) {
         if (!confirm("Are you sure you want to delete this galaxy?")) return;
         try {
-          const response = await fetch(`/api/galaxies/${id}`, {
-            method: "DELETE",
-          });
+          const response = await fetch(`/api/galaxies/${id}`, { method: "DELETE" });
           const result = await response.json();
           if (result.success) {
             loadGalaxies();
@@ -2041,52 +1856,48 @@
       }
 
       // ===== Add Black Hole =====
-      document
-        .getElementById("addBlackHoleForm")
-        .addEventListener("submit", async function (e) {
-          e.preventDefault();
-          const alertContainer = document.getElementById("blackholeAlert");
-          alertContainer.innerHTML = "";
+      document.getElementById("addBlackHoleForm").addEventListener("submit", async function (e) {
+        e.preventDefault();
+        const alertContainer = document.getElementById("blackholeAlert");
+        alertContainer.innerHTML = "";
 
-          const data = {
-            name: document.getElementById("bhName").value.trim(),
-            type: document.getElementById("bhType").value,
-            mass: document.getElementById("bhMass").value.trim(),
-            distance: document.getElementById("bhDistance").value.trim(),
-            diameter: document.getElementById("bhDiameter").value.trim(),
-            discovered: document.getElementById("bhDiscovered").value.trim(),
-            image: document.getElementById("bhImage").value.trim(),
-            description: document.getElementById("bhDescription").value.trim(),
-          };
+        const data = {
+          name: document.getElementById("bhName").value.trim(),
+          type: document.getElementById("bhType").value,
+          mass: document.getElementById("bhMass").value.trim(),
+          distance: document.getElementById("bhDistance").value.trim(),
+          diameter: document.getElementById("bhDiameter").value.trim(),
+          discovered: document.getElementById("bhDiscovered").value.trim(),
+          image: document.getElementById("bhImage").value.trim(),
+          video_url: document.getElementById("bhVideo").value.trim(),
+          description: document.getElementById("bhDescription").value.trim(),
+        };
 
-          try {
-            const response = await fetch("/api/blackholes", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(data),
-            });
-            const result = await response.json();
-            if (result.success) {
-              alertContainer.innerHTML = `<div class="alert alert-success">✅ ${result.message}</div>`;
-              this.reset();
-              loadBlackHoles();
-              loadStats();
-            } else {
-              alertContainer.innerHTML = `<div class="alert alert-error">❌ ${result.message}</div>`;
-            }
-          } catch (e) {
-            alertContainer.innerHTML = `<div class="alert alert-error">❌ Error adding black hole</div>`;
+        try {
+          const response = await fetch("/api/blackholes", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+          });
+          const result = await response.json();
+          if (result.success) {
+            alertContainer.innerHTML = `<div class="alert alert-success">✅ ${result.message}</div>`;
+            this.reset();
+            loadBlackHoles();
+            loadStats();
+          } else {
+            alertContainer.innerHTML = `<div class="alert alert-error">❌ ${result.message}</div>`;
           }
-        });
+        } catch (e) {
+          alertContainer.innerHTML = `<div class="alert alert-error">❌ Error adding black hole</div>`;
+        }
+      });
 
       // ===== Delete Black Hole =====
       async function deleteBlackHole(id) {
-        if (!confirm("Are you sure you want to delete this black hole?"))
-          return;
+        if (!confirm("Are you sure you want to delete this black hole?")) return;
         try {
-          const response = await fetch(`/api/blackholes/${id}`, {
-            method: "DELETE",
-          });
+          const response = await fetch(`/api/blackholes/${id}`, { method: "DELETE" });
           const result = await response.json();
           if (result.success) {
             loadBlackHoles();
@@ -2118,12 +1929,7 @@
                         </tr></thead><tbody>`;
             data.data.forEach((sub) => {
               const statusClass = `status-${sub.status}`;
-              const statusText =
-                sub.status === "pending"
-                  ? "Pending"
-                  : sub.status === "approved"
-                    ? "Approved"
-                    : "Rejected";
+              const statusText = sub.status === "pending" ? "Pending" : sub.status === "approved" ? "Approved" : "Rejected";
               html += `<tr>
                             <td>${sub.name}</td>
                             <td>${sub.email}</td>
@@ -2131,14 +1937,10 @@
                             <td><span class="status-badge ${statusClass}">${statusText}</span></td>
                             <td>${sub.created_at}</td>
                             <td>
-                                ${
-                                  sub.status === "pending"
-                                    ? `
+                                ${sub.status === "pending" ? `
                                     <button class="btn-edit" onclick="updateSubscription(${sub.id}, 'approved')">✓ Approve</button>
                                     <button class="btn-delete" onclick="updateSubscription(${sub.id}, 'rejected')">✗ Reject</button>
-                                `
-                                    : "-"
-                                }
+                                ` : "-"}
                             </td>
                         </tr>`;
             });
@@ -2224,78 +2026,84 @@
 
           if (type === "mission") {
             html = `
-                        <div class="form-group"><label>Name</label><input type="text" id="editName" value="${item.name}" required></div>
-                        <div class="form-group"><label>Agency</label><input type="text" id="editAgency" value="${item.agency}" required></div>
-                        <div class="form-group"><label>Date</label><input type="date" id="editDate" value="${item.date || ""}"></div>
-                        <div class="form-group"><label>Status</label>
-                            <select id="editStatus">
-                                <option value="active" ${item.status === "active" ? "selected" : ""}>Active</option>
-                                <option value="completed" ${item.status === "completed" ? "selected" : ""}>Completed</option>
-                                <option value="planned" ${item.status === "planned" ? "selected" : ""}>Planned</option>
-                            </select>
-                        </div>
-                        <div class="form-group"><label>Image URL</label><input type="text" id="editImage" value="${item.image || ""}"></div>
-                        <div class="form-group"><label>Description</label><textarea id="editDescription" rows="3">${item.description || ""}</textarea></div>
-                    `;
+              <div class="form-group"><label>Name</label><input type="text" id="editName" value="${item.name}" required></div>
+              <div class="form-group"><label>Agency</label><input type="text" id="editAgency" value="${item.agency}" required></div>
+              <div class="form-group"><label>Date</label><input type="date" id="editDate" value="${item.date || ""}"></div>
+              <div class="form-group"><label>Status</label>
+                <select id="editStatus">
+                  <option value="active" ${item.status === "active" ? "selected" : ""}>Active</option>
+                  <option value="completed" ${item.status === "completed" ? "selected" : ""}>Completed</option>
+                  <option value="planned" ${item.status === "planned" ? "selected" : ""}>Planned</option>
+                </select>
+              </div>
+              <div class="form-group"><label>Image URL</label><input type="text" id="editImage" value="${item.image || ""}"></div>
+              <div class="form-group"><label>Video URL</label><input type="text" id="editVideo" value="${item.video_url || ""}"></div>
+              <div class="form-group"><label>Description</label><textarea id="editDescription" rows="3">${item.description || ""}</textarea></div>
+            `;
           } else if (type === "planet") {
             html = `
-                        <div class="form-group"><label>Name</label><input type="text" id="editName" value="${item.name}" required></div>
-                        <div class="form-group"><label>Diameter (km)</label><input type="number" id="editDiameter" value="${item.diameter || ""}"></div>
-                        <div class="form-group"><label>Gravity (m/s²)</label><input type="number" step="0.01" id="editGravity" value="${item.gravity || ""}"></div>
-                        <div class="form-group"><label>Moons</label><input type="number" id="editMoons" value="${item.moons || 0}"></div>
-                        <div class="form-group"><label>Temperature (°C)</label><input type="number" id="editTemperature" value="${item.temperature || ""}"></div>
-                        <div class="form-group"><label>Image URL</label><input type="text" id="editImage" value="${item.image || ""}"></div>
-                        <div class="form-group"><label>Description</label><textarea id="editDescription" rows="3">${item.description || ""}</textarea></div>
-                    `;
+              <div class="form-group"><label>Name</label><input type="text" id="editName" value="${item.name}" required></div>
+              <div class="form-group"><label>Diameter (km)</label><input type="number" id="editDiameter" value="${item.diameter || ""}"></div>
+              <div class="form-group"><label>Gravity (m/s²)</label><input type="number" step="0.01" id="editGravity" value="${item.gravity || ""}"></div>
+              <div class="form-group"><label>Moons</label><input type="number" id="editMoons" value="${item.moons || 0}"></div>
+              <div class="form-group"><label>Temperature (°C)</label><input type="number" id="editTemperature" value="${item.temperature || ""}"></div>
+              <div class="form-group"><label>Image URL</label><input type="text" id="editImage" value="${item.image || ""}"></div>
+              <div class="form-group"><label>Video URL</label><input type="text" id="editVideo" value="${item.video_url || ""}"></div>
+              <div class="form-group"><label>Description</label><textarea id="editDescription" rows="3">${item.description || ""}</textarea></div>
+            `;
           } else if (type === "asteroid") {
             html = `
-                        <div class="form-group"><label>Name</label><input type="text" id="editName" value="${item.name}" required></div>
-                        <div class="form-group"><label>Size (meters)</label><input type="number" id="editSize" value="${item.size || ""}"></div>
-                        <div class="form-group"><label>Speed</label><input type="text" id="editSpeed" value="${item.speed || ""}"></div>
-                        <div class="form-group"><label>Date</label><input type="date" id="editDate" value="${item.date || ""}"></div>
-                        <div class="form-group"><label>Hazardous</label>
-                            <select id="editHazardous">
-                                <option value="false" ${item.hazardous === false ? "selected" : ""}>Safe</option>
-                                <option value="true" ${item.hazardous === true ? "selected" : ""}>Hazardous</option>
-                            </select>
-                        </div>
-                        <div class="form-group"><label>Description</label><textarea id="editDescription" rows="3">${item.description || ""}</textarea></div>
-                    `;
+              <div class="form-group"><label>Name</label><input type="text" id="editName" value="${item.name}" required></div>
+              <div class="form-group"><label>Size (meters)</label><input type="number" id="editSize" value="${item.size || ""}"></div>
+              <div class="form-group"><label>Speed</label><input type="text" id="editSpeed" value="${item.speed || ""}"></div>
+              <div class="form-group"><label>Date</label><input type="date" id="editDate" value="${item.date || ""}"></div>
+              <div class="form-group"><label>Hazardous</label>
+                <select id="editHazardous">
+                  <option value="false" ${item.hazardous === false ? "selected" : ""}>Safe</option>
+                  <option value="true" ${item.hazardous === true ? "selected" : ""}>Hazardous</option>
+                </select>
+              </div>
+              <div class="form-group"><label>Video URL</label><input type="text" id="editVideo" value="${item.video_url || ""}"></div>
+              <div class="form-group"><label>Description</label><textarea id="editDescription" rows="3">${item.description || ""}</textarea></div>
+            `;
           } else if (type === "star") {
             html = `
-                        <div class="form-group"><label>Name</label><input type="text" id="editName" value="${item.name}" required></div>
-                        <div class="form-group"><label>Type</label><input type="text" id="editType" value="${item.type || ""}"></div>
-                        <div class="form-group"><label>Distance</label><input type="text" id="editDistance" value="${item.distance || ""}"></div>
-                        <div class="form-group"><label>Temperature</label><input type="text" id="editTemp" value="${item.temperature || ""}"></div>
-                        <div class="form-group"><label>Image URL</label><input type="text" id="editImage" value="${item.image || ""}"></div>
-                    `;
+              <div class="form-group"><label>Name</label><input type="text" id="editName" value="${item.name}" required></div>
+              <div class="form-group"><label>Type</label><input type="text" id="editType" value="${item.type || ""}"></div>
+              <div class="form-group"><label>Distance</label><input type="text" id="editDistance" value="${item.distance || ""}"></div>
+              <div class="form-group"><label>Temperature</label><input type="text" id="editTemp" value="${item.temperature || ""}"></div>
+              <div class="form-group"><label>Image URL</label><input type="text" id="editImage" value="${item.image || ""}"></div>
+              <div class="form-group"><label>Video URL</label><input type="text" id="editVideo" value="${item.video_url || ""}"></div>
+            `;
           } else if (type === "galaxy") {
             html = `
-                        <div class="form-group"><label>Name</label><input type="text" id="editName" value="${item.name}" required></div>
-                        <div class="form-group"><label>Type</label><input type="text" id="editType" value="${item.type || ""}"></div>
-                        <div class="form-group"><label>Distance</label><input type="text" id="editDistance" value="${item.distance || ""}"></div>
-                        <div class="form-group"><label>Stars Count</label><input type="text" id="editStars" value="${item.stars || ""}"></div>
-                        <div class="form-group"><label>Diameter</label><input type="text" id="editDiameter" value="${item.diameter || ""}"></div>
-                        <div class="form-group"><label>Image URL</label><input type="text" id="editImage" value="${item.image || ""}"></div>
-                    `;
+              <div class="form-group"><label>Name</label><input type="text" id="editName" value="${item.name}" required></div>
+              <div class="form-group"><label>Type</label><input type="text" id="editType" value="${item.type || ""}"></div>
+              <div class="form-group"><label>Distance</label><input type="text" id="editDistance" value="${item.distance || ""}"></div>
+              <div class="form-group"><label>Stars Count</label><input type="text" id="editStars" value="${item.stars || ""}"></div>
+              <div class="form-group"><label>Diameter</label><input type="text" id="editDiameter" value="${item.diameter || ""}"></div>
+              <div class="form-group"><label>Image URL</label><input type="text" id="editImage" value="${item.image || ""}"></div>
+              <div class="form-group"><label>Video URL</label><input type="text" id="editVideo" value="${item.video_url || ""}"></div>
+            `;
           } else if (type === "blackhole") {
             html = `
-                        <div class="form-group"><label>Name</label><input type="text" id="editName" value="${item.name}" required></div>
-                        <div class="form-group"><label>Type</label>
-                            <select id="editType">
-                                <option value="Supermassive" ${item.type === "Supermassive" ? "selected" : ""}>Supermassive</option>
-                                <option value="Stellar" ${item.type === "Stellar" ? "selected" : ""}>Stellar</option>
-                                <option value="Intermediate" ${item.type === "Intermediate" ? "selected" : ""}>Intermediate</option>
-                                <option value="Primordial" ${item.type === "Primordial" ? "selected" : ""}>Primordial</option>
-                            </select>
-                        </div>
-                        <div class="form-group"><label>Mass</label><input type="text" id="editMass" value="${item.mass || ""}"></div>
-                        <div class="form-group"><label>Distance</label><input type="text" id="editDistance" value="${item.distance || ""}"></div>
-                        <div class="form-group"><label>Diameter</label><input type="text" id="editDiameter" value="${item.diameter || ""}"></div>
-                        <div class="form-group"><label>Discovered</label><input type="text" id="editDiscovered" value="${item.discovered || ""}"></div>
-                        <div class="form-group"><label>Image URL</label><input type="text" id="editImage" value="${item.image || ""}"></div>
-                        <div class="form-group"><label>Description</label><textarea id="editDescription" rows="3">${item.description || ""}</textarea></div>
-                    `;
+              <div class="form-group"><label>Name</label><input type="text" id="editName" value="${item.name}" required></div>
+              <div class="form-group"><label>Type</label>
+                <select id="editType">
+                  <option value="Supermassive" ${item.type === "Supermassive" ? "selected" : ""}>Supermassive</option>
+                  <option value="Stellar" ${item.type === "Stellar" ? "selected" : ""}>Stellar</option>
+                  <option value="Intermediate" ${item.type === "Intermediate" ? "selected" : ""}>Intermediate</option>
+                  <option value="Primordial" ${item.type === "Primordial" ? "selected" : ""}>Primordial</option>
+                </select>
+              </div>
+              <div class="form-group"><label>Mass</label><input type="text" id="editMass" value="${item.mass || ""}"></div>
+              <div class="form-group"><label>Distance</label><input type="text" id="editDistance" value="${item.distance || ""}"></div>
+              <div class="form-group"><label>Diameter</label><input type="text" id="editDiameter" value="${item.diameter || ""}"></div>
+              <div class="form-group"><label>Discovered</label><input type="text" id="editDiscovered" value="${item.discovered || ""}"></div>
+              <div class="form-group"><label>Image URL</label><input type="text" id="editImage" value="${item.image || ""}"></div>
+              <div class="form-group"><label>Video URL</label><input type="text" id="editVideo" value="${item.video_url || ""}"></div>
+              <div class="form-group"><label>Description</label><textarea id="editDescription" rows="3">${item.description || ""}</textarea></div>
+            `;
           }
 
           fields.innerHTML = html;
@@ -2312,154 +2120,137 @@
         document.body.style.overflow = "auto";
       }
 
-      document
-        .getElementById("editModal")
-        .addEventListener("click", function (e) {
-          if (e.target === this) closeEditModal();
-        });
+      document.getElementById("editModal").addEventListener("click", function (e) {
+        if (e.target === this) closeEditModal();
+      });
 
       document.addEventListener("keydown", function (e) {
         if (e.key === "Escape") closeEditModal();
       });
 
-      document
-        .getElementById("editForm")
-        .addEventListener("submit", async function (e) {
-          e.preventDefault();
+      document.getElementById("editForm").addEventListener("submit", async function (e) {
+        e.preventDefault();
 
-          const id = document.getElementById("editId").value;
-          const type = document.getElementById("editType").value;
-          const alertContainer = document.getElementById("editAlert");
-          const submitBtn = document.getElementById("editSubmitBtn");
+        const id = document.getElementById("editId").value;
+        const type = document.getElementById("editType").value;
+        const alertContainer = document.getElementById("editAlert");
+        const submitBtn = document.getElementById("editSubmitBtn");
 
-          alertContainer.innerHTML = "";
-          submitBtn.innerHTML =
-            '<i class="fas fa-spinner fa-spin"></i> Saving...';
-          submitBtn.disabled = true;
+        alertContainer.innerHTML = "";
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+        submitBtn.disabled = true;
 
-          let data = {};
-          let endpoint = "";
+        let data = {};
+        let endpoint = "";
 
-          if (type === "mission") {
-            data = {
-              name: document.getElementById("editName").value.trim(),
-              agency: document.getElementById("editAgency").value.trim(),
-              date: document.getElementById("editDate").value,
-              status: document.getElementById("editStatus").value,
-              image: document.getElementById("editImage").value.trim(),
-              description: document
-                .getElementById("editDescription")
-                .value.trim(),
-            };
-            endpoint = `/api/missions/${id}`;
-          } else if (type === "planet") {
-            data = {
-              name: document.getElementById("editName").value.trim(),
-              diameter:
-                parseFloat(document.getElementById("editDiameter").value) ||
-                null,
-              gravity:
-                parseFloat(document.getElementById("editGravity").value) ||
-                null,
-              moons: parseInt(document.getElementById("editMoons").value) || 0,
-              temperature:
-                parseFloat(document.getElementById("editTemperature").value) ||
-                null,
-              image: document.getElementById("editImage").value.trim(),
-              description: document
-                .getElementById("editDescription")
-                .value.trim(),
-            };
-            endpoint = `/api/planets/${id}`;
-          } else if (type === "asteroid") {
-            data = {
-              name: document.getElementById("editName").value.trim(),
-              size:
-                parseFloat(document.getElementById("editSize").value) || null,
-              speed: document.getElementById("editSpeed").value.trim(),
-              date: document.getElementById("editDate").value,
-              hazardous:
-                document.getElementById("editHazardous").value === "true",
-              description: document
-                .getElementById("editDescription")
-                .value.trim(),
-            };
-            endpoint = `/api/asteroids/${id}`;
-          } else if (type === "star") {
-            data = {
-              name: document.getElementById("editName").value.trim(),
-              type: document.getElementById("editType").value.trim(),
-              distance: document.getElementById("editDistance").value.trim(),
-              temperature: document.getElementById("editTemp").value.trim(),
-              image: document.getElementById("editImage").value.trim(),
-            };
-            endpoint = `/api/stars/${id}`;
-          } else if (type === "galaxy") {
-            data = {
-              name: document.getElementById("editName").value.trim(),
-              type: document.getElementById("editType").value.trim(),
-              distance: document.getElementById("editDistance").value.trim(),
-              stars: document.getElementById("editStars").value.trim(),
-              diameter: document.getElementById("editDiameter").value.trim(),
-              image: document.getElementById("editImage").value.trim(),
-            };
-            endpoint = `/api/galaxies/${id}`;
-          } else if (type === "blackhole") {
-            data = {
-              name: document.getElementById("editName").value.trim(),
-              type: document.getElementById("editType").value,
-              mass: document.getElementById("editMass").value.trim(),
-              distance: document.getElementById("editDistance").value.trim(),
-              diameter: document.getElementById("editDiameter").value.trim(),
-              discovered: document
-                .getElementById("editDiscovered")
-                .value.trim(),
-              image: document.getElementById("editImage").value.trim(),
-              description: document
-                .getElementById("editDescription")
-                .value.trim(),
-            };
-            endpoint = `/api/blackholes/${id}`;
-          }
+        if (type === "mission") {
+          data = {
+            name: document.getElementById("editName").value.trim(),
+            agency: document.getElementById("editAgency").value.trim(),
+            date: document.getElementById("editDate").value,
+            status: document.getElementById("editStatus").value,
+            image: document.getElementById("editImage").value.trim(),
+            video_url: document.getElementById("editVideo").value.trim(),
+            description: document.getElementById("editDescription").value.trim(),
+          };
+          endpoint = `/api/missions/${id}`;
+        } else if (type === "planet") {
+          data = {
+            name: document.getElementById("editName").value.trim(),
+            diameter: parseFloat(document.getElementById("editDiameter").value) || null,
+            gravity: parseFloat(document.getElementById("editGravity").value) || null,
+            moons: parseInt(document.getElementById("editMoons").value) || 0,
+            temperature: parseFloat(document.getElementById("editTemperature").value) || null,
+            image: document.getElementById("editImage").value.trim(),
+            video_url: document.getElementById("editVideo").value.trim(),
+            description: document.getElementById("editDescription").value.trim(),
+          };
+          endpoint = `/api/planets/${id}`;
+        } else if (type === "asteroid") {
+          data = {
+            name: document.getElementById("editName").value.trim(),
+            size: parseFloat(document.getElementById("editSize").value) || null,
+            speed: document.getElementById("editSpeed").value.trim(),
+            date: document.getElementById("editDate").value,
+            hazardous: document.getElementById("editHazardous").value === "true",
+            video_url: document.getElementById("editVideo").value.trim(),
+            description: document.getElementById("editDescription").value.trim(),
+          };
+          endpoint = `/api/asteroids/${id}`;
+        } else if (type === "star") {
+          data = {
+            name: document.getElementById("editName").value.trim(),
+            type: document.getElementById("editType").value.trim(),
+            distance: document.getElementById("editDistance").value.trim(),
+            temperature: document.getElementById("editTemp").value.trim(),
+            image: document.getElementById("editImage").value.trim(),
+            video_url: document.getElementById("editVideo").value.trim(),
+          };
+          endpoint = `/api/stars/${id}`;
+        } else if (type === "galaxy") {
+          data = {
+            name: document.getElementById("editName").value.trim(),
+            type: document.getElementById("editType").value.trim(),
+            distance: document.getElementById("editDistance").value.trim(),
+            stars: document.getElementById("editStars").value.trim(),
+            diameter: document.getElementById("editDiameter").value.trim(),
+            image: document.getElementById("editImage").value.trim(),
+            video_url: document.getElementById("editVideo").value.trim(),
+          };
+          endpoint = `/api/galaxies/${id}`;
+        } else if (type === "blackhole") {
+          data = {
+            name: document.getElementById("editName").value.trim(),
+            type: document.getElementById("editType").value,
+            mass: document.getElementById("editMass").value.trim(),
+            distance: document.getElementById("editDistance").value.trim(),
+            diameter: document.getElementById("editDiameter").value.trim(),
+            discovered: document.getElementById("editDiscovered").value.trim(),
+            image: document.getElementById("editImage").value.trim(),
+            video_url: document.getElementById("editVideo").value.trim(),
+            description: document.getElementById("editDescription").value.trim(),
+          };
+          endpoint = `/api/blackholes/${id}`;
+        }
 
-          try {
-            const response = await fetch(endpoint, {
-              method: "PUT",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(data),
-            });
-            const result = await response.json();
+        try {
+          const response = await fetch(endpoint, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+          });
+          const result = await response.json();
 
-            if (result.success) {
-              alertContainer.innerHTML = `<div class="alert alert-success">✅ ${result.message}</div>`;
-              submitBtn.innerHTML = "✅ Saved!";
+          if (result.success) {
+            alertContainer.innerHTML = `<div class="alert alert-success">✅ ${result.message}</div>`;
+            submitBtn.innerHTML = "✅ Saved!";
 
-              setTimeout(() => {
-                closeEditModal();
-                const activeTab = document.querySelector(".tab-content.active");
-                if (activeTab) {
-                  const tabId = activeTab.id.replace("tab-", "");
-                  if (tabId === "missions") loadMissions();
-                  else if (tabId === "planets") loadPlanets();
-                  else if (tabId === "asteroids") loadAsteroids();
-                  else if (tabId === "stars") loadStars();
-                  else if (tabId === "galaxies") loadGalaxies();
-                  else if (tabId === "blackholes") loadBlackHoles();
-                }
-                loadStats();
-              }, 1000);
-            } else {
-              alertContainer.innerHTML = `<div class="alert alert-error">❌ ${result.message}</div>`;
-              submitBtn.innerHTML = "Save Changes";
-              submitBtn.disabled = false;
-            }
-          } catch (e) {
-            alertContainer.innerHTML = `<div class="alert alert-error">❌ Error saving changes</div>`;
+            setTimeout(() => {
+              closeEditModal();
+              const activeTab = document.querySelector(".tab-content.active");
+              if (activeTab) {
+                const tabId = activeTab.id.replace("tab-", "");
+                if (tabId === "missions") loadMissions();
+                else if (tabId === "planets") loadPlanets();
+                else if (tabId === "asteroids") loadAsteroids();
+                else if (tabId === "stars") loadStars();
+                else if (tabId === "galaxies") loadGalaxies();
+                else if (tabId === "blackholes") loadBlackHoles();
+              }
+              loadStats();
+            }, 1000);
+          } else {
+            alertContainer.innerHTML = `<div class="alert alert-error">❌ ${result.message}</div>`;
             submitBtn.innerHTML = "Save Changes";
             submitBtn.disabled = false;
-            console.error(e);
           }
-        });
+        } catch (e) {
+          alertContainer.innerHTML = `<div class="alert alert-error">❌ Error saving changes</div>`;
+          submitBtn.innerHTML = "Save Changes";
+          submitBtn.disabled = false;
+          console.error(e);
+        }
+      });
 
       // ===== Init =====
       document.addEventListener("DOMContentLoaded", function () {
