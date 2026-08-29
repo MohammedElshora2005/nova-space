@@ -367,6 +367,13 @@
         height: 100%;
         border: none;
         object-fit: cover;
+        pointer-events: none;
+      }
+      .planet-card .video-wrapper video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        pointer-events: none;
       }
 
       .planet-card .planet-image {
@@ -473,6 +480,13 @@
         width: 100%;
         height: 100%;
         border: none;
+        pointer-events: none;
+      }
+      .modal-content .video-wrapper video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        pointer-events: none;
       }
       .modal-content h2 {
         text-align: center;
@@ -869,6 +883,91 @@
         }
       }
 
+      // ===== Helper: Convert YouTube URLs to embed =====
+      function convertYoutubeUrl(url) {
+        if (!url) return url;
+        if (url.includes('youtube.com/shorts/')) {
+          const videoId = url.split('/shorts/')[1]?.split('?')[0];
+          if (videoId) return `https://www.youtube.com/embed/${videoId}`;
+        }
+        if (url.includes('youtu.be/')) {
+          const videoId = url.split('youtu.be/')[1]?.split('?')[0];
+          if (videoId) return `https://www.youtube.com/embed/${videoId}`;
+        }
+        if (url.includes('youtube.com/watch?v=')) {
+          const videoId = url.split('v=')[1]?.split('&')[0];
+          if (videoId) return `https://www.youtube.com/embed/${videoId}`;
+        }
+        return url;
+      }
+
+      // ===== Helper: Check if URL is video (MP4, WEBM, etc.) =====
+      function isVideoUrl(url) {
+        if (!url) return false;
+        const videoExtensions = ['.mp4', '.webm', '.ogg', '.mov', '.avi'];
+        const lowerUrl = url.toLowerCase();
+        return videoExtensions.some(ext => lowerUrl.includes(ext));
+      }
+
+      // ===== Helper: Check if URL is embeddable =====
+      function isEmbedUrl(url) {
+        if (!url) return false;
+        const lowerUrl = url.toLowerCase();
+        return lowerUrl.includes('youtube.com/embed') || 
+               lowerUrl.includes('youtu.be') || 
+               lowerUrl.includes('youtube.com/shorts/') ||
+               lowerUrl.includes('youtube.com/watch?v=') ||
+               lowerUrl.includes('vimeo.com') ||
+               lowerUrl.includes('player.vimeo.com') ||
+               lowerUrl.includes('drive.google.com') ||
+               lowerUrl.includes('dailymotion.com');
+      }
+
+      // ===== Helper: Extract video ID for YouTube playlist loop =====
+      function getPlaylistId(url) {
+        const match = url.match(/(?:embed\/|v\/|watch\?v=|shorts\/)([^&?#]+)/);
+        return match ? match[1] : '';
+      }
+
+      // ===== Helper: Generate media HTML =====
+      function getMediaHTML(url, alt, className) {
+        if (!url) {
+          return `<img src="${alt}" alt="Fallback" class="${className}" onerror="this.style.display='none'">`;
+        }
+
+        let processedUrl = convertYoutubeUrl(url);
+
+        if (isVideoUrl(processedUrl)) {
+          return `
+            <div class="video-wrapper">
+              <video autoplay loop muted playsinline style="width:100%; height:100%; object-fit:cover;">
+                <source src="${processedUrl}" type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          `;
+        }
+
+        if (isEmbedUrl(processedUrl)) {
+          const videoId = getPlaylistId(processedUrl);
+          let embedUrl = processedUrl;
+          if (!processedUrl.includes('autoplay=')) {
+            const separator = processedUrl.includes('?') ? '&' : '?';
+            embedUrl += `${separator}autoplay=1&loop=1&mute=1&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3`;
+            if (videoId) {
+              embedUrl += `&playlist=${videoId}`;
+            }
+          }
+          return `
+            <div class="video-wrapper" data-video-id="${videoId}">
+              <iframe src="${embedUrl}" frameborder="0" allow="autoplay; fullscreen" allowfullscreen loading="lazy"></iframe>
+            </div>
+          `;
+        }
+
+        return `<img src="${processedUrl}" alt="${alt}" class="${className}" onerror="this.src='${alt}'">`;
+      }
+
       // ===== Planet Images =====
       const planetImages = {
         mercury:
@@ -977,6 +1076,8 @@
             : "N/A";
           const moons = planet.moons || 0;
           const hasVideo = planet.video_url && planet.video_url.trim() !== "";
+          const mediaHTML = hasVideo ? getMediaHTML(planet.video_url, image, "planet-image") : 
+                                      `<img src="${image}" alt="${planet.name}" class="planet-image" onerror="this.src='${FALLBACK_IMAGE}'">`;
 
           html += `
             <div class="planet-card" onclick="showDetail('${planet.id}')">
@@ -984,13 +1085,7 @@
                 <i class="fas fa-star"></i>
               </button>
               
-              ${hasVideo ? `
-                <div class="video-wrapper">
-                  <iframe src="${planet.video_url}" frameborder="0" allowfullscreen loading="lazy"></iframe>
-                </div>
-              ` : `
-                <img src="${image}" alt="${planet.name}" class="planet-image" onerror="this.src='${FALLBACK_IMAGE}'">
-              `}
+              ${mediaHTML}
               
               <h3>${planet.name}</h3>
               <div class="planet-sub">${planet.description ? planet.description.substring(0, 60) + "..." : "Explore this planet"}</div>
@@ -1079,11 +1174,7 @@
         // Media container
         const mediaContainer = document.getElementById("modalMediaContainer");
         if (hasVideo) {
-          mediaContainer.innerHTML = `
-            <div class="video-wrapper">
-              <iframe src="${planet.video_url}" frameborder="0" allowfullscreen></iframe>
-            </div>
-          `;
+          mediaContainer.innerHTML = getMediaHTML(planet.video_url, image, "planet-image-big");
         } else {
           mediaContainer.innerHTML = `
             <img class="planet-image-big" src="${image}" alt="${planet.name}" onerror="this.src='${FALLBACK_IMAGE}'">
