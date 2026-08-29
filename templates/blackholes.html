@@ -947,8 +947,7 @@
         return videoExtensions.some(ext => lowerUrl.includes(ext));
       }
 
-      // ===== Helper: Check if URL is embeddable =====
-      function isEmbedUrl(url) {
+      // ===== Helper: Check if URL is embeddable =====      function isEmbedUrl(url) {
         if (!url) return false;
         const lowerUrl = url.toLowerCase();
         return lowerUrl.includes('youtube.com/embed') || 
@@ -995,7 +994,7 @@
           let embedUrl = processedUrl;
           if (!processedUrl.includes('autoplay=')) {
             const separator = processedUrl.includes('?') ? '&' : '?';
-            embedUrl += `${separator}autoplay=0&loop=1&mute=1&controls=0&modestbranding=1&rel=0&showinfo=0`;
+            embedUrl += `${separator}autoplay=0&loop=1&mute=1&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3`;
             if (videoId) {
               embedUrl += `&playlist=${videoId}`;
             }
@@ -1119,16 +1118,13 @@
 
         grid.innerHTML = html;
 
-        // ===== Add hover events for YouTube videos =====
+        // ===== Add hover events for YouTube videos (play on hover) =====
         document.querySelectorAll('.blackhole-card').forEach(card => {
           const wrapper = card.querySelector('.video-wrapper');
           if (!wrapper) return;
           
           const iframe = wrapper.querySelector('iframe');
           if (!iframe) return;
-
-          // Store the original src
-          const originalSrc = iframe.src;
 
           card.addEventListener('mouseenter', function() {
             // Play video by reloading iframe with autoplay=1
