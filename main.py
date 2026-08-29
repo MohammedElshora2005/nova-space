@@ -22,7 +22,6 @@ database_url = os.environ.get('DATABASE_URL')
 if database_url:
     if database_url.startswith('postgres://'):
         database_url = database_url.replace('postgres://', 'postgresql://', 1)
-    # ✅ Vercel بيحتاج SSL
     if '?' not in database_url:
         database_url += '?sslmode=require'
 else:
@@ -269,69 +268,136 @@ class Feedback(db.Model):
     created_at = db.Column(db.DateTime, default=get_utc_now)
 
 
+class SavedImage(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    title = db.Column(db.String(200))
+    url = db.Column(db.String(500))
+    explanation = db.Column(db.Text)
+    date = db.Column(db.String(20))
+    saved_at = db.Column(db.DateTime, default=get_utc_now)
+
+
 # ======================================================
 # ===== إنشاء الجداول والبيانات الافتراضية =====
 # ======================================================
 
 with app.app_context():
-    try:
-        db.create_all()
-        
-        # Admin
-        admin_username = os.environ.get('ADMIN_USERNAME', 'admin')
-        admin_password = os.environ.get('ADMIN_PASSWORD')
-        
-        if admin_password and not User.query.filter_by(username=admin_username).first():
-            admin = User(username=admin_username, email='admin@nova.com', is_admin=True)
-            admin.set_password(admin_password)
-            db.session.add(admin)
-            db.session.commit()
-        
-        # Planets
-        if Planet.query.count() == 0:
-            planets = [
-                {'name': 'Mercury', 'type': 'Terrestrial', 'diameter': 4879, 'gravity': 3.7, 'moons': 0, 'temperature': 167, 'description': 'The smallest planet in our solar system'},
-                {'name': 'Venus', 'type': 'Terrestrial', 'diameter': 12104, 'gravity': 8.87, 'moons': 0, 'temperature': 464, 'description': 'The hottest planet in our solar system'},
-                {'name': 'Earth', 'type': 'Terrestrial', 'diameter': 12756, 'gravity': 9.8, 'moons': 1, 'temperature': 15, 'description': 'Our home planet'},
-                {'name': 'Mars', 'type': 'Terrestrial', 'diameter': 6792, 'gravity': 3.71, 'moons': 2, 'temperature': -65, 'description': 'The red planet'},
-                {'name': 'Jupiter', 'type': 'Gas Giant', 'diameter': 142984, 'gravity': 24.79, 'moons': 95, 'temperature': -110, 'description': 'The largest planet in our solar system'},
-                {'name': 'Saturn', 'type': 'Gas Giant', 'diameter': 120536, 'gravity': 10.44, 'moons': 146, 'temperature': -140, 'description': 'The ringed planet'},
-                {'name': 'Uranus', 'type': 'Ice Giant', 'diameter': 51118, 'gravity': 8.69, 'moons': 27, 'temperature': -195, 'description': 'The ice giant'},
-                {'name': 'Neptune', 'type': 'Ice Giant', 'diameter': 49528, 'gravity': 11.15, 'moons': 16, 'temperature': -200, 'description': 'The windiest planet'},
-            ]
-            for p in planets:
-                db.session.add(Planet(**p))
-            db.session.commit()
-        
-        # Missions
-        if Mission.query.count() == 0:
-            missions = [
-                {'name': 'Artemis II', 'agency': 'NASA', 'date': '2026-09-15', 'status': 'planned', 'description': 'First crewed mission to the Moon since Apollo 17'},
-                {'name': 'Mars Sample Return', 'agency': 'NASA/ESA', 'date': '2028-03-01', 'status': 'planned', 'description': 'Bringing samples from Mars back to Earth'},
-                {'name': 'Europa Clipper', 'agency': 'NASA', 'date': '2024-10-10', 'status': 'active', 'description': 'Exploring Jupiter\'s icy moon Europa'},
-                {'name': 'James Webb', 'agency': 'NASA/ESA/CSA', 'date': '2021-12-25', 'status': 'active', 'description': 'Observing the universe in infrared'},
-                {'name': 'Apollo 11', 'agency': 'NASA', 'date': '1969-07-20', 'status': 'completed', 'description': 'First humans to land on the Moon'},
-            ]
-            for m in missions:
-                db.session.add(Mission(**m))
-            db.session.commit()
-        
-        # Asteroids
-        if Asteroid.query.count() == 0:
-            asteroids = [
-                {'name': '2024 XN1', 'size': 150, 'hazardous': True, 'speed': '30.7 km/s', 'date': '2026-12-15', 'description': 'Near-Earth asteroid passing close to Earth'},
-                {'name': '2024 YR4', 'size': 80, 'hazardous': False, 'speed': '22.3 km/s', 'date': '2026-11-20', 'description': 'Safe asteroid in the main belt'},
-                {'name': '2024 ZA1', 'size': 200, 'hazardous': True, 'speed': '35.1 km/s', 'date': '2026-10-05', 'description': 'Potentially hazardous asteroid'},
-                {'name': '2024 WB2', 'size': 45, 'hazardous': False, 'speed': '18.9 km/s', 'date': '2026-09-12', 'description': 'Small safe asteroid'},
-                {'name': '2024 VC3', 'size': 120, 'hazardous': False, 'speed': '25.4 km/s', 'date': '2026-08-28', 'description': 'Medium-sized safe asteroid'},
-            ]
-            for a in asteroids:
-                db.session.add(Asteroid(**a))
-            db.session.commit()
-            
-        print('✅ Database initialized successfully')
-    except Exception as e:
-        print(f'⚠️ Database init error: {e}')
+    db.create_all()
+    print("✅ Database tables created")
+    
+    # ===== Admin =====
+    admin_username = os.environ.get('ADMIN_USERNAME', 'admin')
+    admin_password = os.environ.get('ADMIN_PASSWORD')
+    
+    if admin_password and not User.query.filter_by(username=admin_username).first():
+        admin = User(
+            username=admin_username,
+            email='admin@nova.com',
+            is_admin=True
+        )
+        admin.set_password(admin_password)
+        db.session.add(admin)
+        db.session.commit()
+        print(f"✅ Admin created: {admin_username}")
+    
+    # ===== Planets =====
+    if Planet.query.count() == 0:
+        planets = [
+            {'name': 'Mercury', 'type': 'Terrestrial', 'diameter': 4879, 'gravity': 3.7, 'moons': 0, 'temperature': 167, 'description': 'The smallest planet in our solar system'},
+            {'name': 'Venus', 'type': 'Terrestrial', 'diameter': 12104, 'gravity': 8.87, 'moons': 0, 'temperature': 464, 'description': 'The hottest planet in our solar system'},
+            {'name': 'Earth', 'type': 'Terrestrial', 'diameter': 12756, 'gravity': 9.8, 'moons': 1, 'temperature': 15, 'description': 'Our home planet'},
+            {'name': 'Mars', 'type': 'Terrestrial', 'diameter': 6792, 'gravity': 3.71, 'moons': 2, 'temperature': -65, 'description': 'The red planet'},
+            {'name': 'Jupiter', 'type': 'Gas Giant', 'diameter': 142984, 'gravity': 24.79, 'moons': 95, 'temperature': -110, 'description': 'The largest planet in our solar system'},
+            {'name': 'Saturn', 'type': 'Gas Giant', 'diameter': 120536, 'gravity': 10.44, 'moons': 146, 'temperature': -140, 'description': 'The ringed planet'},
+            {'name': 'Uranus', 'type': 'Ice Giant', 'diameter': 51118, 'gravity': 8.69, 'moons': 27, 'temperature': -195, 'description': 'The ice giant'},
+            {'name': 'Neptune', 'type': 'Ice Giant', 'diameter': 49528, 'gravity': 11.15, 'moons': 16, 'temperature': -200, 'description': 'The windiest planet'},
+        ]
+        for p in planets:
+            db.session.add(Planet(**p))
+        db.session.commit()
+        print("✅ Default planets added")
+    
+    # ===== Missions =====
+    if Mission.query.count() == 0:
+        missions = [
+            {'name': 'Artemis II', 'agency': 'NASA', 'date': '2026-09-15', 'status': 'planned', 'description': 'First crewed mission to the Moon since Apollo 17'},
+            {'name': 'Mars Sample Return', 'agency': 'NASA/ESA', 'date': '2028-03-01', 'status': 'planned', 'description': 'Bringing samples from Mars back to Earth'},
+            {'name': 'Europa Clipper', 'agency': 'NASA', 'date': '2024-10-10', 'status': 'active', 'description': 'Exploring Jupiter\'s icy moon Europa'},
+            {'name': 'James Webb', 'agency': 'NASA/ESA/CSA', 'date': '2021-12-25', 'status': 'active', 'description': 'Observing the universe in infrared'},
+            {'name': 'Apollo 11', 'agency': 'NASA', 'date': '1969-07-20', 'status': 'completed', 'description': 'First humans to land on the Moon'},
+        ]
+        for m in missions:
+            db.session.add(Mission(**m))
+        db.session.commit()
+        print("✅ Default missions added")
+    
+    # ===== Asteroids =====
+    if Asteroid.query.count() == 0:
+        asteroids = [
+            {'name': '2024 XN1', 'size': 150, 'hazardous': True, 'speed': '30.7 km/s', 'date': '2026-12-15', 'description': 'Near-Earth asteroid passing close to Earth'},
+            {'name': '2024 YR4', 'size': 80, 'hazardous': False, 'speed': '22.3 km/s', 'date': '2026-11-20', 'description': 'Safe asteroid in the main belt'},
+            {'name': '2024 ZA1', 'size': 200, 'hazardous': True, 'speed': '35.1 km/s', 'date': '2026-10-05', 'description': 'Potentially hazardous asteroid'},
+            {'name': '2024 WB2', 'size': 45, 'hazardous': False, 'speed': '18.9 km/s', 'date': '2026-09-12', 'description': 'Small safe asteroid'},
+            {'name': '2024 VC3', 'size': 120, 'hazardous': False, 'speed': '25.4 km/s', 'date': '2026-08-28', 'description': 'Medium-sized safe asteroid'},
+        ]
+        for a in asteroids:
+            db.session.add(Asteroid(**a))
+        db.session.commit()
+        print("✅ Default asteroids added")
+    
+    # ===== Stars =====
+    if Star.query.count() == 0:
+        stars = [
+            {'name': 'Sirius', 'type': 'A-type main-sequence', 'distance': '8.6 ly', 'temperature': '9,940 K', 'image': 'https://images.unsplash.com/photo-1504333638930-c8787321eee0?w=400&h=300&fit=crop', 'description': 'The brightest star in the night sky.'},
+            {'name': 'Betelgeuse', 'type': 'Red supergiant', 'distance': '642 ly', 'temperature': '3,500 K', 'image': 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=400&h=300&fit=crop', 'description': 'A massive red supergiant star nearing the end of its life.'},
+            {'name': 'Polaris', 'type': 'Cepheid variable', 'distance': '433 ly', 'temperature': '6,015 K', 'image': 'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&h=300&fit=crop', 'description': 'The North Star, used for navigation for centuries.'},
+            {'name': 'Vega', 'type': 'A-type main-sequence', 'distance': '25 ly', 'temperature': '9,602 K', 'image': 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=400&h=300&fit=crop', 'description': 'One of the brightest stars in the summer sky.'},
+            {'name': 'Rigel', 'type': 'Blue supergiant', 'distance': '860 ly', 'temperature': '12,100 K', 'image': 'https://images.unsplash.com/photo-1506703719100-a0f3a48a2f8f?w=400&h=300&fit=crop', 'description': 'The brightest star in the constellation Orion.'},
+            {'name': 'Aldebaran', 'type': 'Red giant', 'distance': '65 ly', 'temperature': '4,000 K', 'image': 'https://images.unsplash.com/photo-1504333638930-c8787321eee0?w=400&h=300&fit=crop', 'description': 'The brightest star in the constellation Taurus.'},
+            {'name': 'Antares', 'type': 'Red supergiant', 'distance': '550 ly', 'temperature': '3,500 K', 'image': 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=400&h=300&fit=crop', 'description': 'A massive red supergiant in the constellation Scorpius.'},
+            {'name': 'Spica', 'type': 'B-type main-sequence', 'distance': '250 ly', 'temperature': '25,000 K', 'image': 'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&h=300&fit=crop', 'description': 'The brightest star in the constellation Virgo.'},
+        ]
+        for s in stars:
+            db.session.add(Star(**s))
+        db.session.commit()
+        print("✅ Default stars added")
+    
+    # ===== Galaxies =====
+    if Galaxy.query.count() == 0:
+        galaxies = [
+            {'name': 'Andromeda', 'type': 'Spiral', 'distance': '2.537 million ly', 'stars': '1 trillion', 'diameter': '220,000 ly', 'image': 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=400&h=300&fit=crop', 'description': 'The nearest major galaxy to the Milky Way.'},
+            {'name': 'Milky Way', 'type': 'Spiral', 'distance': '0 ly', 'stars': '100-400 billion', 'diameter': '100,000 ly', 'image': 'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&h=300&fit=crop', 'description': 'Our home galaxy containing our solar system.'},
+            {'name': 'Triangulum', 'type': 'Spiral', 'distance': '3 million ly', 'stars': '40 billion', 'diameter': '60,000 ly', 'image': 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=400&h=300&fit=crop', 'description': 'A spiral galaxy in the constellation Triangulum.'},
+            {'name': 'Sombrero', 'type': 'Spiral', 'distance': '29.3 million ly', 'stars': '100 billion', 'diameter': '49,000 ly', 'image': 'https://images.unsplash.com/photo-1504333638930-c8787321eee0?w=400&h=300&fit=crop', 'description': 'A spiral galaxy with a prominent dust lane.'},
+            {'name': 'Whirlpool', 'type': 'Spiral', 'distance': '23 million ly', 'stars': '100 billion', 'diameter': '60,000 ly', 'image': 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=400&h=300&fit=crop', 'description': 'A beautiful spiral galaxy with well-defined arms.'},
+            {'name': 'Black Eye', 'type': 'Spiral', 'distance': '17 million ly', 'stars': '30 billion', 'diameter': '50,000 ly', 'image': 'https://images.unsplash.com/photo-1506703719100-a0f3a48a2f8f?w=400&h=300&fit=crop', 'description': 'A spiral galaxy with a striking dark dust lane.'},
+            {'name': 'Cigar Galaxy', 'type': 'Starburst', 'distance': '12 million ly', 'stars': '30 billion', 'diameter': '37,000 ly', 'image': 'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&h=300&fit=crop', 'description': 'A starburst galaxy undergoing intense star formation.'},
+            {'name': 'Pinwheel', 'type': 'Spiral', 'distance': '21 million ly', 'stars': '100 billion', 'diameter': '170,000 ly', 'image': 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=400&h=300&fit=crop', 'description': 'A magnificent spiral galaxy known for its well-defined arms.'},
+        ]
+        for g in galaxies:
+            db.session.add(Galaxy(**g))
+        db.session.commit()
+        print("✅ Default galaxies added")
+    
+    # ===== Black Holes =====
+    if BlackHole.query.count() == 0:
+        blackholes = [
+            {'name': 'Sagittarius A*', 'type': 'Supermassive', 'mass': '4.3 million M☉', 'distance': '26,000 ly', 'diameter': '44 million km', 'discovered': '1974', 'image': 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=400&h=300&fit=crop', 'description': 'The supermassive black hole at the center of the Milky Way.'},
+            {'name': 'M87*', 'type': 'Supermassive', 'mass': '6.5 billion M☉', 'distance': '53.5 million ly', 'diameter': '38 billion km', 'discovered': '2019', 'image': 'https://images.unsplash.com/photo-1504333638930-c8787321eee0?w=400&h=300&fit=crop', 'description': 'The first black hole ever imaged by the Event Horizon Telescope.'},
+            {'name': 'Cygnus X-1', 'type': 'Stellar', 'mass': '21 M☉', 'distance': '6,070 ly', 'diameter': '60 km', 'discovered': '1964', 'image': 'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&h=300&fit=crop', 'description': 'One of the strongest X-ray sources in the sky.'},
+            {'name': 'Ton 618', 'type': 'Supermassive', 'mass': '66 billion M☉', 'distance': '10.4 billion ly', 'diameter': '390 billion km', 'discovered': '1970', 'image': 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=400&h=300&fit=crop', 'description': 'One of the most massive black holes ever discovered.'},
+            {'name': 'NGC 1277', 'type': 'Supermassive', 'mass': '17 billion M☉', 'distance': '220 million ly', 'diameter': '100 billion km', 'discovered': '2012', 'image': 'https://images.unsplash.com/photo-1506703719100-a0f3a48a2f8f?w=400&h=300&fit=crop', 'description': 'A supermassive black hole with a mass 17 billion times that of the Sun.'},
+            {'name': 'V404 Cygni', 'type': 'Stellar', 'mass': '9 M☉', 'distance': '7,800 ly', 'diameter': '30 km', 'discovered': '1989', 'image': 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=400&h=300&fit=crop', 'description': 'A binary system containing a stellar-mass black hole.'},
+            {'name': 'IC 1101', 'type': 'Supermassive', 'mass': '40 billion M☉', 'distance': '1.04 billion ly', 'diameter': '230 billion km', 'discovered': '1978', 'image': 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=400&h=300&fit=crop', 'description': 'The central black hole of one of the largest known galaxies.'},
+            {'name': 'Henize 2-10', 'type': 'Intermediate', 'mass': '50,000 M☉', 'distance': '34 million ly', 'diameter': '150 km', 'discovered': '2011', 'image': 'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&h=300&fit=crop', 'description': 'A dwarf galaxy containing an intermediate-mass black hole.'},
+        ]
+        for b in blackholes:
+            db.session.add(BlackHole(**b))
+        db.session.commit()
+        print("✅ Default black holes added")
+    
+    print("🎉 Database initialization complete!")
 
 
 # ======================================================
@@ -1221,17 +1287,9 @@ def server_error(error):
 
 
 # ======================================================
-# ===== للـ Vercel - export app =====
-# ======================================================
-
-# ✅ Vercel بيحتاج الـ app object مباشر
-# ✅ مفيش app.run() هنا عشان Vercel مش بيستخدمه
-
-
-# ======================================================
-# ===== للتشغيل المحلي فقط =====
+# ===== التشغيل =====
 # ======================================================
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port, debug=True)
+    app.run(host='0.0.0.0', port=port, debug=False)
