@@ -2,14 +2,13 @@ import os
 import secrets
 import requests
 import json
-from datetime import datetime, timedelta
+from datetime import datetime
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from functools import wraps
 from dotenv import load_dotenv
 from werkzeug.security import generate_password_hash, check_password_hash
-from werkzeug.utils import secure_filename
 from groq import Groq
 
 # ===== تحميل المتغيرات =====
@@ -23,11 +22,19 @@ database_url = os.environ.get('DATABASE_URL')
 if database_url:
     if database_url.startswith('postgres://'):
         database_url = database_url.replace('postgres://', 'postgresql://', 1)
+    # ✅ Vercel بيحتاج SSL
+    if '?' not in database_url:
+        database_url += '?sslmode=require'
 else:
     database_url = 'sqlite:///nova.db'
 
 app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+    'pool_size': 1,
+    'pool_recycle': 300,
+    'pool_pre_ping': True
+}
 
 db = SQLAlchemy(app)
 CORS(app)
@@ -36,23 +43,18 @@ CORS(app)
 NASA_API_KEY = os.environ.get('NASA_API_KEY', 'DEMO_KEY')
 GROQ_API_KEY = os.environ.get('GROQ_API_KEY')
 
-# ===== إعداد رفع الصور =====
-UPLOAD_FOLDER = 'static/uploads'
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
-
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
 
 # ======================================================
-# ===== نماذج قاعدة البيانات (من غير timezone) =====
+# ===== دوال مساعدة =====
 # ======================================================
 
 def get_utc_now():
     return datetime.utcnow()
+
+
+# ======================================================
+# ===== نماذج قاعدة البيانات =====
+# ======================================================
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -267,81 +269,69 @@ class Feedback(db.Model):
     created_at = db.Column(db.DateTime, default=get_utc_now)
 
 
-class SavedImage(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    title = db.Column(db.String(200))
-    url = db.Column(db.String(500))
-    explanation = db.Column(db.Text)
-    date = db.Column(db.String(20))
-    saved_at = db.Column(db.DateTime, default=get_utc_now)
-
-
 # ======================================================
 # ===== إنشاء الجداول والبيانات الافتراضية =====
 # ======================================================
 
 with app.app_context():
-    db.create_all()
-    
-    # ===== إنشاء مشرف افتراضي =====
-    admin_username = os.environ.get('ADMIN_USERNAME', 'admin')
-    admin_password = os.environ.get('ADMIN_PASSWORD')
-    
-    if admin_password:
-        if not User.query.filter_by(username=admin_username).first():
-            admin = User(
-                username=admin_username,
-                email='admin@nova.com',
-                is_admin=True
-            )
+    try:
+        db.create_all()
+        
+        # Admin
+        admin_username = os.environ.get('ADMIN_USERNAME', 'admin')
+        admin_password = os.environ.get('ADMIN_PASSWORD')
+        
+        if admin_password and not User.query.filter_by(username=admin_username).first():
+            admin = User(username=admin_username, email='admin@nova.com', is_admin=True)
             admin.set_password(admin_password)
             db.session.add(admin)
             db.session.commit()
-            print(f'✅ Admin created: {admin_username}')
-    
-    # ===== بيانات افتراضية =====
-    if Planet.query.count() == 0:
-        planets = [
-            {'name': 'Mercury', 'type': 'Terrestrial', 'diameter': 4879, 'gravity': 3.7, 'moons': 0, 'temperature': 167, 'description': 'The smallest planet in our solar system'},
-            {'name': 'Venus', 'type': 'Terrestrial', 'diameter': 12104, 'gravity': 8.87, 'moons': 0, 'temperature': 464, 'description': 'The hottest planet in our solar system'},
-            {'name': 'Earth', 'type': 'Terrestrial', 'diameter': 12756, 'gravity': 9.8, 'moons': 1, 'temperature': 15, 'description': 'Our home planet'},
-            {'name': 'Mars', 'type': 'Terrestrial', 'diameter': 6792, 'gravity': 3.71, 'moons': 2, 'temperature': -65, 'description': 'The red planet'},
-            {'name': 'Jupiter', 'type': 'Gas Giant', 'diameter': 142984, 'gravity': 24.79, 'moons': 95, 'temperature': -110, 'description': 'The largest planet in our solar system'},
-            {'name': 'Saturn', 'type': 'Gas Giant', 'diameter': 120536, 'gravity': 10.44, 'moons': 146, 'temperature': -140, 'description': 'The ringed planet'},
-            {'name': 'Uranus', 'type': 'Ice Giant', 'diameter': 51118, 'gravity': 8.69, 'moons': 27, 'temperature': -195, 'description': 'The ice giant'},
-            {'name': 'Neptune', 'type': 'Ice Giant', 'diameter': 49528, 'gravity': 11.15, 'moons': 16, 'temperature': -200, 'description': 'The windiest planet'},
-        ]
-        for p in planets:
-            db.session.add(Planet(**p))
-        db.session.commit()
-        print('✅ Planets added')
-    
-    if Mission.query.count() == 0:
-        missions = [
-            {'name': 'Artemis II', 'agency': 'NASA', 'date': '2026-09-15', 'status': 'planned', 'description': 'First crewed mission to the Moon since Apollo 17'},
-            {'name': 'Mars Sample Return', 'agency': 'NASA/ESA', 'date': '2028-03-01', 'status': 'planned', 'description': 'Bringing samples from Mars back to Earth'},
-            {'name': 'Europa Clipper', 'agency': 'NASA', 'date': '2024-10-10', 'status': 'active', 'description': 'Exploring Jupiter\'s icy moon Europa'},
-            {'name': 'James Webb', 'agency': 'NASA/ESA/CSA', 'date': '2021-12-25', 'status': 'active', 'description': 'Observing the universe in infrared'},
-            {'name': 'Apollo 11', 'agency': 'NASA', 'date': '1969-07-20', 'status': 'completed', 'description': 'First humans to land on the Moon'},
-        ]
-        for m in missions:
-            db.session.add(Mission(**m))
-        db.session.commit()
-        print('✅ Missions added')
-    
-    if Asteroid.query.count() == 0:
-        asteroids = [
-            {'name': '2024 XN1', 'size': 150, 'hazardous': True, 'speed': '30.7 km/s', 'date': '2026-12-15', 'description': 'Near-Earth asteroid passing close to Earth'},
-            {'name': '2024 YR4', 'size': 80, 'hazardous': False, 'speed': '22.3 km/s', 'date': '2026-11-20', 'description': 'Safe asteroid in the main belt'},
-            {'name': '2024 ZA1', 'size': 200, 'hazardous': True, 'speed': '35.1 km/s', 'date': '2026-10-05', 'description': 'Potentially hazardous asteroid'},
-            {'name': '2024 WB2', 'size': 45, 'hazardous': False, 'speed': '18.9 km/s', 'date': '2026-09-12', 'description': 'Small safe asteroid'},
-            {'name': '2024 VC3', 'size': 120, 'hazardous': False, 'speed': '25.4 km/s', 'date': '2026-08-28', 'description': 'Medium-sized safe asteroid'},
-        ]
-        for a in asteroids:
-            db.session.add(Asteroid(**a))
-        db.session.commit()
-        print('✅ Asteroids added')
+        
+        # Planets
+        if Planet.query.count() == 0:
+            planets = [
+                {'name': 'Mercury', 'type': 'Terrestrial', 'diameter': 4879, 'gravity': 3.7, 'moons': 0, 'temperature': 167, 'description': 'The smallest planet in our solar system'},
+                {'name': 'Venus', 'type': 'Terrestrial', 'diameter': 12104, 'gravity': 8.87, 'moons': 0, 'temperature': 464, 'description': 'The hottest planet in our solar system'},
+                {'name': 'Earth', 'type': 'Terrestrial', 'diameter': 12756, 'gravity': 9.8, 'moons': 1, 'temperature': 15, 'description': 'Our home planet'},
+                {'name': 'Mars', 'type': 'Terrestrial', 'diameter': 6792, 'gravity': 3.71, 'moons': 2, 'temperature': -65, 'description': 'The red planet'},
+                {'name': 'Jupiter', 'type': 'Gas Giant', 'diameter': 142984, 'gravity': 24.79, 'moons': 95, 'temperature': -110, 'description': 'The largest planet in our solar system'},
+                {'name': 'Saturn', 'type': 'Gas Giant', 'diameter': 120536, 'gravity': 10.44, 'moons': 146, 'temperature': -140, 'description': 'The ringed planet'},
+                {'name': 'Uranus', 'type': 'Ice Giant', 'diameter': 51118, 'gravity': 8.69, 'moons': 27, 'temperature': -195, 'description': 'The ice giant'},
+                {'name': 'Neptune', 'type': 'Ice Giant', 'diameter': 49528, 'gravity': 11.15, 'moons': 16, 'temperature': -200, 'description': 'The windiest planet'},
+            ]
+            for p in planets:
+                db.session.add(Planet(**p))
+            db.session.commit()
+        
+        # Missions
+        if Mission.query.count() == 0:
+            missions = [
+                {'name': 'Artemis II', 'agency': 'NASA', 'date': '2026-09-15', 'status': 'planned', 'description': 'First crewed mission to the Moon since Apollo 17'},
+                {'name': 'Mars Sample Return', 'agency': 'NASA/ESA', 'date': '2028-03-01', 'status': 'planned', 'description': 'Bringing samples from Mars back to Earth'},
+                {'name': 'Europa Clipper', 'agency': 'NASA', 'date': '2024-10-10', 'status': 'active', 'description': 'Exploring Jupiter\'s icy moon Europa'},
+                {'name': 'James Webb', 'agency': 'NASA/ESA/CSA', 'date': '2021-12-25', 'status': 'active', 'description': 'Observing the universe in infrared'},
+                {'name': 'Apollo 11', 'agency': 'NASA', 'date': '1969-07-20', 'status': 'completed', 'description': 'First humans to land on the Moon'},
+            ]
+            for m in missions:
+                db.session.add(Mission(**m))
+            db.session.commit()
+        
+        # Asteroids
+        if Asteroid.query.count() == 0:
+            asteroids = [
+                {'name': '2024 XN1', 'size': 150, 'hazardous': True, 'speed': '30.7 km/s', 'date': '2026-12-15', 'description': 'Near-Earth asteroid passing close to Earth'},
+                {'name': '2024 YR4', 'size': 80, 'hazardous': False, 'speed': '22.3 km/s', 'date': '2026-11-20', 'description': 'Safe asteroid in the main belt'},
+                {'name': '2024 ZA1', 'size': 200, 'hazardous': True, 'speed': '35.1 km/s', 'date': '2026-10-05', 'description': 'Potentially hazardous asteroid'},
+                {'name': '2024 WB2', 'size': 45, 'hazardous': False, 'speed': '18.9 km/s', 'date': '2026-09-12', 'description': 'Small safe asteroid'},
+                {'name': '2024 VC3', 'size': 120, 'hazardous': False, 'speed': '25.4 km/s', 'date': '2026-08-28', 'description': 'Medium-sized safe asteroid'},
+            ]
+            for a in asteroids:
+                db.session.add(Asteroid(**a))
+            db.session.commit()
+            
+        print('✅ Database initialized successfully')
+    except Exception as e:
+        print(f'⚠️ Database init error: {e}')
 
 
 # ======================================================
@@ -1231,9 +1221,17 @@ def server_error(error):
 
 
 # ======================================================
-# ===== تشغيل التطبيق =====
+# ===== للـ Vercel - export app =====
+# ======================================================
+
+# ✅ Vercel بيحتاج الـ app object مباشر
+# ✅ مفيش app.run() هنا عشان Vercel مش بيستخدمه
+
+
+# ======================================================
+# ===== للتشغيل المحلي فقط =====
 # ======================================================
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port, debug=True)  # ✅ debug=True عشان تشوف الأخطاء
+    app.run(host='0.0.0.0', port=port, debug=True)
