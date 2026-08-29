@@ -318,6 +318,57 @@
         box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
       }
 
+      /* ===== Favorite Button - Top Right ===== */
+      .planet-card .favorite-btn {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: rgba(0, 0, 0, 0.55);
+        backdrop-filter: blur(10px);
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        color: rgba(255, 255, 255, 0.3);
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .planet-card .favorite-btn:hover {
+        color: #00d4ff;
+        transform: scale(1.15);
+        background: rgba(0, 0, 0, 0.75);
+      }
+      .planet-card .favorite-btn.active {
+        color: #00d4ff;
+        background: rgba(0, 212, 255, 0.2);
+      }
+      .planet-card .favorite-btn.active:hover {
+        color: #7b2ffc;
+        background: rgba(123, 47, 252, 0.2);
+      }
+
+      /* ===== Video Wrapper ===== */
+      .planet-card .video-wrapper {
+        width: 100%;
+        height: 180px;
+        overflow: hidden;
+        background: #1a1a2e;
+        border-radius: 12px;
+        margin-bottom: 15px;
+        position: relative;
+      }
+      .planet-card .video-wrapper iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+        object-fit: cover;
+      }
+
       .planet-card .planet-image {
         width: 100%;
         height: 180px;
@@ -355,28 +406,6 @@
         color: rgba(255, 255, 255, 0.3);
         text-transform: uppercase;
         letter-spacing: 0.5px;
-      }
-
-      .planet-card .favorite-btn {
-        position: absolute;
-        top: 15px;
-        right: 15px;
-        background: none;
-        border: none;
-        color: rgba(255, 255, 255, 0.2);
-        font-size: 1.4rem;
-        cursor: pointer;
-        transition: all 0.3s ease;
-      }
-      .planet-card .favorite-btn:hover {
-        color: #00d4ff;
-        transform: scale(1.2);
-      }
-      .planet-card .favorite-btn.active {
-        color: #00d4ff;
-      }
-      .planet-card .favorite-btn.active:hover {
-        color: #7b2ffc;
       }
 
       /* ===== Detail Modal ===== */
@@ -430,6 +459,20 @@
         border-radius: 12px;
         margin-bottom: 15px;
         background: #1a1a2e;
+      }
+      .modal-content .video-wrapper {
+        width: 100%;
+        height: 300px;
+        overflow: hidden;
+        border-radius: 12px;
+        margin-bottom: 15px;
+        background: #1a1a2e;
+        position: relative;
+      }
+      .modal-content .video-wrapper iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
       }
       .modal-content h2 {
         text-align: center;
@@ -540,11 +583,20 @@
         .modal-content .detail-grid {
           grid-template-columns: 1fr 1fr;
         }
-        .modal-content .planet-image-big {
+        .modal-content .planet-image-big,
+        .modal-content .video-wrapper {
           height: 200px;
         }
-        .planet-card .planet-image {
+        .planet-card .planet-image,
+        .planet-card .video-wrapper {
           height: 140px;
+        }
+        .planet-card .favorite-btn {
+          width: 34px;
+          height: 34px;
+          font-size: 1rem;
+          top: 10px;
+          right: 10px;
         }
       }
 
@@ -564,10 +616,12 @@
         .planet-card .planet-stats {
           grid-template-columns: 1fr 1fr 1fr;
         }
-        .modal-content .planet-image-big {
+        .modal-content .planet-image-big,
+        .modal-content .video-wrapper {
           height: 180px;
         }
-        .planet-card .planet-image {
+        .planet-card .planet-image,
+        .planet-card .video-wrapper {
           height: 120px;
         }
       }
@@ -704,7 +758,7 @@
     <div class="modal-overlay" id="detailModal">
       <div class="modal-content">
         <button class="close-btn" onclick="closeModal()">&times;</button>
-        <img class="planet-image-big" id="modalImage" src="" alt="Planet" />
+        <div id="modalMediaContainer"></div>
         <h2 id="modalName">Earth</h2>
         <p class="planet-sub" id="modalSub">Third planet from the Sun</p>
         <div class="detail-grid" id="modalDetails">
@@ -800,12 +854,10 @@
           const data = await response.json();
 
           if (data.success) {
-            // User is logged in
             document.getElementById("authButtons").style.display = "none";
             document.getElementById("profileButton").style.display =
               "inline-block";
           } else {
-            // User is not logged in
             document.getElementById("authButtons").style.display =
               "inline-block";
             document.getElementById("profileButton").style.display = "none";
@@ -817,7 +869,7 @@
         }
       }
 
-      // ===== Planet Images from Unsplash =====
+      // ===== Planet Images =====
       const planetImages = {
         mercury:
           "https://cdn.eso.org/images/large/eso1011a.jpg",
@@ -924,13 +976,22 @@
             ? Number(planet.gravity).toFixed(2)
             : "N/A";
           const moons = planet.moons || 0;
+          const hasVideo = planet.video_url && planet.video_url.trim() !== "";
 
           html += `
             <div class="planet-card" onclick="showDetail('${planet.id}')">
               <button class="favorite-btn ${isFavorite ? "active" : ""}" onclick="event.stopPropagation(); toggleFavorite('${planet.id}', this)">
                 <i class="fas fa-star"></i>
               </button>
-              <img src="${image}" alt="${planet.name}" class="planet-image" onerror="this.src='${FALLBACK_IMAGE}'">
+              
+              ${hasVideo ? `
+                <div class="video-wrapper">
+                  <iframe src="${planet.video_url}" frameborder="0" allowfullscreen loading="lazy"></iframe>
+                </div>
+              ` : `
+                <img src="${image}" alt="${planet.name}" class="planet-image" onerror="this.src='${FALLBACK_IMAGE}'">
+              `}
+              
               <h3>${planet.name}</h3>
               <div class="planet-sub">${planet.description ? planet.description.substring(0, 60) + "..." : "Explore this planet"}</div>
               <div class="planet-stats">
@@ -1013,9 +1074,22 @@
             : "N/A";
         const description =
           planet.description || "Explore this fascinating planet";
+        const hasVideo = planet.video_url && planet.video_url.trim() !== "";
 
-        document.getElementById("modalImage").src = image;
-        document.getElementById("modalImage").alt = planet.name;
+        // Media container
+        const mediaContainer = document.getElementById("modalMediaContainer");
+        if (hasVideo) {
+          mediaContainer.innerHTML = `
+            <div class="video-wrapper">
+              <iframe src="${planet.video_url}" frameborder="0" allowfullscreen></iframe>
+            </div>
+          `;
+        } else {
+          mediaContainer.innerHTML = `
+            <img class="planet-image-big" src="${image}" alt="${planet.name}" onerror="this.src='${FALLBACK_IMAGE}'">
+          `;
+        }
+
         document.getElementById("modalName").textContent = planet.name;
         document.getElementById("modalSub").textContent = description;
         document.getElementById("modalDiameter").textContent = diameter + " km";
