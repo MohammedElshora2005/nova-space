@@ -319,6 +319,57 @@
         box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
       }
 
+      /* ===== Favorite Button - Top Right ===== */
+      .blackhole-card .favorite-btn {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: rgba(0, 0, 0, 0.55);
+        backdrop-filter: blur(10px);
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        color: rgba(255, 255, 255, 0.3);
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .blackhole-card .favorite-btn:hover {
+        color: #00d4ff;
+        transform: scale(1.15);
+        background: rgba(0, 0, 0, 0.75);
+      }
+      .blackhole-card .favorite-btn.active {
+        color: #00d4ff;
+        background: rgba(0, 212, 255, 0.2);
+      }
+      .blackhole-card .favorite-btn.active:hover {
+        color: #7b2ffc;
+        background: rgba(123, 47, 252, 0.2);
+      }
+
+      /* ===== Video Wrapper ===== */
+      .blackhole-card .video-wrapper {
+        width: 100%;
+        height: 180px;
+        overflow: hidden;
+        background: #1a1a2e;
+        border-radius: 12px;
+        margin-bottom: 15px;
+        position: relative;
+      }
+      .blackhole-card .video-wrapper iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+        object-fit: cover;
+      }
+
       .blackhole-card .bh-image {
         width: 100%;
         height: 180px;
@@ -334,6 +385,16 @@
       .blackhole-card .type {
         color: rgba(255, 255, 255, 0.3);
         font-size: 0.85rem;
+      }
+      .blackhole-card .description {
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 0.85rem;
+        line-height: 1.5;
+        margin: 10px 0;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
       }
       .blackhole-card .bh-stats {
         display: grid;
@@ -356,28 +417,6 @@
         color: rgba(255, 255, 255, 0.3);
         text-transform: uppercase;
         letter-spacing: 0.5px;
-      }
-
-      .blackhole-card .favorite-btn {
-        position: absolute;
-        top: 15px;
-        right: 15px;
-        background: none;
-        border: none;
-        color: rgba(255, 255, 255, 0.2);
-        font-size: 1.4rem;
-        cursor: pointer;
-        transition: all 0.3s ease;
-      }
-      .blackhole-card .favorite-btn:hover {
-        color: #00d4ff;
-        transform: scale(1.2);
-      }
-      .blackhole-card .favorite-btn.active {
-        color: #00d4ff;
-      }
-      .blackhole-card .favorite-btn.active:hover {
-        color: #7b2ffc;
       }
 
       /* ===== Detail Modal ===== */
@@ -431,6 +470,20 @@
         border-radius: 12px;
         margin-bottom: 15px;
         background: #1a1a2e;
+      }
+      .modal-content .video-wrapper {
+        width: 100%;
+        height: 250px;
+        overflow: hidden;
+        border-radius: 12px;
+        margin-bottom: 15px;
+        background: #1a1a2e;
+        position: relative;
+      }
+      .modal-content .video-wrapper iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
       }
       .modal-content h2 {
         text-align: center;
@@ -554,8 +607,20 @@
         .modal-content .detail-grid {
           grid-template-columns: 1fr;
         }
-        .modal-content .bh-image-big {
+        .modal-content .bh-image-big,
+        .modal-content .video-wrapper {
           height: 180px;
+        }
+        .blackhole-card .bh-image,
+        .blackhole-card .video-wrapper {
+          height: 140px;
+        }
+        .blackhole-card .favorite-btn {
+          width: 34px;
+          height: 34px;
+          font-size: 1rem;
+          top: 10px;
+          right: 10px;
         }
       }
 
@@ -569,8 +634,9 @@
         .blackhole-card {
           padding: 18px;
         }
-        .blackhole-card .bh-image {
-          height: 140px;
+        .blackhole-card .bh-image,
+        .blackhole-card .video-wrapper {
+          height: 120px;
         }
         .blackhole-card .bh-stats {
           grid-template-columns: 1fr;
@@ -579,7 +645,8 @@
         .modal-content {
           padding: 20px;
         }
-        .modal-content .bh-image-big {
+        .modal-content .bh-image-big,
+        .modal-content .video-wrapper {
           height: 150px;
         }
       }
@@ -716,7 +783,7 @@
     <div class="modal-overlay" id="detailModal">
       <div class="modal-content">
         <button class="close-btn" onclick="closeModal()">&times;</button>
-        <img class="bh-image-big" id="modalImage" src="" alt="Black Hole" />
+        <div id="modalMediaContainer"></div>
         <h2 id="modalName">Black Hole Name</h2>
         <p class="bh-sub" id="modalType">Type</p>
         <div class="detail-grid">
@@ -908,15 +975,25 @@
           const image =
             bh.image ||
             "https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=400&h=300&fit=crop";
+          const hasVideo = bh.video_url && bh.video_url.trim() !== "";
 
           html += `
             <div class="blackhole-card" onclick="showDetail('${bh.id}')">
               <button class="favorite-btn ${isFavorite ? "active" : ""}" onclick="event.stopPropagation(); toggleFavorite('${bh.id}', this)">
                 <i class="fas fa-star"></i>
               </button>
-              <img src="${image}" alt="${bh.name}" class="bh-image" onerror="this.src='https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=400&h=300&fit=crop'">
+              
+              ${hasVideo ? `
+                <div class="video-wrapper">
+                  <iframe src="${bh.video_url}" frameborder="0" allowfullscreen loading="lazy"></iframe>
+                </div>
+              ` : `
+                <img src="${image}" alt="${bh.name}" class="bh-image" onerror="this.src='https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=400&h=300&fit=crop'">
+              `}
+              
               <h3>${bh.name}</h3>
               <div class="type">${bh.type || "Unknown type"}</div>
+              <p class="description">${bh.description || "Explore this mysterious black hole"}</p>
               <div class="bh-stats">
                 <div class="stat">
                   <div class="value">${bh.mass || "N/A"}</div>
@@ -979,9 +1056,22 @@
         const image =
           bh.image ||
           "https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=400&h=300&fit=crop";
+        const hasVideo = bh.video_url && bh.video_url.trim() !== "";
 
-        document.getElementById("modalImage").src = image;
-        document.getElementById("modalImage").alt = bh.name;
+        // Media container
+        const mediaContainer = document.getElementById("modalMediaContainer");
+        if (hasVideo) {
+          mediaContainer.innerHTML = `
+            <div class="video-wrapper">
+              <iframe src="${bh.video_url}" frameborder="0" allowfullscreen></iframe>
+            </div>
+          `;
+        } else {
+          mediaContainer.innerHTML = `
+            <img class="bh-image-big" src="${image}" alt="${bh.name}" onerror="this.src='https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=400&h=300&fit=crop'">
+          `;
+        }
+
         document.getElementById("modalName").textContent = bh.name;
         document.getElementById("modalType").textContent =
           bh.type || "Unknown type";
