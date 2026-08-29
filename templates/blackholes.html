@@ -368,11 +368,13 @@
         height: 100%;
         border: none;
         object-fit: cover;
+        pointer-events: none;
       }
       .blackhole-card .video-wrapper video {
         width: 100%;
         height: 100%;
         object-fit: cover;
+        pointer-events: none;
       }
 
       .blackhole-card .bh-image {
@@ -489,11 +491,13 @@
         width: 100%;
         height: 100%;
         border: none;
+        pointer-events: none;
       }
       .modal-content .video-wrapper video {
         width: 100%;
         height: 100%;
         object-fit: cover;
+        pointer-events: none;
       }
       .modal-content h2 {
         text-align: center;
@@ -929,7 +933,13 @@
                lowerUrl.includes('facebook.com/plugins/video');
       }
 
-      // ===== Helper: Generate media HTML =====
+      // ===== Helper: Extract video ID for YouTube playlist loop =====
+      function getPlaylistId(url) {
+        const match = url.match(/(?:embed\/|v\/|watch\?v=)([^&?#]+)/);
+        return match ? match[1] : '';
+      }
+
+      // ===== Helper: Generate media HTML with autoplay & loop =====
       function getMediaHTML(url, alt, className) {
         if (!url) {
           return `<img src="${alt}" alt="Fallback" class="${className}" onerror="this.style.display='none'">`;
@@ -939,7 +949,7 @@
         if (isVideoUrl(url)) {
           return `
             <div class="video-wrapper">
-              <video controls style="width:100%; height:100%; object-fit:cover;">
+              <video autoplay loop muted playsinline style="width:100%; height:100%; object-fit:cover;">
                 <source src="${url}" type="video/mp4">
                 Your browser does not support the video tag.
               </video>
@@ -949,9 +959,19 @@
 
         // If it's an embeddable URL (YouTube, Vimeo, etc.)
         if (isEmbedUrl(url)) {
+          const videoId = getPlaylistId(url);
+          let embedUrl = url;
+          // Add autoplay and loop parameters if not already present
+          if (!url.includes('autoplay=')) {
+            const separator = url.includes('?') ? '&' : '?';
+            embedUrl += `${separator}autoplay=1&loop=1`;
+            if (videoId) {
+              embedUrl += `&playlist=${videoId}`;
+            }
+          }
           return `
             <div class="video-wrapper">
-              <iframe src="${url}" frameborder="0" allowfullscreen loading="lazy"></iframe>
+              <iframe src="${embedUrl}" frameborder="0" allow="autoplay; fullscreen" allowfullscreen loading="lazy"></iframe>
             </div>
           `;
         }
