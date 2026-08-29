@@ -369,6 +369,11 @@
         border: none;
         object-fit: cover;
       }
+      .blackhole-card .video-wrapper video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
 
       .blackhole-card .bh-image {
         width: 100%;
@@ -484,6 +489,11 @@
         width: 100%;
         height: 100%;
         border: none;
+      }
+      .modal-content .video-wrapper video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
       }
       .modal-content h2 {
         text-align: center;
@@ -898,6 +908,58 @@
         }
       }
 
+      // ===== Helper: Check if URL is video (MP4, WEBM, etc.) =====
+      function isVideoUrl(url) {
+        if (!url) return false;
+        const videoExtensions = ['.mp4', '.webm', '.ogg', '.mov', '.avi'];
+        const lowerUrl = url.toLowerCase();
+        return videoExtensions.some(ext => lowerUrl.includes(ext));
+      }
+
+      // ===== Helper: Check if URL is embeddable (YouTube, Vimeo, etc.) =====
+      function isEmbedUrl(url) {
+        if (!url) return false;
+        const lowerUrl = url.toLowerCase();
+        return lowerUrl.includes('youtube.com/embed') || 
+               lowerUrl.includes('youtu.be') || 
+               lowerUrl.includes('vimeo.com') ||
+               lowerUrl.includes('player.vimeo.com') ||
+               lowerUrl.includes('drive.google.com') ||
+               lowerUrl.includes('dailymotion.com') ||
+               lowerUrl.includes('facebook.com/plugins/video');
+      }
+
+      // ===== Helper: Generate media HTML =====
+      function getMediaHTML(url, alt, className) {
+        if (!url) {
+          return `<img src="${alt}" alt="Fallback" class="${className}" onerror="this.style.display='none'">`;
+        }
+
+        // If it's a video file (MP4, etc.)
+        if (isVideoUrl(url)) {
+          return `
+            <div class="video-wrapper">
+              <video controls style="width:100%; height:100%; object-fit:cover;">
+                <source src="${url}" type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          `;
+        }
+
+        // If it's an embeddable URL (YouTube, Vimeo, etc.)
+        if (isEmbedUrl(url)) {
+          return `
+            <div class="video-wrapper">
+              <iframe src="${url}" frameborder="0" allowfullscreen loading="lazy"></iframe>
+            </div>
+          `;
+        }
+
+        // Otherwise treat as image
+        return `<img src="${url}" alt="${alt}" class="${className}" onerror="this.src='${alt}'">`;
+      }
+
       // ===== Data =====
       let blackholesData = [];
       let favorites = [];
@@ -976,6 +1038,8 @@
             bh.image ||
             "https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=400&h=300&fit=crop";
           const hasVideo = bh.video_url && bh.video_url.trim() !== "";
+          const mediaHTML = hasVideo ? getMediaHTML(bh.video_url, image, "bh-image") : 
+                                      `<img src="${image}" alt="${bh.name}" class="bh-image" onerror="this.src='https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=400&h=300&fit=crop'">`;
 
           html += `
             <div class="blackhole-card" onclick="showDetail('${bh.id}')">
@@ -983,13 +1047,7 @@
                 <i class="fas fa-star"></i>
               </button>
               
-              ${hasVideo ? `
-                <div class="video-wrapper">
-                  <iframe src="${bh.video_url}" frameborder="0" allowfullscreen loading="lazy"></iframe>
-                </div>
-              ` : `
-                <img src="${image}" alt="${bh.name}" class="bh-image" onerror="this.src='https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=400&h=300&fit=crop'">
-              `}
+              ${mediaHTML}
               
               <h3>${bh.name}</h3>
               <div class="type">${bh.type || "Unknown type"}</div>
@@ -1057,15 +1115,11 @@
           bh.image ||
           "https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=400&h=300&fit=crop";
         const hasVideo = bh.video_url && bh.video_url.trim() !== "";
-
+        
         // Media container
         const mediaContainer = document.getElementById("modalMediaContainer");
         if (hasVideo) {
-          mediaContainer.innerHTML = `
-            <div class="video-wrapper">
-              <iframe src="${bh.video_url}" frameborder="0" allowfullscreen></iframe>
-            </div>
-          `;
+          mediaContainer.innerHTML = getMediaHTML(bh.video_url, image, "bh-image-big");
         } else {
           mediaContainer.innerHTML = `
             <img class="bh-image-big" src="${image}" alt="${bh.name}" onerror="this.src='https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=400&h=300&fit=crop'">
