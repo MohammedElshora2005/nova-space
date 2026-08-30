@@ -62,7 +62,7 @@ class User(db.Model):
     password_hash = db.Column(db.String(200), nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
     location = db.Column(db.String(100), default='')
-    profile_image = db.Column(db.String(500), default='')
+    profile_image = db.Column(db.Text, default='')  # ✅ Base64 or URL
     favorite_planets = db.Column(db.Text, default='[]')
     favorite_missions = db.Column(db.Text, default='[]')
     favorite_asteroids = db.Column(db.Text, default='[]')
@@ -139,6 +139,7 @@ class Asteroid(db.Model):
     hazardous = db.Column(db.Boolean, default=False)
     speed = db.Column(db.String(50))
     date = db.Column(db.String(50))
+    image = db.Column(db.String(500))  # ✅ ضيفت الصورة
     video_url = db.Column(db.String(500))
     description = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=get_utc_now)
@@ -152,6 +153,7 @@ class Asteroid(db.Model):
             'hazardous': self.hazardous,
             'speed': self.speed,
             'date': self.date,
+            'image': self.image,
             'video_url': self.video_url,
             'description': self.description
         }
@@ -681,6 +683,40 @@ def update_favorites():
 
 
 # ======================================================
+# ===== ✅ API - Update Avatar (Base64) =====
+# ======================================================
+
+@app.route('/api/user/update-avatar', methods=['POST'])
+@login_required
+def update_avatar():
+    """تحديث صورة البروفايل (Base64)"""
+    try:
+        data = request.get_json()
+        avatar_base64 = data.get('avatar', '').strip()
+        
+        if not avatar_base64:
+            return jsonify({'success': False, 'message': 'No image provided'}), 400
+        
+        # ✅ التحقق من صحة الصورة
+        if not avatar_base64.startswith('data:image/'):
+            return jsonify({'success': False, 'message': 'Invalid image format'}), 400
+        
+        # ✅ تحديث المستخدم - تخزين Base64 مباشرة
+        user = db.session.get(User, session['user_id'])
+        user.profile_image = avatar_base64
+        db.session.commit()
+        
+        return jsonify({
+            'success': True,
+            'message': 'Avatar updated successfully',
+            'data': {'profile_image': avatar_base64}
+        })
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'success': False, 'message': str(e)}), 400
+
+
+# ======================================================
 # ===== API - Missions =====
 # ======================================================
 
@@ -833,7 +869,7 @@ def delete_planet(planet_id):
 
 
 # ======================================================
-# ===== API - Asteroids =====
+# ===== API - Asteroids (مع Image) =====
 # ======================================================
 
 @app.route('/api/asteroids')
@@ -866,6 +902,7 @@ def create_asteroid():
             hazardous=data.get('hazardous', False),
             speed=data.get('speed'),
             date=data.get('date'),
+            image=data.get('image'),
             video_url=data.get('video_url'),
             description=data.get('description')
         )
@@ -883,7 +920,7 @@ def update_asteroid(asteroid_id):
         asteroid = Asteroid.query.get_or_404(asteroid_id)
         data = request.get_json()
         
-        for field in ['name', 'size', 'hazardous', 'speed', 'date', 'video_url', 'description']:
+        for field in ['name', 'size', 'hazardous', 'speed', 'date', 'image', 'video_url', 'description']:
             if field in data:
                 setattr(asteroid, field, data[field])
         
