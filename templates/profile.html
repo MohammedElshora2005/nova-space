@@ -1006,6 +1006,17 @@
         }
       }
 
+      // ===== Show Notification =====
+      function showNotification(message, type = "success") {
+        const alertContainer = document.getElementById("editAlert");
+        alertContainer.innerHTML = `
+            <div class="alert alert-${type}">${message}</div>
+          `;
+        setTimeout(() => {
+          alertContainer.innerHTML = "";
+        }, 5000);
+      }
+
       // ===== Load Profile =====
       async function loadProfile() {
         try {
@@ -1032,12 +1043,12 @@
               "Joined: " + user.created_at;
 
             // Avatar - check if Base64 or URL
-            if (user.profile_image && user.profile_image.startsWith('data:image')) {
+            if (user.profile_image && user.profile_image.startsWith("data:image")) {
               // Base64 image
               document.getElementById("profileAvatarImg").src = user.profile_image;
               document.getElementById("profileAvatarImg").style.display = "block";
               document.getElementById("avatarPlaceholder").style.display = "none";
-            } else if (user.profile_image && user.profile_image.startsWith('http')) {
+            } else if (user.profile_image && user.profile_image.startsWith("http")) {
               // URL image
               document.getElementById("profileAvatarImg").src = user.profile_image;
               document.getElementById("profileAvatarImg").style.display = "block";
@@ -1046,7 +1057,9 @@
               // No image - show placeholder
               document.getElementById("profileAvatarImg").style.display = "none";
               document.getElementById("avatarPlaceholder").style.display = "block";
-              document.getElementById("avatarPlaceholder").textContent = user.username.charAt(0).toUpperCase();
+              document.getElementById("avatarPlaceholder").textContent = user.username
+                .charAt(0)
+                .toUpperCase();
             }
 
             // Admin badge
@@ -1107,23 +1120,23 @@
           planetsContainer.innerHTML = planets
             .map(
               (name) => `
-                <div class="favorite-item">
-                  <span class="name">🪐 ${name}</span>
-                  <span class="type">Planet</span>
-                  <button class="remove-btn" onclick="removeFavorite('planet', '${name}')" title="Remove from favorites">
-                    <i class="fas fa-times"></i>
-                  </button>
-                </div>
-              `,
+                  <div class="favorite-item">
+                    <span class="name">🪐 ${name}</span>
+                    <span class="type">Planet</span>
+                    <button class="remove-btn" onclick="removeFavorite('planet', '${name}')" title="Remove from favorites">
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </div>
+                `,
             )
             .join("");
         } else {
           planetsContainer.innerHTML = `
-            <div class="no-favorites" style="grid-column: 1 / -1;">
-              <span class="icon">🌌</span>
-              <p>No favorite planets yet. <a href="/planets">Explore planets →</a></p>
-            </div>
-          `;
+              <div class="no-favorites" style="grid-column: 1 / -1;">
+                <span class="icon">🌌</span>
+                <p>No favorite planets yet. <a href="/planets">Explore planets →</a></p>
+              </div>
+            `;
         }
 
         // Missions
@@ -1132,23 +1145,23 @@
           missionsContainer.innerHTML = missions
             .map(
               (id) => `
-                <div class="favorite-item">
-                  <span class="name">🚀 ${id.replace(/-/g, " ").toUpperCase()}</span>
-                  <span class="type">Mission</span>
-                  <button class="remove-btn" onclick="removeFavorite('mission', '${id}')" title="Remove from favorites">
-                    <i class="fas fa-times"></i>
-                  </button>
-                </div>
-              `,
+                  <div class="favorite-item">
+                    <span class="name">🚀 ${id.replace(/-/g, " ").toUpperCase()}</span>
+                    <span class="type">Mission</span>
+                    <button class="remove-btn" onclick="removeFavorite('mission', '${id}')" title="Remove from favorites">
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </div>
+                `,
             )
             .join("");
         } else {
           missionsContainer.innerHTML = `
-            <div class="no-favorites" style="grid-column: 1 / -1;">
-              <span class="icon">🚀</span>
-              <p>No favorite missions yet. <a href="/missions">Explore missions →</a></p>
-            </div>
-          `;
+              <div class="no-favorites" style="grid-column: 1 / -1;">
+                <span class="icon">🚀</span>
+                <p>No favorite missions yet. <a href="/missions">Explore missions →</a></p>
+              </div>
+            `;
         }
 
         // Asteroids
@@ -1157,23 +1170,23 @@
           asteroidsContainer.innerHTML = asteroids
             .map(
               (id) => `
-                <div class="favorite-item">
-                  <span class="name">☄️ ${id.replace(/-/g, " ").toUpperCase()}</span>
-                  <span class="type">Asteroid</span>
-                  <button class="remove-btn" onclick="removeFavorite('asteroid', '${id}')" title="Remove from favorites">
-                    <i class="fas fa-times"></i>
-                  </button>
-                </div>
-              `,
+                  <div class="favorite-item">
+                    <span class="name">☄️ ${id.replace(/-/g, " ").toUpperCase()}</span>
+                    <span class="type">Asteroid</span>
+                    <button class="remove-btn" onclick="removeFavorite('asteroid', '${id}')" title="Remove from favorites">
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </div>
+                `,
             )
             .join("");
         } else {
           asteroidsContainer.innerHTML = `
-            <div class="no-favorites" style="grid-column: 1 / -1;">
-              <span class="icon">☄️</span>
-              <p>No favorite asteroids yet. <a href="/asteroids">Explore asteroids →</a></p>
-            </div>
-          `;
+              <div class="no-favorites" style="grid-column: 1 / -1;">
+                <span class="icon">☄️</span>
+                <p>No favorite asteroids yet. <a href="/asteroids">Explore asteroids →</a></p>
+              </div>
+            `;
         }
 
         // Stars
@@ -1182,23 +1195,23 @@
           starsContainer.innerHTML = stars
             .map(
               (id) => `
-                <div class="favorite-item">
-                  <span class="name">⭐ ${id.replace(/-/g, " ").toUpperCase()}</span>
-                  <span class="type">Star</span>
-                  <button class="remove-btn" onclick="removeFavorite('star', '${id}')" title="Remove from favorites">
-                    <i class="fas fa-times"></i>
-                  </button>
-                </div>
-              `,
+                  <div class="favorite-item">
+                    <span class="name">⭐ ${id.replace(/-/g, " ").toUpperCase()}</span>
+                    <span class="type">Star</span>
+                    <button class="remove-btn" onclick="removeFavorite('star', '${id}')" title="Remove from favorites">
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </div>
+                `,
             )
             .join("");
         } else {
           starsContainer.innerHTML = `
-            <div class="no-favorites" style="grid-column: 1 / -1;">
-              <span class="icon">⭐</span>
-              <p>No favorite stars yet. <a href="/stars">Explore stars →</a></p>
-            </div>
-          `;
+              <div class="no-favorites" style="grid-column: 1 / -1;">
+                <span class="icon">⭐</span>
+                <p>No favorite stars yet. <a href="/stars">Explore stars →</a></p>
+              </div>
+            `;
         }
 
         // Galaxies
@@ -1207,23 +1220,23 @@
           galaxiesContainer.innerHTML = galaxies
             .map(
               (id) => `
-                <div class="favorite-item">
-                  <span class="name">🌌 ${id.replace(/-/g, " ").toUpperCase()}</span>
-                  <span class="type">Galaxy</span>
-                  <button class="remove-btn" onclick="removeFavorite('galaxy', '${id}')" title="Remove from favorites">
-                    <i class="fas fa-times"></i>
-                  </button>
-                </div>
-              `,
+                  <div class="favorite-item">
+                    <span class="name">🌌 ${id.replace(/-/g, " ").toUpperCase()}</span>
+                    <span class="type">Galaxy</span>
+                    <button class="remove-btn" onclick="removeFavorite('galaxy', '${id}')" title="Remove from favorites">
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </div>
+                `,
             )
             .join("");
         } else {
           galaxiesContainer.innerHTML = `
-            <div class="no-favorites" style="grid-column: 1 / -1;">
-              <span class="icon">🌌</span>
-              <p>No favorite galaxies yet. <a href="/galaxies">Explore galaxies →</a></p>
-            </div>
-          `;
+              <div class="no-favorites" style="grid-column: 1 / -1;">
+                <span class="icon">🌌</span>
+                <p>No favorite galaxies yet. <a href="/galaxies">Explore galaxies →</a></p>
+              </div>
+            `;
         }
 
         // Black Holes
@@ -1233,23 +1246,23 @@
           blackholesContainer.innerHTML = blackholes
             .map(
               (id) => `
-                <div class="favorite-item">
-                  <span class="name">🕳️ ${id.replace(/-/g, " ").toUpperCase()}</span>
-                  <span class="type">Black Hole</span>
-                  <button class="remove-btn" onclick="removeFavorite('blackhole', '${id}')" title="Remove from favorites">
-                    <i class="fas fa-times"></i>
-                  </button>
-                </div>
-              `,
+                  <div class="favorite-item">
+                    <span class="name">🕳️ ${id.replace(/-/g, " ").toUpperCase()}</span>
+                    <span class="type">Black Hole</span>
+                    <button class="remove-btn" onclick="removeFavorite('blackhole', '${id}')" title="Remove from favorites">
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </div>
+                `,
             )
             .join("");
         } else {
           blackholesContainer.innerHTML = `
-            <div class="no-favorites" style="grid-column: 1 / -1;">
-              <span class="icon">🕳️</span>
-              <p>No favorite black holes yet. <a href="/blackholes">Explore black holes →</a></p>
-            </div>
-          `;
+              <div class="no-favorites" style="grid-column: 1 / -1;">
+                <span class="icon">🕳️</span>
+                <p>No favorite black holes yet. <a href="/blackholes">Explore black holes →</a></p>
+              </div>
+            `;
         }
       }
 
@@ -1350,13 +1363,19 @@
                   "block";
                 document.getElementById("avatarPlaceholder").style.display =
                   "none";
-                alert("Avatar updated successfully!");
+                showNotification("Avatar updated successfully!", "success");
               } else {
-                alert(result.message || "Error updating avatar");
+                showNotification(
+                  result.message || "Error updating avatar",
+                  "error",
+                );
               }
             } catch (error) {
               console.error("Error uploading avatar:", error);
-              alert("Error uploading avatar. Please try again.");
+              showNotification(
+                "Error uploading avatar. Please try again.",
+                "error",
+              );
             }
           };
           reader.readAsDataURL(file);
@@ -1399,8 +1418,8 @@
 
             if (result.success) {
               alertContainer.innerHTML = `
-                <div class="alert alert-success">✅ ${result.message}</div>
-              `;
+                  <div class="alert alert-success">✅ ${result.message}</div>
+                `;
               document.getElementById("profileName").textContent = username;
               document.getElementById("profileUsername").textContent =
                 "@" + username;
@@ -1425,16 +1444,16 @@
               }, 5000);
             } else {
               alertContainer.innerHTML = `
-                <div class="alert alert-error">❌ ${result.message}</div>
-              `;
+                  <div class="alert alert-error">❌ ${result.message}</div>
+                `;
               button.innerHTML = '<i class="fas fa-save"></i> Save Changes';
               button.disabled = false;
             }
           } catch (e) {
             console.error("Error updating profile:", e);
             alertContainer.innerHTML = `
-              <div class="alert alert-error">❌ Connection error. Please try again.</div>
-            `;
+                <div class="alert alert-error">❌ Connection error. Please try again.</div>
+              `;
             button.innerHTML = '<i class="fas fa-save"></i> Save Changes';
             button.disabled = false;
           }
