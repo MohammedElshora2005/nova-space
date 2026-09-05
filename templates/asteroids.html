@@ -780,8 +780,8 @@
           />
           <select id="hazardFilter">
             <option value="">All</option>
-            <option value="true">⚠️ Hazardous</option>
-            <option value="false">✅ Safe</option>
+            <option value="true">Hazardous</option>
+            <option value="false">Safe</option>
           </select>
           <button class="filter-btn" id="filterBtn">
             <i class="fas fa-search"></i> Filter
@@ -905,7 +905,7 @@
           <h4>Support</h4>
           <a href="#">Contact</a>
           <a href="#">FAQ</a>
-          <a href="/login" class="footer-admin-link">🔐 Admin</a>
+          <a href="/login" class="footer-admin-link">Admin</a>
         </div>
       </div>
     </div>
@@ -1130,7 +1130,7 @@
         asteroids.forEach((asteroid) => {
           const isFavorite = favorites.includes(String(asteroid.id));
           const hazardClass = asteroid.hazardous ? "hazard-yes" : "hazard-no";
-          const hazardText = asteroid.hazardous ? "⚠️ Hazardous" : "✅ Safe";
+          const hazardText = asteroid.hazardous ? "Hazardous" : "Safe";
           const image = asteroid.image || FALLBACK_IMAGE;
           const hasVideo =
             asteroid.video_url && asteroid.video_url.trim() !== "";
@@ -1148,7 +1148,7 @@
                 
                 <span class="hazard-badge ${hazardClass}">${hazardText}</span>
                 <h3>${asteroid.name}</h3>
-                <div class="date">📅 ${asteroid.date || "TBD"}</div>
+                <div class="date">${asteroid.date || "TBD"}</div>
                 <p class="description">${asteroid.description || "No description available"}</p>
                 <div class="stats">
                   <div class="stat">
@@ -1215,7 +1215,7 @@
         const hazardClass = asteroid.hazardous
           ? "hazard-yes-large"
           : "hazard-no-large";
-        const hazardText = asteroid.hazardous ? "⚠️ Hazardous" : "✅ Safe";
+        const hazardText = asteroid.hazardous ? "Hazardous" : "Safe";
         const hazardDisplay = asteroid.hazardous ? "Yes" : "No";
         const hasVideo =
           asteroid.video_url && asteroid.video_url.trim() !== "";
