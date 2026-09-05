@@ -847,9 +847,56 @@
         <!-- Header -->
         <div class="admin-header">
           <h1>
-            <span class="logo-icon">✦</span>
-            Nova Dashboard
-          </h1>
+  <svg
+    width="28"
+    height="28"
+    viewBox="0 0 40 40"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    style="display: inline-block; vertical-align: middle; margin-right: 10px;"
+  >
+    <circle cx="20" cy="20" r="10" fill="url(#grad1)" />
+    <ellipse
+      cx="20"
+      cy="20"
+      rx="18"
+      ry="6"
+      fill="none"
+      stroke="url(#grad2)"
+      stroke-width="2"
+      transform="rotate(-20, 20, 20)"
+    />
+    <ellipse
+      cx="20"
+      cy="20"
+      rx="14"
+      ry="4"
+      fill="none"
+      stroke="#fff"
+      stroke-width="0.5"
+      opacity="0.15"
+      transform="rotate(-20, 20, 20)"
+    />
+    <path
+      d="M10 20 Q20 26 30 20"
+      stroke="rgba(0,0,0,0.2)"
+      stroke-width="4"
+      fill="none"
+    />
+    <defs>
+      <linearGradient id="grad1" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#00D4FF" />
+        <stop offset="50%" stop-color="#7B2FFC" />
+        <stop offset="100%" stop-color="#FF006E" />
+      </linearGradient>
+      <linearGradient id="grad2" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#7B2FFC" />
+        <stop offset="100%" stop-color="#FF006E" />
+      </linearGradient>
+    </defs>
+  </svg>
+  Nova Dashboard
+</h1>
           <div class="admin-user">
             <span class="user-name"
               ><i class="fas fa-user"></i>
@@ -967,7 +1014,7 @@
 
           <div class="table-container">
             <div class="table-header">
-              <h3>📋 All Missions</h3>
+              <h3>All Missions</h3>
               <span class="count" id="missionCount">0 entries</span>
             </div>
             <div class="table-wrapper">
@@ -981,7 +1028,7 @@
         <!-- ===== Tab: Planets ===== -->
         <div id="tab-planets" class="tab-content">
           <div class="add-form">
-            <h3>➕ Add New Planet</h3>
+            <h3>Add New Planet</h3>
             <div id="planetAlert"></div>
             <form id="addPlanetForm">
               <div class="form-row">
@@ -1026,7 +1073,7 @@
 
           <div class="table-container">
             <div class="table-header">
-              <h3>🌍 All Planets</h3>
+              <h3>All Planets</h3>
               <span class="count" id="planetCount">0 entries</span>
             </div>
             <div class="table-wrapper">
@@ -1040,7 +1087,7 @@
         <!-- ===== Tab: Asteroids (مع Image URL + Video URL) ===== -->
         <div id="tab-asteroids" class="tab-content">
           <div class="add-form">
-            <h3>➕ Add New Asteroid</h3>
+            <h3>Add New Asteroid</h3>
             <div id="asteroidAlert"></div>
             <form id="addAsteroidForm">
               <div class="form-row">
@@ -1102,7 +1149,7 @@
         <!-- ===== Tab: Stars (مع Video URL + Description) ===== -->
         <div id="tab-stars" class="tab-content">
           <div class="add-form">
-            <h3>⭐ Add New Star</h3>
+            <h3>Add New Star</h3>
             <div id="starAlert"></div>
             <form id="addStarForm">
               <div class="form-row">
@@ -1141,7 +1188,7 @@
 
           <div class="table-container">
             <div class="table-header">
-              <h3>⭐ All Stars</h3>
+              <h3>All Stars</h3>
               <span class="count" id="starCount">0 entries</span>
             </div>
             <div class="table-wrapper">
@@ -1155,7 +1202,7 @@
         <!-- ===== Tab: Galaxies (مع Video URL + Description) ===== -->
         <div id="tab-galaxies" class="tab-content">
           <div class="add-form">
-            <h3>🌌 Add New Galaxy</h3>
+            <h3>Add New Galaxy</h3>
             <div id="galaxyAlert"></div>
             <form id="addGalaxyForm">
               <div class="form-row">
@@ -1200,7 +1247,7 @@
 
           <div class="table-container">
             <div class="table-header">
-              <h3>🌌 All Galaxies</h3>
+              <h3>All Galaxies</h3>
               <span class="count" id="galaxyCount">0 entries</span>
             </div>
             <div class="table-wrapper">
@@ -1214,7 +1261,7 @@
         <!-- ===== Tab: Black Holes ===== -->
         <div id="tab-blackholes" class="tab-content">
           <div class="add-form">
-            <h3>🕳️ Add New Black Hole</h3>
+            <h3>Add New Black Hole</h3>
             <div id="blackholeAlert"></div>
             <form id="addBlackHoleForm">
               <div class="form-row">
@@ -1268,7 +1315,7 @@
 
           <div class="table-container">
             <div class="table-header">
-              <h3>🕳️ All Black Holes</h3>
+              <h3>All Black Holes</h3>
               <span class="count" id="blackholeCount">0 entries</span>
             </div>
             <div class="table-wrapper">
@@ -1283,7 +1330,7 @@
         <div id="tab-subscriptions" class="tab-content">
           <div class="table-container">
             <div class="table-header">
-              <h3>📋 All Applications</h3>
+              <h3>All Applications</h3>
               <span class="count" id="subCount">0 entries</span>
             </div>
             <div class="table-wrapper">
@@ -1305,7 +1352,7 @@
     <div class="modal-overlay" id="editModal">
       <div class="modal-content">
         <button class="close-btn" onclick="closeEditModal()">&times;</button>
-        <h2 id="editModalTitle">✏️ Edit</h2>
+        <h2 id="editModalTitle">Edit</h2>
         <div id="editAlert"></div>
         <form id="editForm">
           <input type="hidden" id="editId" />
@@ -1395,7 +1442,7 @@
             html += "</tbody></table>";
             container.innerHTML = html;
           } else {
-            container.innerHTML = `<div class="no-data"><div class="icon">🚀</div><p>No missions yet</p></div>`;
+            container.innerHTML = `<div class="no-data"><div class="icon"></div><p>No missions yet</p></div>`;
             count.textContent = "0 entries";
           }
         } catch (e) {
@@ -1427,15 +1474,15 @@
           });
           const result = await response.json();
           if (result.success) {
-            alertContainer.innerHTML = `<div class="alert alert-success">✅ ${result.message}</div>`;
+            alertContainer.innerHTML = `<div class="alert alert-success">${result.message}</div>`;
             this.reset();
             loadMissions();
             loadStats();
           } else {
-            alertContainer.innerHTML = `<div class="alert alert-error">❌ ${result.message}</div>`;
+            alertContainer.innerHTML = `<div class="alert alert-error">${result.message}</div>`;
           }
         } catch (e) {
-          alertContainer.innerHTML = `<div class="alert alert-error">❌ Error adding mission</div>`;
+          alertContainer.innerHTML = `<div class="alert alert-error">Error adding mission</div>`;
         }
       });
 
@@ -1487,7 +1534,7 @@
             html += "</tbody></table>";
             container.innerHTML = html;
           } else {
-            container.innerHTML = `<div class="no-data"><div class="icon">🌍</div><p>No planets yet</p></div>`;
+            container.innerHTML = `<div class="no-data"><div class="icon"></div><p>No planets yet</p></div>`;
             count.textContent = "0 entries";
           }
         } catch (e) {
@@ -1520,15 +1567,15 @@
           });
           const result = await response.json();
           if (result.success) {
-            alertContainer.innerHTML = `<div class="alert alert-success">✅ ${result.message}</div>`;
+            alertContainer.innerHTML = `<div class="alert alert-success">${result.message}</div>`;
             this.reset();
             loadPlanets();
             loadStats();
           } else {
-            alertContainer.innerHTML = `<div class="alert alert-error">❌ ${result.message}</div>`;
+            alertContainer.innerHTML = `<div class="alert alert-error">${result.message}</div>`;
           }
         } catch (e) {
-          alertContainer.innerHTML = `<div class="alert alert-error">❌ Error adding planet</div>`;
+          alertContainer.innerHTML = `<div class="alert alert-error">Error adding planet</div>`;
         }
       });
 
@@ -1569,7 +1616,7 @@
               html += `<tr>
                             <td>${a.name}</td>
                             <td>${a.size || "N/A"} m</td>
-                            <td>${a.hazardous ? "⚠️ Yes" : "✅ No"}</td>
+                            <td>${a.hazardous ? "Yes" : "No"}</td>
                             <td>${a.date || "TBD"}</td>
                             <td>
                                 <button class="btn-edit" onclick="openEditModal('asteroid', '${a.id}')"><i class="fas fa-edit"></i></button>
@@ -1580,7 +1627,7 @@
             html += "</tbody></table>";
             container.innerHTML = html;
           } else {
-            container.innerHTML = `<div class="no-data"><div class="icon">☄️</div><p>No asteroids yet</p></div>`;
+            container.innerHTML = `<div class="no-data"><div class="icon"></div><p>No asteroids yet</p></div>`;
             count.textContent = "0 entries";
           }
         } catch (e) {
@@ -1613,15 +1660,15 @@
           });
           const result = await response.json();
           if (result.success) {
-            alertContainer.innerHTML = `<div class="alert alert-success">✅ ${result.message}</div>`;
+            alertContainer.innerHTML = `<div class="alert alert-success">${result.message}</div>`;
             this.reset();
             loadAsteroids();
             loadStats();
           } else {
-            alertContainer.innerHTML = `<div class="alert alert-error">❌ ${result.message}</div>`;
+            alertContainer.innerHTML = `<div class="alert alert-error">${result.message}</div>`;
           }
         } catch (e) {
-          alertContainer.innerHTML = `<div class="alert alert-error">❌ Error adding asteroid</div>`;
+          alertContainer.innerHTML = `<div class="alert alert-error">Error adding asteroid</div>`;
         }
       });
 
@@ -1705,15 +1752,15 @@
           });
           const result = await response.json();
           if (result.success) {
-            alertContainer.innerHTML = `<div class="alert alert-success">✅ ${result.message}</div>`;
+            alertContainer.innerHTML = `<div class="alert alert-success">${result.message}</div>`;
             this.reset();
             loadStars();
             loadStats();
           } else {
-            alertContainer.innerHTML = `<div class="alert alert-error">❌ ${result.message}</div>`;
+            alertContainer.innerHTML = `<div class="alert alert-error">${result.message}</div>`;
           }
         } catch (e) {
-          alertContainer.innerHTML = `<div class="alert alert-error">❌ Error adding star</div>`;
+          alertContainer.innerHTML = `<div class="alert alert-error">Error adding star</div>`;
         }
       });
 
@@ -1800,15 +1847,15 @@
           });
           const result = await response.json();
           if (result.success) {
-            alertContainer.innerHTML = `<div class="alert alert-success">✅ ${result.message}</div>`;
+            alertContainer.innerHTML = `<div class="alert alert-success">${result.message}</div>`;
             this.reset();
             loadGalaxies();
             loadStats();
           } else {
-            alertContainer.innerHTML = `<div class="alert alert-error">❌ ${result.message}</div>`;
+            alertContainer.innerHTML = `<div class="alert alert-error">${result.message}</div>`;
           }
         } catch (e) {
-          alertContainer.innerHTML = `<div class="alert alert-error">❌ Error adding galaxy</div>`;
+          alertContainer.innerHTML = `<div class="alert alert-error">Error adding galaxy</div>`;
         }
       });
 
@@ -1896,15 +1943,15 @@
           });
           const result = await response.json();
           if (result.success) {
-            alertContainer.innerHTML = `<div class="alert alert-success">✅ ${result.message}</div>`;
+            alertContainer.innerHTML = `<div class="alert alert-success">${result.message}</div>`;
             this.reset();
             loadBlackHoles();
             loadStats();
           } else {
-            alertContainer.innerHTML = `<div class="alert alert-error">❌ ${result.message}</div>`;
+            alertContainer.innerHTML = `<div class="alert alert-error">${result.message}</div>`;
           }
         } catch (e) {
-          alertContainer.innerHTML = `<div class="alert alert-error">❌ Error adding black hole</div>`;
+          alertContainer.innerHTML = `<div class="alert alert-error">Error adding black hole</div>`;
         }
       });
 
@@ -2017,7 +2064,7 @@
           galaxy: "Galaxy",
           blackhole: "Black Hole",
         };
-        title.textContent = `✏️ Edit ${typeNames[type] || "Item"}`;
+        title.textContent = `Edit ${typeNames[type] || "Item"}`;
 
         try {
           let endpoint = "";
@@ -2032,7 +2079,7 @@
           const data = await response.json();
 
           if (!data.success) {
-            alertContainer.innerHTML = `<div class="alert alert-error">❌ Error loading data</div>`;
+            alertContainer.innerHTML = `<div class="alert alert-error">Error loading data</div>`;
             return;
           }
 
@@ -2128,7 +2175,7 @@
           modal.classList.add("active");
           document.body.style.overflow = "hidden";
         } catch (e) {
-          alertContainer.innerHTML = `<div class="alert alert-error">❌ Error loading data</div>`;
+          alertContainer.innerHTML = `<div class="alert alert-error">Error loading data</div>`;
           console.error(e);
         }
       }
@@ -2243,8 +2290,8 @@
           const result = await response.json();
 
           if (result.success) {
-            alertContainer.innerHTML = `<div class="alert alert-success">✅ ${result.message}</div>`;
-            submitBtn.innerHTML = "✅ Saved!";
+            alertContainer.innerHTML = `<div class="alert alert-success">${result.message}</div>`;
+            submitBtn.innerHTML = "Saved!";
 
             setTimeout(() => {
               closeEditModal();
@@ -2261,12 +2308,12 @@
               loadStats();
             }, 1000);
           } else {
-            alertContainer.innerHTML = `<div class="alert alert-error">❌ ${result.message}</div>`;
+            alertContainer.innerHTML = `<div class="alert alert-error">${result.message}</div>`;
             submitBtn.innerHTML = "Save Changes";
             submitBtn.disabled = false;
           }
         } catch (e) {
-          alertContainer.innerHTML = `<div class="alert alert-error">❌ Error saving changes</div>`;
+          alertContainer.innerHTML = `<div class="alert alert-error">Error saving changes</div>`;
           submitBtn.innerHTML = "Save Changes";
           submitBtn.disabled = false;
           console.error(e);
