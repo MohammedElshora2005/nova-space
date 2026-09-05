@@ -738,7 +738,7 @@
                 alt="Avatar"
                 style="display: none"
               />
-              <span class="avatar-placeholder" id="avatarPlaceholder">🚀</span>
+              <span class="avatar-placeholder" id="avatarPlaceholder"></span>
               <div class="avatar-overlay">
                 <i class="fas fa-camera"></i> Change
               </div>
@@ -1121,7 +1121,7 @@
             .map(
               (name) => `
                   <div class="favorite-item">
-                    <span class="name">🪐 ${name}</span>
+                    <span class="name">${name}</span>
                     <span class="type">Planet</span>
                     <button class="remove-btn" onclick="removeFavorite('planet', '${name}')" title="Remove from favorites">
                       <i class="fas fa-times"></i>
@@ -1158,7 +1158,7 @@
         } else {
           missionsContainer.innerHTML = `
               <div class="no-favorites" style="grid-column: 1 / -1;">
-                <span class="icon">🚀</span>
+                <span class="icon"></span>
                 <p>No favorite missions yet. <a href="/missions">Explore missions →</a></p>
               </div>
             `;
@@ -1171,7 +1171,7 @@
             .map(
               (id) => `
                   <div class="favorite-item">
-                    <span class="name">☄️ ${id.replace(/-/g, " ").toUpperCase()}</span>
+                    <span class="name">${id.replace(/-/g, " ").toUpperCase()}</span>
                     <span class="type">Asteroid</span>
                     <button class="remove-btn" onclick="removeFavorite('asteroid', '${id}')" title="Remove from favorites">
                       <i class="fas fa-times"></i>
@@ -1183,7 +1183,7 @@
         } else {
           asteroidsContainer.innerHTML = `
               <div class="no-favorites" style="grid-column: 1 / -1;">
-                <span class="icon">☄️</span>
+                <span class="icon"></span>
                 <p>No favorite asteroids yet. <a href="/asteroids">Explore asteroids →</a></p>
               </div>
             `;
@@ -1221,7 +1221,7 @@
             .map(
               (id) => `
                   <div class="favorite-item">
-                    <span class="name">🌌 ${id.replace(/-/g, " ").toUpperCase()}</span>
+                    <span class="name">${id.replace(/-/g, " ").toUpperCase()}</span>
                     <span class="type">Galaxy</span>
                     <button class="remove-btn" onclick="removeFavorite('galaxy', '${id}')" title="Remove from favorites">
                       <i class="fas fa-times"></i>
@@ -1233,7 +1233,7 @@
         } else {
           galaxiesContainer.innerHTML = `
               <div class="no-favorites" style="grid-column: 1 / -1;">
-                <span class="icon">🌌</span>
+                <span class="icon"></span>
                 <p>No favorite galaxies yet. <a href="/galaxies">Explore galaxies →</a></p>
               </div>
             `;
