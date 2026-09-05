@@ -968,7 +968,7 @@
             <a href="/register">Register</a>
           </li>
           <li id="profileButton" style="display: none">
-            <a href="/profile" class="nav-cta">👤 Profile</a>
+            <a href="/profile" class="nav-cta">Profile</a>
           </li>
         </ul>
         <div class="hamburger">
@@ -989,7 +989,7 @@
 
       <div class="hero-content">
         <div class="hero-left">
-          <span class="hero-badge">🚀 Mission 2026</span>
+          <span class="hero-badge">Mission 2026</span>
           <h1>
             <span class="gradient-text">Explore</span> the Universe<br />
             <span class="highlight-text">Without Limits</span>
@@ -1061,7 +1061,7 @@
           <img src="{{ apod.url }}" alt="{{ apod.title }}" class="apod-image" />
           {% endif %}
           <div class="apod-info">
-            <span class="date">📅 {{ apod.date }}</span>
+            <span class="date">{{ apod.date }}</span>
             <h3>{{ apod.title }}</h3>
             <p>
               {{ apod.explanation[:250] }}{% if apod.explanation|length > 250
@@ -1107,7 +1107,7 @@
             <span>{{ ast.name }}</span>
             <span class="size">{{ "%.0f"|format(ast.size) }}m</span>
             <span class="{{ 'hazardous' if ast.hazardous else 'safe' }}">
-              {{ '⚠️ Hazardous' if ast.hazardous else '✅ Safe' }}
+              {{ 'Hazardous' if ast.hazardous else 'Safe' }}
             </span>
           </div>
           {% endfor %}
@@ -1117,7 +1117,7 @@
         <!-- Mars Photos -->
         {% if mars_photos %}
         <div>
-          <h3 style="margin-bottom: 15px">🔴 Mars Rover Photos</h3>
+          <h3 style="margin-bottom: 15px">Mars Rover Photos</h3>
           <div class="mars-grid">
             {% for photo in mars_photos[:6] %}
             <div class="mars-item">
@@ -1136,7 +1136,7 @@
     <section class="news-section">
       <div class="container">
         <div class="section-header">
-          <span class="section-tag">📰 Space News</span>
+          <span class="section-tag">Space News</span>
           <h2>Latest <span class="gradient-text">News</span></h2>
           <p>Stay updated with the latest space news</p>
         </div>
@@ -1225,7 +1225,7 @@
     <section id="technology" class="technology">
       <div class="container">
         <div class="section-header">
-          <span class="section-tag">⚡ Technology</span>
+          <span class="section-tag">Technology</span>
           <h2>Latest <span class="gradient-text">Innovations</span></h2>
           <p>
             We present the latest technologies that will change the future of
@@ -1331,7 +1331,7 @@
     <section id="team" class="team">
       <div class="container">
         <div class="section-header">
-          <span class="section-tag">👨‍🚀 Our Team</span>
+          <span class="section-tag">Our Team</span>
           <h2>Elite <span class="gradient-text">Creators</span></h2>
           <p>A team of experts and scientists to achieve our vision</p>
         </div>
@@ -1409,7 +1409,7 @@
       <div class="container">
         <div class="contact-wrapper">
           <div class="contact-text">
-            <span class="section-tag">💌 Join Us</span>
+            <span class="section-tag">Join Us</span>
             <h2>Be Part of the <span class="gradient-text">Future</span></h2>
             <p>Join our team and explore new horizons together</p>
             <div class="contact-features">
@@ -1539,7 +1539,7 @@
               <h4>Support</h4>
               <a href="#">Contact</a>
               <a href="#">FAQ</a>
-              <a href="/login" class="footer-admin-link">🔐 Admin</a>
+              <a href="/login" class="footer-admin-link">Admin</a>
             </div>
           </div>
         </div>
