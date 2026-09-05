@@ -697,11 +697,11 @@
           <li><a href="/chat">Nova AI</a></li>
           <!-- Dynamic Auth Buttons -->
           <li id="authButtons">
-            <a href="/login">🔐 Login</a>
-            <a href="/register">📝 Register</a>
+            <a href="/login">Login</a>
+            <a href="/register">Register</a>
           </li>
           <li id="profileButton" style="display: inline-block">
-            <a href="/profile" class="active nav-cta">👤 Profile</a>
+            <a href="/profile" class="active nav-cta">Profile</a>
           </li>
         </ul>
         <div class="hamburger">
@@ -747,13 +747,13 @@
             <div class="profile-info">
               <h1 id="profileName">Username</h1>
               <div class="username" id="profileUsername">@username</div>
-              <div class="email" id="profileEmail">✉️ email@example.com</div>
+              <div class="email" id="profileEmail">email@example.com</div>
               <div class="location" id="profileLocation">
-                📍 No location set
+                No location set
               </div>
               <div class="joined" id="profileJoined">Joined: Loading...</div>
               <div id="adminBadge" style="display: none" class="badge-admin">
-                ⭐ Admin
+                Admin
               </div>
             </div>
             <div class="profile-actions">
@@ -949,7 +949,7 @@
               <h4>Support</h4>
               <a href="#">Contact</a>
               <a href="#">FAQ</a>
-              <a href="/login" class="footer-admin-link">🔐 Admin</a>
+              <a href="/login" class="footer-admin-link">Admin</a>
             </div>
           </div>
         </div>
@@ -1036,9 +1036,9 @@
             document.getElementById("profileUsername").textContent =
               "@" + user.username;
             document.getElementById("profileEmail").textContent =
-              "✉️ " + user.email;
+              " " + user.email;
             document.getElementById("profileLocation").textContent =
-              user.location ? "📍 " + user.location : "📍 No location set";
+              user.location ? " " + user.location : " No location set";
             document.getElementById("profileJoined").textContent =
               "Joined: " + user.created_at;
 
@@ -1146,7 +1146,7 @@
             .map(
               (id) => `
                   <div class="favorite-item">
-                    <span class="name">🚀 ${id.replace(/-/g, " ").toUpperCase()}</span>
+                    <span class="name"> ${id.replace(/-/g, " ").toUpperCase()}</span>
                     <span class="type">Mission</span>
                     <button class="remove-btn" onclick="removeFavorite('mission', '${id}')" title="Remove from favorites">
                       <i class="fas fa-times"></i>
@@ -1418,7 +1418,7 @@
 
             if (result.success) {
               alertContainer.innerHTML = `
-                  <div class="alert alert-success">✅ ${result.message}</div>
+                  <div class="alert alert-success">${result.message}</div>
                 `;
               document.getElementById("profileName").textContent = username;
               document.getElementById("profileUsername").textContent =
@@ -1426,8 +1426,8 @@
               document.getElementById("profileEmail").textContent =
                 "✉️ " + email;
               document.getElementById("profileLocation").textContent = location
-                ? "📍 " + location
-                : "📍 No location set";
+                ? " " + location
+                : " No location set";
 
               // Update avatar placeholder
               document.getElementById("avatarPlaceholder").textContent =
@@ -1444,7 +1444,7 @@
               }, 5000);
             } else {
               alertContainer.innerHTML = `
-                  <div class="alert alert-error">❌ ${result.message}</div>
+                  <div class="alert alert-error">${result.message}</div>
                 `;
               button.innerHTML = '<i class="fas fa-save"></i> Save Changes';
               button.disabled = false;
@@ -1452,7 +1452,7 @@
           } catch (e) {
             console.error("Error updating profile:", e);
             alertContainer.innerHTML = `
-                <div class="alert alert-error">❌ Connection error. Please try again.</div>
+                <div class="alert alert-error">Connection error. Please try again.</div>
               `;
             button.innerHTML = '<i class="fas fa-save"></i> Save Changes';
             button.disabled = false;
