@@ -658,7 +658,7 @@
         <div class="messages-container" id="messagesContainer">
           <!-- Welcome Message -->
           <div class="welcome-message" id="welcomeMessage">
-            <span class="icon">🚀</span>
+            <span class="icon"></span>
             <h3>Welcome to Nova AI!</h3>
             <p>Ask me anything about space, planets, missions, and more.</p>
           </div>
@@ -670,31 +670,31 @@
             class="suggestion"
             onclick="askQuestion('Tell me about the Mars rovers')"
           >
-            🔴 Mars rovers
+            Mars rovers
           </button>
           <button
             class="suggestion"
             onclick="askQuestion('What is the James Webb Space Telescope?')"
           >
-            🔭 JWST
+            JWST
           </button>
           <button
             class="suggestion"
             onclick="askQuestion('How many planets are in our solar system?')"
           >
-            🪐 Planets
+            Planets
           </button>
           <button
             class="suggestion"
             onclick="askQuestion('What is a black hole?')"
           >
-            ⚫ Black holes
+            Black holes
           </button>
           <button
             class="suggestion"
             onclick="askQuestion('When is the next rocket launch?')"
           >
-            🚀 Rocket launches
+            Rocket launches
           </button>
         </div>
 
@@ -788,7 +788,7 @@
           <h4>Support</h4>
           <a href="#">Contact</a>
           <a href="#">FAQ</a>
-          <a href="/login" class="footer-admin-link">🔐 Admin</a>
+          <a href="/login" class="footer-admin-link">Admin</a>
         </div>
       </div>
     </div>
@@ -885,13 +885,13 @@
           } else {
             addMessage(
               "nova",
-              "❌ Sorry, I encountered an error. Please try again.",
+              "Sorry, I encountered an error. Please try again.",
             );
           }
         } catch (error) {
           console.error("Error:", error);
           showTyping(false);
-          addMessage("nova", "❌ Connection error. Please try again.");
+          addMessage("nova", "Connection error. Please try again.");
         }
 
         isProcessing = false;
@@ -940,7 +940,7 @@
             indicator.id = "typingIndicator";
             indicator.className = "typing-indicator";
             indicator.innerHTML = `
-              <div class="avatar">🤖</div>
+              <div class="avatar"></div>
               <div class="dots">
                 <span></span>
                 <span></span>
