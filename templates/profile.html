@@ -1133,7 +1133,7 @@
         } else {
           planetsContainer.innerHTML = `
               <div class="no-favorites" style="grid-column: 1 / -1;">
-                <span class="icon">🌌</span>
+                <span class="icon"></span>
                 <p>No favorite planets yet. <a href="/planets">Explore planets →</a></p>
               </div>
             `;
@@ -1146,7 +1146,7 @@
             .map(
               (id) => `
                   <div class="favorite-item">
-                    <span class="name"> ${id.replace(/-/g, " ").toUpperCase()}</span>
+                    <span class="name">${id.replace(/-/g, " ").toUpperCase()}</span>
                     <span class="type">Mission</span>
                     <button class="remove-btn" onclick="removeFavorite('mission', '${id}')" title="Remove from favorites">
                       <i class="fas fa-times"></i>
@@ -1247,7 +1247,7 @@
             .map(
               (id) => `
                   <div class="favorite-item">
-                    <span class="name">🕳️ ${id.replace(/-/g, " ").toUpperCase()}</span>
+                    <span class="name">${id.replace(/-/g, " ").toUpperCase()}</span>
                     <span class="type">Black Hole</span>
                     <button class="remove-btn" onclick="removeFavorite('blackhole', '${id}')" title="Remove from favorites">
                       <i class="fas fa-times"></i>
@@ -1259,7 +1259,7 @@
         } else {
           blackholesContainer.innerHTML = `
               <div class="no-favorites" style="grid-column: 1 / -1;">
-                <span class="icon">🕳️</span>
+                <span class="icon"></span>
                 <p>No favorite black holes yet. <a href="/blackholes">Explore black holes →</a></p>
               </div>
             `;
