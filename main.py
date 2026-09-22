@@ -292,7 +292,10 @@ with app.app_context():
     admin_username = os.environ.get('ADMIN_USERNAME', 'admin')
     admin_password = os.environ.get('ADMIN_PASSWORD')
     
-    if admin_password and not User.query.filter_by(username=admin_username).first():
+    if admin_password:
+    admin = User.query.filter_by(email='admin@nova.com').first()
+
+    if not admin:
         admin = User(
             username=admin_username,
             email='admin@nova.com',
@@ -301,7 +304,9 @@ with app.app_context():
         admin.set_password(admin_password)
         db.session.add(admin)
         db.session.commit()
-        print(f"✅ Admin created: {admin_username}")
+        print(f"Admin created: {admin_username}")
+    else:
+        print("Admin already exists")
     
     # ===== Planets =====
     if Planet.query.count() == 0:
